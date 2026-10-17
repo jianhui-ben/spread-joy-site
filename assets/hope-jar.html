@@ -2,7 +2,7 @@
 <script>
 (() => {
   // Isolated styles prevent this widget from changing your Squarespace site.
-  const host = document.currentScript.previousElementSibling;
+  const host = (document.currentScript && document.currentScript.previousElementSibling) || document.querySelector('[data-sjc-hope-widget]');
   if (!host || host.shadowRoot) return;
   const root = host.attachShadow({mode: 'open'});
   root.innerHTML = `<style>
