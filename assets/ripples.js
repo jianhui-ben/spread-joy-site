@@ -1,0 +1,155 @@
+(function (root) {
+  // The "ripples of joy" heart and counter. This file is self-contained: the hero Code Block carries it
+  // on its own (see home-page/3-hero-block.html), so no site-wide or footer script is needed for it.
+  //
+  // PLACEHOLDER: made-up starting number. Replace with real data later. There is no server, so the count
+  // is not shared between visitors: each browser adds only its own taps to this number and remembers
+  // them (localStorage, key below).
+  var PLACEHOLDER_START_COUNT = 1284;
+  var STORAGE_KEY = 'sj-ripples';
+  var MAX_RINGS = 6;
+  var MAX_FLOATS = 12;
+  var CONFETTI_EVERY = 10;
+  var CONFETTI_BITS = 14;
+
+  function formatCount(n) {
+    return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+
+  // With a storage object (localStorage) the visitor's own taps are remembered between visits.
+  // Storage can be missing or blocked (private windows); the counter then just works for this visit.
+  function createCounter(start, storage) {
+    var own = 0;
+    try {
+      var saved = parseInt(storage && storage.getItem(STORAGE_KEY), 10);
+      if (saved > 0) own = saved;
+    } catch (e) {}
+    return {
+      value: function () { return start + own; },
+      tap: function () {
+        own += 1;
+        try { if (storage) storage.setItem(STORAGE_KEY, String(own)); } catch (e) {}
+        return start + own;
+      }
+    };
+  }
+
+  function reducedMotion(doc) {
+    var view = doc.defaultView;
+    return !!(view && view.matchMedia && view.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  }
+
+  function closestWithId(node, id) {
+    while (node) {
+      if (node.id === id) return node;
+      node = node.parentNode;
+    }
+    return null;
+  }
+
+  // The click listener is on the whole document and elements are looked up at click time, because
+  // Squarespace re-draws a Code Block's HTML after load. Running this again (the block was re-drawn and
+  // its script ran twice) only refreshes the number; it never adds a second listener.
+  function initRipples(doc, storage) {
+    var html = doc.documentElement;
+    var counter = createCounter(PLACEHOLDER_START_COUNT, storage);
+    var taps = 0;
+
+    function show() {
+      var number = doc.getElementById('sj-count');
+      if (number) number.textContent = formatCount(counter.value());
+    }
+    show();
+
+    if (html && html.classList.contains('sj-ripples-on')) return;
+    if (html) html.classList.add('sj-ripples-on');
+
+    // Other scripts on the page may write their own number later; put ours back once the page has loaded.
+    var view = doc.defaultView;
+    if (view && view.addEventListener) view.addEventListener('load', show);
+
+    // a heart that floats up from the button, and a burst of confetti on every tenth tap
+    function playful(fx) {
+      taps += 1;
+      var heart = doc.createElement('span');
+      heart.classList.add('float');
+      heart.textContent = '♥';
+      heart.style.setProperty('--x', Math.round((Math.random() - 0.5) * 120) + 'px');
+      heart.addEventListener('animationend', function () { heart.remove(); });
+      fx.appendChild(heart);
+      // children is a live HTMLCollection in browsers (no filter/shift), so copy it into an array first
+      var floats = Array.prototype.filter.call(fx.children, function (c) { return c.classList.contains('float'); });
+      while (floats.length > MAX_FLOATS) fx.removeChild(floats.shift());
+
+      if (taps % CONFETTI_EVERY === 0) {
+        for (var i = 0; i < CONFETTI_BITS; i++) {
+          var bit = doc.createElement('i');
+          bit.classList.add('bit');
+          var angle = (i / CONFETTI_BITS) * Math.PI * 2;
+          var dist = 70 + Math.random() * 60;
+          bit.style.setProperty('--dx', Math.round(Math.cos(angle) * dist) + 'px');
+          bit.style.setProperty('--dy', Math.round(Math.sin(angle) * dist - 40) + 'px');
+          bit.style.setProperty('--c', i % 3 === 0 ? '#fdcd17' : i % 3 === 1 ? '#ffffff' : '#231f20');
+          bit.addEventListener('animationend', function (b) { return function () { b.remove(); }; }(bit));
+          fx.appendChild(bit);
+        }
+      }
+    }
+
+    function tap() {
+      var heart = doc.getElementById('sj-heart');
+      var rings = doc.getElementById('sj-rings');
+      var number = doc.getElementById('sj-count');
+      if (!heart || !rings || !number) return;
+
+      number.textContent = formatCount(counter.tap());
+
+      if (reducedMotion(doc)) {
+        heart.classList.add('pulse');
+        setTimeout(function () { heart.classList.remove('pulse'); }, 300);
+        return;
+      }
+
+      var fx = doc.getElementById('sj-fx');
+      if (fx) playful(fx);
+      number.classList.add('bump');
+      setTimeout(function () { number.classList.remove('bump'); }, 250);
+
+      var ring = doc.createElement('span');
+      ring.classList.add('ring');
+      ring.addEventListener('animationend', function () { ring.remove(); });
+      rings.appendChild(ring);
+      while (rings.children.length > MAX_RINGS) rings.removeChild(rings.children[0]);
+    }
+
+    // Capture phase, and the tap is claimed here so no other script on the page counts it a second time.
+    doc.addEventListener('click', function (e) {
+      if (!closestWithId(e.target, 'sj-heart')) return;
+      if (e.stopPropagation) e.stopPropagation();
+      tap();
+    }, true);
+  }
+
+  // Reading localStorage can throw (blocked cookies, some private windows), so ask for it carefully.
+  function browserStorage() {
+    try { return root.localStorage || null; } catch (e) { return null; }
+  }
+
+  var Ripples = {
+    PLACEHOLDER_START_COUNT: PLACEHOLDER_START_COUNT,
+    formatCount: formatCount,
+    createCounter: createCounter,
+    initRipples: initRipples
+  };
+
+  if (typeof module !== 'undefined' && module.exports) module.exports = Ripples;
+  root.Ripples = Ripples;
+
+  if (typeof document !== 'undefined') {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function () { initRipples(document, browserStorage()); });
+    } else {
+      initRipples(document, browserStorage());
+    }
+  }
+})(typeof window !== 'undefined' ? window : globalThis);

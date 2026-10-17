@@ -26,7 +26,7 @@ Run both suites before committing. Develop test-first; bugs that only showed up 
 | Path | What it is |
 |---|---|
 | `build.py` | Generator: page bodies, `HOME_*` sections, Squarespace paste files. **Edit this, not generated files.** |
-| `assets/` | `styles.css` (mock site), `home.css`, `joy.js`, `home.js`, `scroll-story.js`, `img/` |
+| `assets/` | `styles.css` (mock site), `home.css`, `ripples.js` (heart + counter, carried by the hero block), `joy.js`, `home.js`, `scroll-story.js`, `img/` |
 | `home-page/` | **Generated** paste files 1-6, `README.md` (how to rebuild the home page in Squarespace), `image-urls.json` (uploaded image addresses) |
 | `squarespace/` | Legacy standalone snippets from before the home page; kept, not maintained |
 | `tests/` | `test_build.py`, `*.test.js` |

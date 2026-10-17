@@ -275,7 +275,7 @@ class SnippetTests(unittest.TestCase):
         self.assertRegex(html, r'<p[^>]*id="sj-idea"[^>]*sj-needs-js')
 
     def test_start_count_comes_from_the_single_constant(self):
-        const = re.search(r"PLACEHOLDER_START_COUNT\s*=\s*(\d+)", (ROOT / "assets" / "joy.js").read_text()).group(1)
+        const = re.search(r"PLACEHOLDER_START_COUNT\s*=\s*(\d+)", (ROOT / "assets" / "ripples.js").read_text()).group(1)
         formatted = f"{int(const):,}"
         for text in (self.heart, (ROOT / "index.html").read_text()):
             self.assertIn(f'id="sj-count">{formatted}<', text)
@@ -350,6 +350,9 @@ class HomePageFolderTests(unittest.TestCase):
             text = self.read(n)
             # the supplied hope-jar overlay carries its own isolated (shadow DOM) style and script
             text = re.sub(r"<div data-sjc-hope-widget></div>\s*<script>.*?</script>", "", text, flags=re.S)
+            if n == "3-hero-block.html":
+                # the hero block carries the ripples heart and counter script by itself
+                text = re.sub(r"<script>\n\(function \(root\) \{\n  // The \"ripples of joy\".*?</script>", "", text, flags=re.S)
             self.assertNotIn("<style", text, n)
             self.assertNotIn("<script", text, n)
             self.assertNotIn("assets/img", text, n)
@@ -380,6 +383,15 @@ class HomePageFolderTests(unittest.TestCase):
         self.assertIn("window.__sjHome", text)  # guard against running twice if Squarespace re-draws the block
         for needle in ["PART 1", "PART 2", "PART 3", "PART 4", "initStory", "initGive", "createShuffler"]:
             self.assertIn(needle, text)
+
+    def test_ripples_counter_lives_only_in_the_hero_block_not_in_the_site_script(self):
+        hero = self.read("3-hero-block.html")
+        self.assertEqual(hero.count("<script>"), 1)
+        self.assertIn("initRipples", hero)
+        self.assertIn("sj-ripples", hero)
+        for n in ("2-footer-injection.html", "7-page-script-block.html"):
+            self.assertNotIn("initRipples", self.read(n), n)
+            self.assertNotIn("sj-ripples", self.read(n), n)
 
     def test_footer_has_every_script_part(self):
         js = self.read("2-footer-injection.html")

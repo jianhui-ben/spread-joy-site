@@ -12,8 +12,8 @@ OUT = Path(__file__).parent
 
 
 def start_count():
-    """The made-up starting number lives only in assets/joy.js; format it for the static markup."""
-    joy = (OUT / "assets" / "joy.js").read_text()
+    """The made-up starting number lives only in assets/ripples.js; format it for the static markup."""
+    joy = (OUT / "assets" / "ripples.js").read_text()
     return f"{int(re.search(r'PLACEHOLDER_START_COUNT\s*=\s*(\d+)', joy).group(1)):,}"
 
 
@@ -156,6 +156,9 @@ HOME_HERO = f"""<section class="hero">
 </section>
 """
 
+# The heart and counter script travels inside the hero block, so nothing site-wide is needed for it.
+RIPPLES_SCRIPT = "\n<script>\n" + (OUT / "assets" / "ripples.js").read_text().strip() + "\n</script>\n"
+
 HOME_STORY = """<section class="story" id="story">
   <div class="stage-pin">
     <div class="frames">
@@ -209,7 +212,8 @@ PAGES["index.html"] = dict(
     title="Home",
     description="Spread Joy Collective supports families of individuals with disabilities. Small acts. Big impact. Spread joy.",
     head_extra='<link rel="stylesheet" href="assets/home.css">',
-    scripts="""<script src="assets/joy.js" defer></script>
+    scripts="""<script src="assets/ripples.js" defer></script>
+<script src="assets/joy.js" defer></script>
 <script src="assets/home.js" defer></script>
 <script src="assets/scroll-story.js" defer></script>""" + GB_LIBRARY,
     body=HOME_HERO + "\n" + HOME_STORY + "\n" + WAVE_UP + "\n" + HOME_TURN,
@@ -463,10 +467,12 @@ def build_snippets():
         print("wrote squarespace/" + filename)
     joy = (OUT / "assets" / "joy.js").read_text()
     home = (OUT / "assets" / "home.js").read_text()
+    ripples = (OUT / "assets" / "ripples.js").read_text()
     script = (FOOTER_HEADER.replace("__GENERATED__", GENERATED_NOTE)
               + "<script>\n"
               + "/* ===== PART 1: logic (assets/joy.js) ===== */\n" + joy + "\n"
-              + "/* ===== PART 2: click handling (assets/home.js) ===== */\n" + home
+              + "/* ===== PART 2: click handling (assets/home.js) ===== */\n" + home + "\n"
+              + "/* ===== PART 3: heart and counter (assets/ripples.js) ===== */\n" + ripples
               + "</script>\n")
     (out / "footer-injection.html").write_text(script)
     print("wrote squarespace/footer-injection.html")
@@ -644,8 +650,9 @@ HOME_FOOTER = """<!--
   PASTE 2 OF 6:   Footer and home page script
   WHAT IT DOES:   Replaces the site footer with the same charcoal footer as the local preview (logo,
                   Explore, Give, Follow, Stay in the loop), and hides Squarespace's own footer so the
-                  white logo row does not sit above it. Then the home page script. Part 1: heart counter,
-                  kindness ideas. Part 2: taps on the heart and "Surprise me". Part 3: the growing hero
+                  white logo row does not sit above it. Then the home page script. Part 1: kindness ideas.
+                  Part 2: "Surprise me" and "I did it". (The heart counter is NOT here: it lives in the hero
+                  block, paste 3.) Part 3: the growing hero
                   photo, the pinned photo story, fade-ins, dragging the cards, and the header tucking away.
   WHERE TO PASTE: Pages > Custom Code > Code Injection > FOOTER, then Save. Replace the whole field.
                   Once for the whole site. Do not leave an older footer above this paste.
@@ -723,7 +730,7 @@ def build_home_page():
     footer = (HOME_FOOTER.replace("__FOOTERCSS__", HOME_FOOTER_CSS).replace("__FOOTERHTML__", footer_html)
               + (GB_LIBRARY + "\n" if GB_LIBRARY else "") + "<script>\n"
               + "/* ===== PART 1: logic (assets/joy.js) ===== */\n" + parts[0] + "\n"
-              + "/* ===== PART 2: taps on heart and Surprise me (assets/home.js) ===== */\n" + parts[1] + "\n"
+              + "/* ===== PART 2: Surprise me and I did it (assets/home.js) ===== */\n" + parts[1] + "\n"
               + "/* ===== PART 3: scroll story, cards, header (assets/scroll-story.js) ===== */\n" + parts[2] + "\n"
               + "/* ===== PART 4: floating Give pill on every page (assets/give-pill.js) ===== */\n" + parts[3]
               + "</script>\n")
@@ -739,7 +746,7 @@ def build_home_page():
                    "  GENERATED:      by build.py from assets/*.js. Do not hand-edit.\n"
                    "-->\n" + (GB_LIBRARY + "\n" if GB_LIBRARY else "") + "<script>\nif (!window.__sjHome) { window.__sjHome = true;\n"
                    + "/* ===== PART 1: logic (assets/joy.js) ===== */\n" + parts[0] + "\n"
-                   + "/* ===== PART 2: taps on heart and Surprise me (assets/home.js) ===== */\n" + parts[1] + "\n"
+                   + "/* ===== PART 2: Surprise me and I did it (assets/home.js) ===== */\n" + parts[1] + "\n"
                    + "/* ===== PART 3: scroll story, cards, header (assets/scroll-story.js) ===== */\n" + parts[2] + "\n"
                    + "/* ===== PART 4: floating Give pill (assets/give-pill.js) ===== */\n" + parts[3]
                    + "\n}\n</script>\n")
@@ -748,8 +755,8 @@ def build_home_page():
     blocks = [
         (3, "3-hero-block.html", "Hero: headline and growing photo with the heart",
          "Giant headline, the photo that grows as you scroll, and the tap-the-heart pill on top of it.",
-         "A Code Block (mode HTML) in the FIRST section of the Home page.",
-         "{{IMG_SOCKS_CIRCLE}}, {{IMG_HEART}}", HOME_HERO),
+         "A Code Block (mode HTML) in the FIRST section of the Home page. It carries its own heart and counter script, so nothing in the Footer injection is needed for the counter.",
+         "{{IMG_SOCKS_CIRCLE}}, {{IMG_HEART}}", HOME_HERO + RIPPLES_SCRIPT),
         (4, "4-story-block.html", "Pinned photo story",
          "Three photos and three short lines that change as you scroll while the stage stays pinned.",
          "A Code Block (mode HTML) in the SECOND section.",

@@ -2,8 +2,9 @@
   PASTE 2 OF 6:   Footer and home page script
   WHAT IT DOES:   Replaces the site footer with the same charcoal footer as the local preview (logo,
                   Explore, Give, Follow, Stay in the loop), and hides Squarespace's own footer so the
-                  white logo row does not sit above it. Then the home page script. Part 1: heart counter,
-                  kindness ideas. Part 2: taps on the heart and "Surprise me". Part 3: the growing hero
+                  white logo row does not sit above it. Then the home page script. Part 1: kindness ideas.
+                  Part 2: "Surprise me" and "I did it". (The heart counter is NOT here: it lives in the hero
+                  block, paste 3.) Part 3: the growing hero
                   photo, the pinned photo story, fade-ins, dragging the cards, and the header tucking away.
   WHERE TO PASTE: Pages > Custom Code > Code Injection > FOOTER, then Save. Replace the whole field.
                   Once for the whole site. Do not leave an older footer above this paste.
@@ -81,11 +82,6 @@
 <script>
 /* ===== PART 1: logic (assets/joy.js) ===== */
 (function (root) {
-  // PLACEHOLDER: made-up starting number for the "ripples of joy" counter.
-  // Replace with real data later. There is no server, so the count is not shared: each browser adds
-  // only its own taps to this number and remembers them (localStorage, key below).
-  var PLACEHOLDER_START_COUNT = 1284;
-
   // Kindness ideas from the owner's brainstorm doc. Edit this list; do not add facts.
   var IDEAS = [
     "Invite someone to join you who might otherwise be left out.",
@@ -105,30 +101,6 @@
     "Let someone know they make a difference in your life.",
     "Give someone a sincere compliment."
   ];
-
-  function formatCount(n) {
-    return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  }
-
-  var STORAGE_KEY = 'sj-ripples';
-
-  // With a storage object (localStorage) the visitor's own taps are remembered between visits.
-  // Storage can be missing or blocked (private windows); the counter then just works for this visit.
-  function createCounter(start, storage) {
-    var own = 0;
-    try {
-      var saved = parseInt(storage && storage.getItem(STORAGE_KEY), 10);
-      if (saved > 0) own = saved;
-    } catch (e) {}
-    return {
-      value: function () { return start + own; },
-      tap: function () {
-        own += 1;
-        try { if (storage) storage.setItem(STORAGE_KEY, String(own)); } catch (e) {}
-        return start + own;
-      }
-    };
-  }
 
   function shuffled(items, rng) {
     var a = items.slice();
@@ -161,10 +133,7 @@
   }
 
   var Joy = {
-    PLACEHOLDER_START_COUNT: PLACEHOLDER_START_COUNT,
     IDEAS: IDEAS,
-    formatCount: formatCount,
-    createCounter: createCounter,
     createShuffler: createShuffler
   };
 
@@ -172,18 +141,8 @@
   root.Joy = Joy;
 })(typeof window !== 'undefined' ? window : globalThis);
 
-/* ===== PART 2: taps on heart and Surprise me (assets/home.js) ===== */
+/* ===== PART 2: Surprise me and I did it (assets/home.js) ===== */
 (function (root) {
-  var MAX_RINGS = 6;
-  var MAX_FLOATS = 12;
-  var CONFETTI_EVERY = 10;
-  var CONFETTI_BITS = 14;
-
-  function reducedMotion(doc) {
-    var view = doc.defaultView;
-    return !!(view && view.matchMedia && view.matchMedia('(prefers-reduced-motion: reduce)').matches);
-  }
-
   function closestWithId(node, id) {
     while (node) {
       if (node.id === id) return node;
@@ -194,73 +153,12 @@
 
   // Clicks are handled on the whole document, and elements are looked up at click time,
   // because Squarespace's editor can re-draw a Code Block's HTML after this script has run.
-  function initHome(doc, joy, storage) {
+  function initHome(doc, joy) {
     var html = doc.documentElement;
     if (html && html.classList.contains('sj-js')) return; // already running
     if (html) html.classList.add('sj-js'); // reveals the elements marked sj-needs-js
 
-    var counter = joy.createCounter(joy.PLACEHOLDER_START_COUNT, storage);
     var shuffler = joy.createShuffler(joy.IDEAS);
-    var calm = reducedMotion(doc);
-
-    var count = doc.getElementById('sj-count');
-    if (count) count.textContent = joy.formatCount(counter.value());
-
-    var taps = 0;
-
-    // a heart that floats up from the button, and a burst of confetti on every tenth tap
-    function playful(fx) {
-      taps += 1;
-      var heart = doc.createElement('span');
-      heart.classList.add('float');
-      heart.textContent = '\u2665';
-      heart.style.setProperty('--x', Math.round((Math.random() - 0.5) * 120) + 'px');
-      heart.addEventListener('animationend', function () { heart.remove(); });
-      fx.appendChild(heart);
-      // children is a live HTMLCollection in browsers (no filter/shift), so copy it into an array first
-      var floats = Array.prototype.filter.call(fx.children, function (c) { return c.classList.contains('float'); });
-      while (floats.length > MAX_FLOATS) fx.removeChild(floats.shift());
-
-      if (taps % CONFETTI_EVERY === 0) {
-        for (var i = 0; i < CONFETTI_BITS; i++) {
-          var bit = doc.createElement('i');
-          bit.classList.add('bit');
-          var angle = (i / CONFETTI_BITS) * Math.PI * 2;
-          var dist = 70 + Math.random() * 60;
-          bit.style.setProperty('--dx', Math.round(Math.cos(angle) * dist) + 'px');
-          bit.style.setProperty('--dy', Math.round(Math.sin(angle) * dist - 40) + 'px');
-          bit.style.setProperty('--c', i % 3 === 0 ? '#fdcd17' : i % 3 === 1 ? '#ffffff' : '#231f20');
-          bit.addEventListener('animationend', function (b) { return function () { b.remove(); }; }(bit));
-          fx.appendChild(bit);
-        }
-      }
-    }
-
-    function tap() {
-      var heart = doc.getElementById('sj-heart');
-      var rings = doc.getElementById('sj-rings');
-      var number = doc.getElementById('sj-count');
-      if (!heart || !rings || !number) return;
-
-      number.textContent = joy.formatCount(counter.tap());
-
-      if (calm) {
-        heart.classList.add('pulse');
-        setTimeout(function () { heart.classList.remove('pulse'); }, 300);
-        return;
-      }
-
-      var fx = doc.getElementById('sj-fx');
-      if (fx) playful(fx);
-      number.classList.add('bump');
-      setTimeout(function () { number.classList.remove('bump'); }, 250);
-
-      var ring = doc.createElement('span');
-      ring.classList.add('ring');
-      ring.addEventListener('animationend', function () { ring.remove(); });
-      rings.appendChild(ring);
-      while (rings.children.length > MAX_RINGS) rings.removeChild(rings.children[0]);
-    }
 
     function clearDone() {
       var note = doc.getElementById('sj-done');
@@ -284,24 +182,18 @@
     }
 
     doc.addEventListener('click', function (e) {
-      if (closestWithId(e.target, 'sj-heart')) tap();
-      else if (closestWithId(e.target, 'sj-surprise')) surprise();
+      if (closestWithId(e.target, 'sj-surprise')) surprise();
       else if (closestWithId(e.target, 'sj-did-it')) didIt();
     });
-  }
-
-  // Reading localStorage can throw (blocked cookies, some private windows), so ask for it carefully.
-  function browserStorage() {
-    try { return root.localStorage || null; } catch (e) { return null; }
   }
 
   if (typeof module !== 'undefined' && module.exports) module.exports = { initHome: initHome };
 
   if (typeof document !== 'undefined' && root.Joy) {
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', function () { initHome(document, root.Joy, browserStorage()); });
+      document.addEventListener('DOMContentLoaded', function () { initHome(document, root.Joy); });
     } else {
-      initHome(document, root.Joy, browserStorage());
+      initHome(document, root.Joy);
     }
   }
 })(typeof window !== 'undefined' ? window : globalThis);

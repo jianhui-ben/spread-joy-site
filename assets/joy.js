@@ -1,9 +1,4 @@
 (function (root) {
-  // PLACEHOLDER: made-up starting number for the "ripples of joy" counter.
-  // Replace with real data later. There is no server, so the count is not shared: each browser adds
-  // only its own taps to this number and remembers them (localStorage, key below).
-  var PLACEHOLDER_START_COUNT = 1284;
-
   // Kindness ideas from the owner's brainstorm doc. Edit this list; do not add facts.
   var IDEAS = [
     "Invite someone to join you who might otherwise be left out.",
@@ -23,30 +18,6 @@
     "Let someone know they make a difference in your life.",
     "Give someone a sincere compliment."
   ];
-
-  function formatCount(n) {
-    return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  }
-
-  var STORAGE_KEY = 'sj-ripples';
-
-  // With a storage object (localStorage) the visitor's own taps are remembered between visits.
-  // Storage can be missing or blocked (private windows); the counter then just works for this visit.
-  function createCounter(start, storage) {
-    var own = 0;
-    try {
-      var saved = parseInt(storage && storage.getItem(STORAGE_KEY), 10);
-      if (saved > 0) own = saved;
-    } catch (e) {}
-    return {
-      value: function () { return start + own; },
-      tap: function () {
-        own += 1;
-        try { if (storage) storage.setItem(STORAGE_KEY, String(own)); } catch (e) {}
-        return start + own;
-      }
-    };
-  }
 
   function shuffled(items, rng) {
     var a = items.slice();
@@ -79,10 +50,7 @@
   }
 
   var Joy = {
-    PLACEHOLDER_START_COUNT: PLACEHOLDER_START_COUNT,
     IDEAS: IDEAS,
-    formatCount: formatCount,
-    createCounter: createCounter,
     createShuffler: createShuffler
   };
 

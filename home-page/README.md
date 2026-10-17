@@ -57,4 +57,4 @@ Two things Squarespace did that the localhost page does not: the header is laid 
 
 - Words, photos, links: edit the Code Block HTML directly in Squarespace, or change `build.py` (the `HOME_*` sections) and regenerate.
 - Colours, sizes, motion: `assets/home.css`.
-- The made-up counter number and the kindness ideas: `assets/joy.js`.
+- The made-up counter number: `assets/ripples.js` (`PLACEHOLDER_START_COUNT`). The heart and counter script travels inside the hero block (paste 3), not in the Footer injection. There is no server, so the count is not shared: each browser adds only its own taps and remembers them. The kindness ideas: `assets/joy.js`.
