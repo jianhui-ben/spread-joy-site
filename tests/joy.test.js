@@ -48,3 +48,26 @@ test('a one-item shuffler keeps returning that item', () => {
   assert.equal(s.next(), 'only');
   assert.equal(s.next(), 'only');
 });
+
+function fakeStorage(initial = {}) {
+  const d = { ...initial };
+  return { d, getItem: (k) => (k in d ? d[k] : null), setItem: (k, v) => { d[k] = String(v); } };
+}
+
+test('a counter with storage keeps a visitor\'s own taps between visits', () => {
+  const s = fakeStorage();
+  const first = Joy.createCounter(1284, s);
+  first.tap(); first.tap();
+  const later = Joy.createCounter(1284, s); // a new page load
+  assert.equal(later.value(), 1286);
+  assert.equal(later.tap(), 1287);
+});
+
+test('counter ignores junk in storage and survives storage that throws', () => {
+  assert.equal(Joy.createCounter(100, fakeStorage({ 'sj-ripples': 'banana' })).value(), 100);
+  assert.equal(Joy.createCounter(100, fakeStorage({ 'sj-ripples': '-5' })).value(), 100);
+  const broken = { getItem() { throw new Error('blocked'); }, setItem() { throw new Error('blocked'); } };
+  const c = Joy.createCounter(100, broken);
+  assert.equal(c.value(), 100);
+  assert.equal(c.tap(), 101);
+});

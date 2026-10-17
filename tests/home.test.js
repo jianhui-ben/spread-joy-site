@@ -223,3 +223,15 @@ test('works when children is a browser HTMLCollection (no array methods): hearts
   assert.ok(all.some((c) => c.classList.contains('bit')), 'confetti on the tenth tap');
   assert.ok(Array.prototype.slice.call(doc.els['sj-rings'].children).length >= 1, 'ring still added');
 });
+
+test('the counter remembers this visitor\'s taps after a reload', () => {
+  const d = {};
+  const storage = { getItem: (k) => (k in d ? d[k] : null), setItem: (k, v) => { d[k] = String(v); } };
+  const doc = makeDoc(ALL);
+  initHome(doc, Joy, storage);
+  doc.els['sj-heart'].fire('click');
+  doc.els['sj-heart'].fire('click');
+  const again = makeDoc(ALL);
+  initHome(again, Joy, storage);
+  assert.equal(again.els['sj-count'].textContent, Joy.formatCount(Joy.PLACEHOLDER_START_COUNT + 2));
+});

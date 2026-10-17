@@ -1,6 +1,7 @@
 (function (root) {
   // PLACEHOLDER: made-up starting number for the "ripples of joy" counter.
-  // Replace with real data later; nothing is stored between visits.
+  // Replace with real data later. There is no server, so the count is not shared: each browser adds
+  // only its own taps to this number and remembers them (localStorage, key below).
   var PLACEHOLDER_START_COUNT = 1284;
 
   // Kindness ideas from the owner's brainstorm doc. Edit this list; do not add facts.
@@ -27,11 +28,23 @@
     return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   }
 
-  function createCounter(start) {
-    var n = start;
+  var STORAGE_KEY = 'sj-ripples';
+
+  // With a storage object (localStorage) the visitor's own taps are remembered between visits.
+  // Storage can be missing or blocked (private windows); the counter then just works for this visit.
+  function createCounter(start, storage) {
+    var own = 0;
+    try {
+      var saved = parseInt(storage && storage.getItem(STORAGE_KEY), 10);
+      if (saved > 0) own = saved;
+    } catch (e) {}
     return {
-      value: function () { return n; },
-      tap: function () { n += 1; return n; }
+      value: function () { return start + own; },
+      tap: function () {
+        own += 1;
+        try { if (storage) storage.setItem(STORAGE_KEY, String(own)); } catch (e) {}
+        return start + own;
+      }
     };
   }
 

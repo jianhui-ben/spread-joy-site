@@ -19,12 +19,12 @@
 
   // Clicks are handled on the whole document, and elements are looked up at click time,
   // because Squarespace's editor can re-draw a Code Block's HTML after this script has run.
-  function initHome(doc, joy) {
+  function initHome(doc, joy, storage) {
     var html = doc.documentElement;
     if (html && html.classList.contains('sj-js')) return; // already running
     if (html) html.classList.add('sj-js'); // reveals the elements marked sj-needs-js
 
-    var counter = joy.createCounter(joy.PLACEHOLDER_START_COUNT);
+    var counter = joy.createCounter(joy.PLACEHOLDER_START_COUNT, storage);
     var shuffler = joy.createShuffler(joy.IDEAS);
     var calm = reducedMotion(doc);
 
@@ -115,13 +115,18 @@
     });
   }
 
+  // Reading localStorage can throw (blocked cookies, some private windows), so ask for it carefully.
+  function browserStorage() {
+    try { return root.localStorage || null; } catch (e) { return null; }
+  }
+
   if (typeof module !== 'undefined' && module.exports) module.exports = { initHome: initHome };
 
   if (typeof document !== 'undefined' && root.Joy) {
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', function () { initHome(document, root.Joy); });
+      document.addEventListener('DOMContentLoaded', function () { initHome(document, root.Joy, browserStorage()); });
     } else {
-      initHome(document, root.Joy);
+      initHome(document, root.Joy, browserStorage());
     }
   }
 })(typeof window !== 'undefined' ? window : globalThis);
