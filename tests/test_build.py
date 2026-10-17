@@ -61,6 +61,19 @@ def home_rule(selector):
     return None
 
 
+class GivebutterLinkTests(unittest.TestCase):
+    # Every Givebutter address on the site must be one the owner has confirmed (a typo'd or unowned slug would send gifts elsewhere).
+    VERIFIED = {"SpreadJoyCollective", "socks-that-spread-joy"}
+
+    def test_givebutter_links_use_only_verified_campaign_slugs(self):
+        files = list(ROOT.glob("*.html")) + list((ROOT / "home-page").glob("*.html")) + list((ROOT / "squarespace").glob("*.html"))
+        found = set()
+        for f in files:
+            found |= set(re.findall(r"https://givebutter\.com/([A-Za-z0-9_-]+)", f.read_text()))
+        self.assertTrue(found)
+        self.assertLessEqual(found, self.VERIFIED)
+
+
 class HomeTests(unittest.TestCase):
     def test_give_band_links_to_givebutter_and_never_shows_a_made_up_total(self):
         html = build_index()
