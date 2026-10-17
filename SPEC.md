@@ -29,6 +29,25 @@ Variables read from the trial site on 2026-10-17 (live site and dark section the
 | Light / mid grey | `--lightAccent-hsl` / `--darkAccent-hsl` | `270,8%,90.2%` / `0,0%,47.45%` |
 | Section heading color | `--headingLargeColor` | `hsla(0,0%,0%,1)` in the light theme |
 
+### Type, buttons and spacing (brand look, for every page)
+
+Set these in Squarespace's Site Styles where possible. Code should match them, not replace them.
+
+- **Body and headings:** League Spartan, weight 400 for body, 700 for big headlines, tight letter-spacing (-0.02 to -0.03em) on headlines. Set League Spartan in Site Styles (see §7 on the font decision).
+- **Accent words:** Oooh Baby, script, about 1.4rem beside the body text. Use one accent per section at most.
+- **Headlines:** one big line per section (roughly 3rem to 6rem on desktop), line-height about 1.05. Body text about 1.05rem to 1.15rem, line-height 1.5 to 1.6, max width about 40em.
+- **Muted text:** `#6B6560` for secondary copy (the palette has no matching slot yet).
+- **Buttons:** pill shape (fully rounded), at least 44px tall, 12px by 26px padding. Three styles only:
+  - **Primary:** brand yellow background, charcoal text (for example "Give").
+  - **Dark:** charcoal background, white text (on yellow sections).
+  - **Outline:** white background, charcoal border (secondary actions).
+- **Dividers:** the yellow wave (see the home page) is the only divider. Do not add other decorative lines.
+- **Motif:** the yellow heart is the signature mark. Use the uploaded heart image, not new icons.
+- **Spacing:** generous. Sections use at least 80px top and bottom padding on desktop and 56px on phone. Maximum one idea per section.
+- **Photos:** full-bleed or rounded corners (about 24px to 32px). No frames, no drop shadows except a soft one on floating elements.
+
+Reference build: `index.html` and `assets/styles.css` (local preview), and the home-page paste files. When in doubt, match the home page.
+
 ## 3. Shared structure (native Squarespace, not rebuilt in code)
 
 - **Header:** fixed to the top on desktop and phone. **Nav order:** Home · Our Mission · Our Story · Events · Get Involved · How Can We Help · Contact · **Give** (button). At most 8 top-level items.
@@ -80,7 +99,7 @@ Use a visible placeholder and list each in your response.
 
 - Live-site brand yellow: `--accent-hsl` on the trial site; owner to confirm on the live site.
 - Dark color for footers and dark sections: pure black (`--black-hsl`), or add the logo's charcoal `#231F20` to the palette?
-- Fonts: the site's own font is Poppins; the brand guide uses League Spartan (text) and Oooh Baby (accent). Keep Poppins, or set the brand fonts in Site Styles so code can inherit them?
+- Fonts: the live site's own font is Poppins; the brand guide and the local preview use League Spartan (text) and Oooh Baby (accent). Working default in §2 is League Spartan set in Site Styles. Owner to confirm.
 - Whether stock photography is used, and where videos are hosted (Squarespace, YouTube or Vimeo).
 - Final nav order if a page is added or merged.
 
