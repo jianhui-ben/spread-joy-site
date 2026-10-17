@@ -22,7 +22,7 @@ python3 -m unittest discover -s tests       # theme, home page markup, snippets
 
 Home, Our Mission, Our Story, Events, How Can We Help, Contact (same as the live site's menu).
 
-The home page is the "Joy Ripple" design: five moments on white and yellow bands with a wave between them. Tap the heart to send a ripple (the counter number is a placeholder, `PLACEHOLDER_START_COUNT` in `assets/joy.js`), then scroll the story, then "Your turn" with a "Surprise me" button. With JavaScript off, the page shows the static heart and counter and hides "Surprise me".
+The home page is an Apple-style scrolling story: a giant headline and a photo that grows as you scroll, a pinned stage where photos and three short lines change with scroll, then a yellow "Your turn" band with swipeable photo cards (the last one is "Surprise me"). Tap the heart on the hero photo to send a ripple (the counter number is a placeholder, `PLACEHOLDER_START_COUNT` in `assets/joy.js`). Styles are in `assets/home.css`, scroll logic in `assets/scroll-story.js`. With JavaScript off, the static photos, heart and counter show and "Surprise me" is hidden.
 
 ## Squarespace
 

@@ -30,15 +30,14 @@ class ThemeTests(unittest.TestCase):
     def test_header_is_sticky(self):
         self.assertIn("position: sticky", rule(".site-header"))
 
-    def test_new_classes_exist(self):
-        for sel in [".band", ".band.yellow", ".wave", ".wave.flip", ".moment",
-                    ".hl", ".photo-card", ".pill", ".pill.outline", ".drift-heart"]:
+    def test_shared_classes_exist(self):
+        for sel in [".wave", ".wave.flip", ".pill", ".pill.outline"]:
             self.assertIsNotNone(rule(sel), f"missing CSS rule for {sel}")
 
-    def test_reduced_motion_block_hides_drift_hearts(self):
+    def test_reduced_motion_block_turns_animation_off(self):
         m = re.search(r"@media \(prefers-reduced-motion: reduce\)\s*\{(.*?)\n\}", CSS, re.S)
         self.assertIsNotNone(m, "no prefers-reduced-motion block")
-        self.assertIn(".drift-heart", m.group(1))
+        self.assertIn("animation: none", m.group(1))
 
 
 def build_index():
@@ -50,40 +49,62 @@ def text_of(fragment):
     return re.sub(r"\s+", " ", re.sub(r"<[^>]+>", "", fragment)).strip()
 
 
+HOME_CSS = (ROOT / "assets" / "home.css").read_text() if (ROOT / "assets" / "home.css").exists() else ""
+HOME_CSS_NO_COMMENTS = re.sub(r"/\*.*?\*/", "", HOME_CSS, flags=re.S)
+
+
+def home_rule(selector):
+    for m in re.finditer(r"([^{}]+)\{([^{}]*)\}", HOME_CSS_NO_COMMENTS):
+        if selector in [x.strip() for x in m.group(1).split(",")]:
+            return m.group(2)
+    return None
+
+
 class HomeTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.html = build_index()
-        cls.moments = re.findall(
-            r'<section class="([^"]*\bmoment\b[^"]*)"[^>]*>(.*?)</section>', cls.html, re.S)
 
-    def test_five_moments_with_exact_headlines(self):
-        self.assertEqual(len(self.moments), 5)
-        headlines = [text_of(re.search(r"<h2[^>]*>(.*?)</h2>", body, re.S).group(1))
-                     for _, body in self.moments]
-        self.assertEqual(headlines, [
-            "Tap the heart.",
+    def test_hero_headline_and_subline(self):
+        h1 = re.search(r"<h1[^>]*>(.*?)</h1>", self.html, re.S).group(1)
+        self.assertEqual(text_of(h1), "Small acts. Big impact.")
+        self.assertIn("Spread joy.", text_of(re.search(r'<p class="sub[^"]*"[^>]*>(.*?)</p>', self.html, re.S).group(1)))
+
+    def test_story_lines_in_order(self):
+        lines = [text_of(t) for t in re.findall(r'<h2 class="line"[^>]*>(.*?)</h2>', self.html, re.S)]
+        self.assertEqual(lines, [
             "It started with one kid.",
             "Then a whole circle showed up.",
             "578 socks. One kindness at a time.",
-            "Your turn.",
         ])
 
-    def test_photos_exist_and_have_alt_text(self):
-        for name in ["xavier-portrait.jpg", "socks-circle.jpg", "sock-pile.jpg"]:
+    def test_story_photos_exist_and_have_alt_text(self):
+        frames = re.findall(r'<div class="frame">(.*?)</div>', self.html, re.S)
+        self.assertEqual(len(frames), 3)
+        for frame, name in zip(frames, ["xavier-portrait.jpg", "socks-circle.jpg", "sock-pile.jpg"]):
+            self.assertIn(f'src="assets/img/{name}"', frame)
             self.assertTrue((ROOT / "assets" / "img" / name).exists(), name)
-            m = re.search(r'<img[^>]*src="assets/img/%s"[^>]*>' % re.escape(name), self.html)
-            self.assertIsNotNone(m, f"{name} not used on the home page")
-            alt = re.search(r'alt="([^"]*)"', m.group(0))
+            alt = re.search(r'alt="([^"]*)"', frame)
             self.assertTrue(alt and alt.group(1).strip(), f"{name} has no alt text")
 
-    def test_your_turn_links(self):
-        body = self.moments[4][1]
-        links = dict((text_of(t), h) for h, t in re.findall(r'<a[^>]*href="([^"]*)"[^>]*>(.*?)</a>', body, re.S))
-        self.assertEqual(links["I have time"], "help.html")
-        self.assertEqual(links["I have something to share"], "help.html")
-        self.assertEqual(links["I want to give"], "#")
-        self.assertEqual(links["My family could use support"], "contact.html")
+    def test_your_turn_cards_link_to_the_right_places(self):
+        self.assertEqual(text_of(re.search(r'<section class="turn".*?<h2[^>]*>(.*?)</h2>', self.html, re.S).group(1)), "Your turn.")
+        cards = re.findall(r'<a class="card"[^>]*href="([^"]*)"[^>]*>(.*?)</a>', self.html, re.S)
+        links = {text_of(re.search(r"<h3>(.*?)</h3>", body, re.S).group(1)): href for href, body in cards}
+        self.assertEqual(links, {
+            "I have time": "help.html",
+            "I want to give": "#",
+            "I have something to share": "help.html",
+            "My family could use support": "contact.html",
+        })
+
+    def test_every_link_card_has_a_photo_so_none_is_a_blank_white_block(self):
+        cards = re.findall(r'<a class="card"[^>]*>(.*?)</a>', self.html, re.S)
+        self.assertEqual(len(cards), 4)
+        for body in cards:
+            m = re.search(r'<img[^>]*src="(assets/img/[^"]+)"', body)
+            self.assertIsNotNone(m, "card without a photo")
+            self.assertTrue((ROOT / m.group(1)).exists(), m.group(1))
 
     def test_interaction_ids_exist_exactly_once(self):
         for ident in ["sj-heart", "sj-rings", "sj-count", "sj-surprise", "sj-idea"]:
@@ -91,21 +112,22 @@ class HomeTests(unittest.TestCase):
 
     def test_heart_is_a_button_and_counter_announces_politely(self):
         self.assertRegex(self.html, r'<button[^>]*id="sj-heart"')
-        self.assertRegex(self.html, r'<p[^>]*aria-live="polite"[^>]*>.*?id="sj-count".*?</p>|'
-                                    r'<p[^>]*id="sj-count"[^>]*aria-live="polite"')
+        self.assertRegex(self.html, r'<p[^>]*aria-live="polite"[^>]*>[^<]*(?:<[^>]*>[^<]*)*id="sj-count"|id="sj-count"[^>]*>[^<]*</[^>]+>[^<]*</p>')
         self.assertIn("1,284", re.search(r'id="sj-count"[^>]*>([^<]*)<', self.html).group(1))
 
-    def test_surprise_button_is_hidden_without_javascript(self):
+    def test_script_only_elements_are_hidden_without_javascript(self):
         self.assertRegex(self.html, r'<button[^>]*id="sj-surprise"[^>]*sj-needs-js')
+        self.assertRegex(self.html, r'<p[^>]*id="sj-idea"[^>]*sj-needs-js')
 
-    def test_yellow_moments_use_white_hearts(self):
-        for idx in (1, 3):
-            classes, body = self.moments[idx]
-            self.assertIn("band", classes)
-            self.assertIn("yellow", classes)
-            self.assertIn("heart-white.png", body)
-        for idx in (0, 2, 4):
-            self.assertNotIn("yellow", self.moments[idx][0].split())
+    def test_home_loads_its_own_styles_and_scripts(self):
+        for ref in ["assets/home.css", "assets/joy.js", "assets/home.js", "assets/scroll-story.js"]:
+            self.assertIn(ref, self.html)
+            self.assertTrue((ROOT / ref).exists(), ref)
+
+    def test_home_css_has_the_story_and_card_rules_and_a_reduced_motion_block(self):
+        for sel in [".hero-card", ".story", ".stage-pin", ".frame", ".line", ".cards", ".card", ".reveal", ".reveal.in"]:
+            self.assertIsNotNone(home_rule(sel), f"home.css missing {sel}")
+        self.assertIn("prefers-reduced-motion", HOME_CSS)
 
 
 class SnippetTests(unittest.TestCase):

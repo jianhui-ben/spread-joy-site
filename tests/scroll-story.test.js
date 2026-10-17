@@ -1,0 +1,54 @@
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const { storyState } = require('../assets/scroll-story.js');
+
+test('at the top the first photo is shown and the others are not', () => {
+  const s = storyState(0, 3, false);
+  assert.equal(s.index, 0);
+  assert.deepEqual(s.frames.map((f) => f.opacity), [1, 0, 0]);
+});
+
+test('by the end every photo has faded in and the last one is current', () => {
+  const s = storyState(1, 3, false);
+  assert.equal(s.index, 2);
+  assert.deepEqual(s.frames.map((f) => f.opacity), [1, 1, 1]);
+});
+
+test('the next photo only starts fading in near the end of the current one', () => {
+  const early = storyState(0.1, 3, false); // a third of the first segment
+  assert.equal(early.frames[1].opacity, 0);
+  const late = storyState(0.3, 3, false);  // 90% through the first segment
+  assert.ok(late.frames[1].opacity > 0 && late.frames[1].opacity < 1);
+});
+
+test('exactly one line is the brightest at the middle of each segment', () => {
+  for (let i = 0; i < 3; i++) {
+    const p = (i + 0.42) / 3;
+    const s = storyState(p, 3, false);
+    const max = Math.max(...s.lines.map((l) => l.opacity));
+    assert.equal(s.lines.filter((l) => l.opacity === max).length, 1);
+    assert.equal(s.lines.findIndex((l) => l.opacity === max), i);
+    assert.ok(max > 0.95);
+  }
+});
+
+test('photos settle from zoomed in to normal size as you scroll', () => {
+  const start = storyState(0, 3, false).frames[0].scale;
+  const later = storyState(0.2, 3, false).frames[0].scale;
+  assert.ok(start > later);
+  assert.ok(start <= 1.12 && later >= 1);
+});
+
+test('progress outside 0..1 is clamped instead of breaking', () => {
+  assert.deepEqual(storyState(-5, 3, false), storyState(0, 3, false));
+  assert.deepEqual(storyState(9, 3, false), storyState(1, 3, false));
+});
+
+test('reduced motion shows one line at a time with no zoom or slide', () => {
+  const s = storyState(0.5, 3, true);
+  s.frames.forEach((f) => assert.equal(f.scale, 1));
+  s.lines.forEach((l, i) => {
+    assert.equal(l.shift, 0);
+    assert.equal(l.opacity, i === s.index ? 1 : 0);
+  });
+});
