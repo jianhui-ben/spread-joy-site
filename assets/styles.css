@@ -161,7 +161,11 @@ label { font-size: 0.9rem; color: var(--muted); }
   .moment.reverse .wrap > :first-child { order: 0; }
   .photo-card img { box-shadow: 8px 8px 0 var(--ink); }
   .band.yellow .photo-card img { box-shadow: 8px 8px 0 var(--bg); }
-  .site-header nav { margin-left: 0; width: 100%; }
+  .site-header .wrap { gap: 6px 12px; padding-top: 10px; padding-bottom: 8px; }
+  .brand { order: 1; font-size: 0.8rem; letter-spacing: 0.14em; }
+  .brand img { height: 32px; }
+  .site-header .btn { order: 2; margin-left: auto; padding: 6px 18px; }
+  .site-header nav { order: 3; margin-left: 0; width: 100%; flex-wrap: nowrap; overflow-x: auto; white-space: nowrap; gap: 18px; padding-bottom: 4px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

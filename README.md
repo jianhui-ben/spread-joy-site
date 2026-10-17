@@ -5,21 +5,28 @@ A static mock of the Squarespace site, used to settle layout, copy and links bef
 ## Run
 
 ```bash
-python3 build.py          # regenerates the six .html pages
-open index.html           # or: python3 -m http.server 8011
+python3 build.py                    # regenerates the six .html pages and the Squarespace snippets
+python3 -m http.server 8011         # then open http://localhost:8011/index.html
 ```
 
-Edit page content in `build.py` and styles in `assets/styles.css`. The `.html` files are generated, so change `build.py` rather than the HTML.
+Edit page content in `build.py` and styles in `assets/styles.css`. The `.html` files and `squarespace/` snippets are generated, so change `build.py` or the assets rather than the output.
+
+## Tests
+
+```bash
+node --test tests/                          # counter and idea logic, ripple behavior
+python3 -m unittest discover -s tests       # theme, home page markup, snippets
+```
 
 ## Pages
 
 Home, Our Mission, Our Story, Events, How Can We Help, Contact (same as the live site's menu).
 
-## Design fixes built in (from reviewing the live home page)
+The home page is the "Joy Ripple" design: five moments on white and yellow bands with a wave between them. Tap the heart to send a ripple (the counter number is a placeholder, `PLACEHOLDER_START_COUNT` in `assets/joy.js`), then scroll the story, then "Your turn" with a "Surprise me" button. With JavaScript off, the page shows the static heart and counter and hides "Surprise me".
 
-- Nav text is dark on the yellow header (white on yellow was hard to read).
-- Hero has a headline and two buttons (Donate, Get involved) above the fold.
-- No black-on-black logo text: the brand name sits in the header in dark-on-yellow.
+## Squarespace
+
+`squarespace/` holds the ready-to-paste snippets (`heart-block.html`, `surprise-block.html`, `footer-injection.html`). Follow `docs/squarespace-setup.md` to recreate the page in Squarespace 7.1. Design and plan: `docs/superpowers/specs/` and `docs/superpowers/plans/`.
 
 ## Placeholders to fill in
 
@@ -27,7 +34,7 @@ Every `href="#"` is a link still to be supplied:
 
 | Where | Needed |
 |---|---|
-| Header, hero, CTA band, Help page | Donation page URL |
+| Header, "I want to give" on Home, CTA band, Help page | Donation page URL |
 | Footer, Help, Contact | Instagram, Facebook, YouTube URLs |
 | Footer | Newsletter signup service |
 | Footer, Contact | Real email address and phone number (currently `hello@example.com`) |
