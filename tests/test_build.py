@@ -96,7 +96,7 @@ class HomeTests(unittest.TestCase):
         self.assertIn("1,284", re.search(r'id="sj-count"[^>]*>([^<]*)<', self.html).group(1))
 
     def test_surprise_button_is_hidden_without_javascript(self):
-        self.assertRegex(self.html, r'<button[^>]*id="sj-surprise"[^>]*\bhidden\b')
+        self.assertRegex(self.html, r'<button[^>]*id="sj-surprise"[^>]*sj-needs-js')
 
     def test_yellow_moments_use_white_hearts(self):
         for idx in (1, 3):
@@ -138,16 +138,17 @@ class SnippetTests(unittest.TestCase):
             self.assertIn(f'id="{ident}"', self.surprise)
         self.assertIn("<style>", self.surprise)
         self.assertNotIn("<script", self.surprise)
-        self.assertRegex(self.surprise, r'<button[^>]*id="sj-surprise"[^>]*\bhidden\b')
+        self.assertRegex(self.surprise, r'<button[^>]*id="sj-surprise"[^>]*sj-needs-js')
 
-    def test_hidden_elements_stay_hidden_despite_pill_display_rule(self):
-        self.assertRegex(self.surprise, r"\[hidden\]\s*\{[^}]*display:\s*none")
-        self.assertRegex(CSS_NO_COMMENTS, r"\[hidden\]\s*\{[^}]*display:\s*none")
+    def test_script_only_elements_are_hidden_until_the_page_is_marked_script_enabled(self):
+        for css in (self.surprise, CSS_NO_COMMENTS):
+            self.assertRegex(css, r"\.sj-needs-js\s*\{[^}]*display:\s*none")
+            self.assertRegex(css, r"\.sj-js\s+\.sj-needs-js\s*\{[^}]*display:\s*(block|inline-block)")
 
-    def test_idea_line_is_hidden_until_the_script_runs(self):
-        self.assertRegex(self.surprise, r'<p[^>]*id="sj-idea"[^>]*\bhidden\b')
+    def test_idea_line_is_script_only(self):
+        self.assertRegex(self.surprise, r'<p[^>]*id="sj-idea"[^>]*sj-needs-js')
         html = (ROOT / "index.html").read_text()
-        self.assertRegex(html, r'<p[^>]*id="sj-idea"[^>]*\bhidden\b')
+        self.assertRegex(html, r'<p[^>]*id="sj-idea"[^>]*sj-needs-js')
 
     def test_start_count_comes_from_the_single_constant(self):
         const = re.search(r"PLACEHOLDER_START_COUNT\s*=\s*(\d+)", (ROOT / "assets" / "joy.js").read_text()).group(1)

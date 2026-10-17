@@ -162,8 +162,8 @@ PAGES["index.html"] = dict(
       <a class="pill" href="help.html">I have something to share</a>
       <a class="pill" href="contact.html">My family could use support</a>
     </div>
-    <button id="sj-surprise" class="pill outline" type="button" hidden>Surprise me &#9829;</button>
-    <p id="sj-idea" class="idea" aria-live="polite" hidden></p>
+    <button id="sj-surprise" class="pill outline sj-needs-js" type="button">Surprise me &#9829;</button>
+    <p id="sj-idea" class="idea sj-needs-js" aria-live="polite"></p>
   </div>
 </section>
 """,
@@ -291,8 +291,8 @@ __VARS__
 __CSS__
 </style>
 <div style="text-align:center">
-  <button id="sj-surprise" class="pill outline" type="button" hidden>Surprise me &#9829;</button>
-  <p id="sj-idea" class="idea" aria-live="polite" hidden></p>
+  <button id="sj-surprise" class="pill outline sj-needs-js" type="button">Surprise me &#9829;</button>
+  <p id="sj-idea" class="idea sj-needs-js" aria-live="polite"></p>
 </div>
 """
 

@@ -71,13 +71,16 @@ img { max-width: 100%; display: block; }
 .band.yellow .photo-card img { box-shadow: 12px 12px 0 var(--bg); }
 
 /* snippet:surprise:start */
-[hidden] { display: none !important; }
 .pill {
   display: inline-block; background: var(--yellow); color: var(--ink);
   border: 2px solid var(--yellow); border-radius: 999px; padding: 8px 18px;
   font: inherit; font-weight: 600; text-decoration: none; margin: 4px; cursor: pointer;
 }
 .pill.outline { background: var(--bg); border-color: var(--ink); }
+/* hidden until the script marks the page as .sj-js; survives the editor re-drawing a block */
+.sj-needs-js { display: none; }
+.sj-js .sj-needs-js { display: inline-block; }
+.sj-js .idea.sj-needs-js { display: block; }
 /* snippet:surprise:end */
 
 .drift-heart { position: absolute; width: 30px; animation: drift 4s ease-in-out infinite; pointer-events: none; }

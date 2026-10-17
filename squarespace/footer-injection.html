@@ -80,18 +80,35 @@
     return !!(view && view.matchMedia && view.matchMedia('(prefers-reduced-motion: reduce)').matches);
   }
 
-  function initRipple(doc, joy) {
-    var heart = doc.getElementById('sj-heart');
-    var rings = doc.getElementById('sj-rings');
-    var count = doc.getElementById('sj-count');
-    if (!heart || !rings || !count) return;
+  function closestWithId(node, id) {
+    while (node) {
+      if (node.id === id) return node;
+      node = node.parentNode;
+    }
+    return null;
+  }
+
+  // Clicks are handled on the whole document, and elements are looked up at click time,
+  // because Squarespace's editor can re-draw a Code Block's HTML after this script has run.
+  function initHome(doc, joy) {
+    var html = doc.documentElement;
+    if (html && html.classList.contains('sj-js')) return; // already running
+    if (html) html.classList.add('sj-js'); // reveals the elements marked sj-needs-js
 
     var counter = joy.createCounter(joy.PLACEHOLDER_START_COUNT);
+    var shuffler = joy.createShuffler(joy.IDEAS);
     var calm = reducedMotion(doc);
-    count.textContent = joy.formatCount(counter.value());
 
-    heart.addEventListener('click', function () {
-      count.textContent = joy.formatCount(counter.tap());
+    var count = doc.getElementById('sj-count');
+    if (count) count.textContent = joy.formatCount(counter.value());
+
+    function tap() {
+      var heart = doc.getElementById('sj-heart');
+      var rings = doc.getElementById('sj-rings');
+      var number = doc.getElementById('sj-count');
+      if (!heart || !rings || !number) return;
+
+      number.textContent = joy.formatCount(counter.tap());
 
       if (calm) {
         heart.classList.add('pulse');
@@ -104,25 +121,17 @@
       ring.addEventListener('animationend', function () { ring.remove(); });
       rings.appendChild(ring);
       while (rings.children.length > MAX_RINGS) rings.removeChild(rings.children[0]);
+    }
+
+    function surprise() {
+      var idea = doc.getElementById('sj-idea');
+      if (idea) idea.textContent = shuffler.next();
+    }
+
+    doc.addEventListener('click', function (e) {
+      if (closestWithId(e.target, 'sj-heart')) tap();
+      else if (closestWithId(e.target, 'sj-surprise')) surprise();
     });
-  }
-
-  function initSurprise(doc, joy) {
-    var button = doc.getElementById('sj-surprise');
-    var idea = doc.getElementById('sj-idea');
-    if (!button || !idea) return;
-
-    var shuffler = joy.createShuffler(joy.IDEAS);
-    button.removeAttribute('hidden');
-    idea.removeAttribute('hidden');
-    button.addEventListener('click', function () {
-      idea.textContent = shuffler.next();
-    });
-  }
-
-  function initHome(doc, joy) {
-    initRipple(doc, joy);
-    initSurprise(doc, joy);
   }
 
   if (typeof module !== 'undefined' && module.exports) module.exports = { initHome: initHome };
