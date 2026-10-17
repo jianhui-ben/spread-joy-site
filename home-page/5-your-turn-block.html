@@ -1,0 +1,25 @@
+<!--
+  PASTE 5 OF 5:   Yellow wave and the Your turn cards
+  WHAT IT IS:     The wave, the yellow band, the Your turn headline and the swipeable photo cards, ending with Surprise me.
+  WHERE TO PASTE: A Code Block (mode HTML) in the THIRD (last) section.
+  NEEDS:          Pastes 1 and 2 installed once (Code Injection Header and Footer).
+  PLACEHOLDERS:   {{IMG_FAMILY}}, {{IMG_SOCK_PILE}}, {{IMG_SOCKS_CIRCLE_2}}, {{IMG_XAVIER}}, {{IMG_HEART}}, {{LINK_HELP}}, {{LINK_CONTACT}}
+  GENERATED:      by build.py. Change build.py (HOME_* sections) and run `python3 build.py`.
+-->
+<div class="sj-home">
+<svg class="wave flip" viewBox="0 0 1200 44" preserveAspectRatio="none" aria-hidden="true"><path d="M0,20 C200,48 400,0 600,22 C800,44 1000,4 1200,24 L1200,44 L0,44 Z"/></svg>
+<section class="turn">
+  <h2 class="reveal">Your turn.</h2>
+  <div class="cards" id="cards">
+    <a class="card" href="{{LINK_HELP}}"><img src="{{IMG_FAMILY}}" alt=""><span class="go" aria-hidden="true">&rarr;</span><h3>I have time</h3></a>
+    <a class="card" href="#"><img src="{{IMG_SOCK_PILE}}" alt=""><span class="go" aria-hidden="true">&rarr;</span><h3>I want to give</h3></a>
+    <a class="card" href="{{LINK_HELP}}"><img src="{{IMG_SOCKS_CIRCLE_2}}" alt=""><span class="go" aria-hidden="true">&rarr;</span><h3>I have something to share</h3></a>
+    <a class="card" href="{{LINK_CONTACT}}"><img src="{{IMG_XAVIER}}" alt=""><span class="go" aria-hidden="true">&rarr;</span><h3>My family could use support</h3></a>
+    <div class="card surprise">
+      <img class="beat" src="{{IMG_HEART}}" alt="">
+      <p id="sj-idea" class="idea sj-needs-js" aria-live="polite"></p>
+      <button id="sj-surprise" class="pill outline sj-needs-js" type="button">Surprise me &#9829;</button>
+    </div>
+  </div>
+</section>
+</div>

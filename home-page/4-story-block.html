@@ -1,0 +1,26 @@
+<!--
+  PASTE 4 OF 5:   Pinned photo story
+  WHAT IT IS:     Three photos and three short lines that change as you scroll while the stage stays pinned.
+  WHERE TO PASTE: A Code Block (mode HTML) in the SECOND section.
+  NEEDS:          Pastes 1 and 2 installed once (Code Injection Header and Footer).
+  PLACEHOLDERS:   {{IMG_XAVIER}}, {{IMG_SOCKS_CIRCLE}}, {{IMG_SOCK_PILE}}
+  GENERATED:      by build.py. Change build.py (HOME_* sections) and run `python3 build.py`.
+-->
+<div class="sj-home">
+<section class="story" id="story">
+  <div class="stage-pin">
+    <div class="frames">
+      <div class="frame"><img src="{{IMG_XAVIER}}" alt="Xavier, the kid whose story started it all"></div>
+      <div class="frame"><img src="{{IMG_SOCKS_CIRCLE}}" alt="A circle of people holding socks together"></div>
+      <div class="frame"><img src="{{IMG_SOCK_PILE}}" alt="A big pile of donated socks"></div>
+      <div class="shade"></div>
+      <div class="dots" aria-hidden="true"><i></i><i></i><i></i></div>
+    </div>
+    <div class="lines">
+      <h2 class="line">It started with <span class="y">one kid.</span></h2>
+      <h2 class="line">Then a whole <span class="y">circle</span> showed up.</h2>
+      <h2 class="line"><span class="y">578 socks.</span> One kindness at a time.</h2>
+    </div>
+  </div>
+</section>
+</div>

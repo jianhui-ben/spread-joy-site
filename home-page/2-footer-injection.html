@@ -1,0 +1,302 @@
+<!--
+  PASTE 2 OF 5:   Home page script
+  WHAT IT DOES:   Makes the home page move. Part 1: heart counter, kindness ideas. Part 2: taps on the
+                  heart and "Surprise me" (listens on the whole page, so it survives Squarespace
+                  re-drawing a block). Part 3: the growing hero photo, the pinned photo story, fade-ins,
+                  dragging the cards, and the header tucking away.
+  WHERE TO PASTE: Pages > Custom Code > Code Injection > FOOTER, then Save. Once for the whole site.
+                  It does nothing on pages that have none of our blocks.
+  NEEDS:          A Core, Plus or Advanced plan.
+  PLACEHOLDERS:   none. Starting number: PLACEHOLDER_START_COUNT in Part 1. Kindness ideas: IDEAS in Part 1.
+  GENERATED:      by build.py from assets/joy.js, assets/home.js and assets/scroll-story.js.
+                  Change the sources and run `python3 build.py`; edits made here are overwritten.
+-->
+<script>
+/* ===== PART 1: logic (assets/joy.js) ===== */
+(function (root) {
+  // PLACEHOLDER: made-up starting number for the "ripples of joy" counter.
+  // Replace with real data later; nothing is stored between visits.
+  var PLACEHOLDER_START_COUNT = 1284;
+
+  var IDEAS = [
+    "Give someone a sincere compliment.",
+    "Tell someone you're glad they're here.",
+    "Send a \"thinking of you\" message.",
+    "Notice someone's effort and let them know.",
+    "Ask someone how they're doing, then really listen.",
+    "Celebrate someone's accomplishment, big or small.",
+    "Thank someone whose work often goes unnoticed.",
+    "Introduce yourself to someone new.",
+    "Check in on someone you haven't heard from lately.",
+    "Offer a specific helping hand: \"I can bring dinner.\""
+  ];
+
+  function formatCount(n) {
+    return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+
+  function createCounter(start) {
+    var n = start;
+    return {
+      value: function () { return n; },
+      tap: function () { n += 1; return n; }
+    };
+  }
+
+  function shuffled(items, rng) {
+    var a = items.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(rng() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  function createShuffler(items, rng) {
+    rng = rng || Math.random;
+    var queue = [];
+    var last = null;
+    return {
+      next: function () {
+        if (items.length === 1) return items[0];
+        if (queue.length === 0) {
+          queue = shuffled(items, rng);
+          // keep a new cycle from opening with the previous cycle's last item
+          if (queue[0] === last) {
+            var swap = queue.length - 1;
+            var t = queue[0]; queue[0] = queue[swap]; queue[swap] = t;
+          }
+        }
+        last = queue.shift();
+        return last;
+      }
+    };
+  }
+
+  var Joy = {
+    PLACEHOLDER_START_COUNT: PLACEHOLDER_START_COUNT,
+    IDEAS: IDEAS,
+    formatCount: formatCount,
+    createCounter: createCounter,
+    createShuffler: createShuffler
+  };
+
+  if (typeof module !== 'undefined' && module.exports) module.exports = Joy;
+  root.Joy = Joy;
+})(typeof window !== 'undefined' ? window : globalThis);
+
+/* ===== PART 2: taps on heart and Surprise me (assets/home.js) ===== */
+(function (root) {
+  var MAX_RINGS = 6;
+
+  function reducedMotion(doc) {
+    var view = doc.defaultView;
+    return !!(view && view.matchMedia && view.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  }
+
+  function closestWithId(node, id) {
+    while (node) {
+      if (node.id === id) return node;
+      node = node.parentNode;
+    }
+    return null;
+  }
+
+  // Clicks are handled on the whole document, and elements are looked up at click time,
+  // because Squarespace's editor can re-draw a Code Block's HTML after this script has run.
+  function initHome(doc, joy) {
+    var html = doc.documentElement;
+    if (html && html.classList.contains('sj-js')) return; // already running
+    if (html) html.classList.add('sj-js'); // reveals the elements marked sj-needs-js
+
+    var counter = joy.createCounter(joy.PLACEHOLDER_START_COUNT);
+    var shuffler = joy.createShuffler(joy.IDEAS);
+    var calm = reducedMotion(doc);
+
+    var count = doc.getElementById('sj-count');
+    if (count) count.textContent = joy.formatCount(counter.value());
+
+    function tap() {
+      var heart = doc.getElementById('sj-heart');
+      var rings = doc.getElementById('sj-rings');
+      var number = doc.getElementById('sj-count');
+      if (!heart || !rings || !number) return;
+
+      number.textContent = joy.formatCount(counter.tap());
+
+      if (calm) {
+        heart.classList.add('pulse');
+        setTimeout(function () { heart.classList.remove('pulse'); }, 300);
+        return;
+      }
+
+      var ring = doc.createElement('span');
+      ring.classList.add('ring');
+      ring.addEventListener('animationend', function () { ring.remove(); });
+      rings.appendChild(ring);
+      while (rings.children.length > MAX_RINGS) rings.removeChild(rings.children[0]);
+    }
+
+    function surprise() {
+      var idea = doc.getElementById('sj-idea');
+      if (idea) idea.textContent = shuffler.next();
+    }
+
+    doc.addEventListener('click', function (e) {
+      if (closestWithId(e.target, 'sj-heart')) tap();
+      else if (closestWithId(e.target, 'sj-surprise')) surprise();
+    });
+  }
+
+  if (typeof module !== 'undefined' && module.exports) module.exports = { initHome: initHome };
+
+  if (typeof document !== 'undefined' && root.Joy) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function () { initHome(document, root.Joy); });
+    } else {
+      initHome(document, root.Joy);
+    }
+  }
+})(typeof window !== 'undefined' ? window : globalThis);
+
+/* ===== PART 3: scroll story, cards, header (assets/scroll-story.js) ===== */
+(function (root) {
+  function clamp(v, a, b) { return Math.min(b, Math.max(a, v)); }
+
+  // Pure maths for the pinned story. `progress` is 0..1 through the tall section,
+  // `count` is the number of photos/lines. Returns what each photo and line should look like.
+  function storyState(progress, count, reduce) {
+    var p = clamp(progress, 0, 1);
+    var seg = p * count * 0.999;
+    var index = Math.min(count - 1, Math.floor(seg));
+    var local = seg - index;
+    var frames = [];
+    var lines = [];
+    for (var i = 0; i < count; i++) {
+      // each photo stays opaque once shown; the next one fades in over the last 22% of the current segment
+      var opacity = i <= index ? 1 : (i === index + 1 ? clamp((local - 0.78) / 0.22, 0, 1) : 0);
+      // each photo settles from slightly zoomed-in to normal size
+      var scale = reduce ? 1 : 1.12 - 0.12 * clamp((seg - (i - 0.3)) / 0.7, 0, 1);
+      frames.push({ opacity: opacity, scale: scale });
+
+      var d = seg - (i + 0.42);
+      lines.push({
+        opacity: reduce ? (i === index ? 1 : 0) : clamp(1 - Math.abs(d) * 2.3, 0, 1),
+        shift: reduce ? 0 : -d * 36
+      });
+    }
+    return { index: index, frames: frames, lines: lines };
+  }
+
+  function initStory(doc, win) {
+    var story = doc.getElementById('story');
+    if (!story) return;
+
+    var reduce = !!(win.matchMedia && win.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    var card = doc.getElementById('heroCard');
+    var frames = Array.prototype.slice.call(story.querySelectorAll('.frame'));
+    var lines = Array.prototype.slice.call(story.querySelectorAll('.line'));
+    var dots = Array.prototype.slice.call(story.querySelectorAll('.dots i'));
+
+    // fade things in as they scroll into view
+    if ('IntersectionObserver' in win) {
+      var io = new win.IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+        });
+      }, { threshold: 0.2 });
+      Array.prototype.forEach.call(doc.querySelectorAll('.reveal'), function (el) { io.observe(el); });
+    } else {
+      Array.prototype.forEach.call(doc.querySelectorAll('.reveal'), function (el) { el.classList.add('in'); });
+    }
+
+    function tick() {
+      var y = win.scrollY, vh = win.innerHeight;
+
+      if (card && !reduce) {
+        // the hero photo grows from 90% to full size as you scroll away
+        card.style.transform = 'scale(' + (0.9 + 0.1 * clamp(y / (vh * 0.7), 0, 1)) + ')';
+      }
+
+      var span = story.offsetHeight - vh;
+      // offsetTop is relative to the nearest positioned parent, which on Squarespace is not the page
+      var top = story.getBoundingClientRect().top + y;
+      var state = storyState(span > 0 ? (y - top) / span : 0, frames.length, reduce);
+      frames.forEach(function (f, i) {
+        f.style.opacity = state.frames[i].opacity;
+        f.style.transform = 'scale(' + state.frames[i].scale + ')';
+      });
+      lines.forEach(function (l, i) {
+        l.style.opacity = state.lines[i].opacity;
+        l.style.transform = 'translateY(' + state.lines[i].shift + 'px)';
+      });
+      dots.forEach(function (d, i) { d.classList.toggle('on', i === state.index); });
+    }
+
+    var ticking = false;
+    win.addEventListener('scroll', function () {
+      if (!ticking) {
+        ticking = true;
+        win.requestAnimationFrame(function () { tick(); ticking = false; });
+      }
+    }, { passive: true });
+    win.addEventListener('resize', tick);
+    tick();
+  }
+
+  // Cards row: a mouse can drag the row sideways (touch already scrolls natively)
+  function initCards(doc) {
+    var row = doc.getElementById('cards');
+    if (!row) return;
+    var down = false, moved = false, startX = 0, startLeft = 0;
+    row.addEventListener('pointerdown', function (e) {
+      if (e.pointerType !== 'mouse') return;
+      down = true; moved = false; startX = e.clientX; startLeft = row.scrollLeft;
+    });
+    doc.addEventListener('pointermove', function (e) {
+      if (!down) return;
+      var dx = e.clientX - startX;
+      if (Math.abs(dx) > 5) { moved = true; row.classList.add('dragging'); }
+      if (moved) row.scrollLeft = startLeft - dx;
+    });
+    doc.addEventListener('pointerup', function () {
+      if (!down) return;
+      down = false; row.classList.remove('dragging');
+    });
+    // a drag should not count as a click on the card underneath
+    row.addEventListener('click', function (e) {
+      if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; }
+    }, true);
+    row.addEventListener('dragstart', function (e) { e.preventDefault(); });
+  }
+
+  // Apple-style bar: tucks away while you scroll down, comes back as soon as you scroll up.
+  function headerHidden(prevY, y, wasHidden) {
+    if (y < 80) return false;
+    if (y > prevY + 4) return true;
+    if (y < prevY - 8) return false;
+    return wasHidden;
+  }
+
+  function initHeader(doc, win) {
+    var bar = doc.querySelector('.site-header, #header');
+    if (!bar) return;
+    var prev = win.scrollY, hidden = false;
+    win.addEventListener('scroll', function () {
+      var y = win.scrollY;
+      var next = headerHidden(prev, y, hidden);
+      if (next !== hidden) { hidden = next; bar.classList.toggle('tucked', hidden); }
+      prev = y;
+    }, { passive: true });
+  }
+
+  var api = { storyState: storyState, initStory: initStory, initCards: initCards, headerHidden: headerHidden, initHeader: initHeader };
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+  if (typeof document !== 'undefined' && typeof window !== 'undefined') {
+    root.StoryScroll = api;
+    initStory(document, window);
+    initCards(document);
+    initHeader(document, window);
+  }
+})(typeof window !== 'undefined' ? window : globalThis);
+</script>

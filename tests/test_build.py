@@ -231,3 +231,42 @@ class SnippetLibraryTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class HomePageFolderTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        build_index()
+        cls.dir = ROOT / "home-page"
+
+    def read(self, name):
+        return (self.dir / name).read_text()
+
+    def test_folder_has_the_five_pastes_in_order(self):
+        for n in ["1-header-injection.html", "2-footer-injection.html", "3-hero-block.html", "4-story-block.html", "5-your-turn-block.html"]:
+            self.assertTrue((self.dir / n).exists(), n)
+            self.assertIn("PASTE", self.read(n).split("-->")[0], n)
+
+    def test_blocks_hold_html_only_with_image_placeholders_and_no_local_paths(self):
+        for n in ["3-hero-block.html", "4-story-block.html", "5-your-turn-block.html"]:
+            text = self.read(n)
+            self.assertNotIn("<style", text, n)
+            self.assertNotIn("<script", text, n)
+            self.assertNotIn("assets/img", text, n)
+            self.assertIn('<div class="sj-home">', text, n)
+        self.assertIn("{{IMG_SOCKS_CIRCLE}}", self.read("3-hero-block.html"))
+        self.assertIn("{{LINK_HELP}}", self.read("5-your-turn-block.html"))
+
+    def test_header_has_all_the_css_and_the_squarespace_fixes(self):
+        css = self.read("1-header-injection.html")
+        for needle in [".hero-card", ".stage-pin", ".card", ".page-section:has(.sj-home)", "#header.tucked", "font-family: inherit", "League+Spartan"]:
+            self.assertIn(needle, css)
+
+    def test_footer_has_every_script_part(self):
+        js = self.read("2-footer-injection.html")
+        self.assertEqual(js.count("<script"), 1)
+        for needle in ["PART 1", "PART 2", "PART 3", "initStory", "initCards", "initHeader", "createShuffler"]:
+            self.assertIn(needle, js)
+
+    def test_story_position_does_not_use_offsettop(self):
+        self.assertNotRegex((ROOT / "assets" / "scroll-story.js").read_text(), r"\.offsetTop")

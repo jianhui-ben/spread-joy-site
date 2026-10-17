@@ -1,0 +1,172 @@
+<!--
+  PASTE 1 OF 5:   Home page styles
+  WHAT IT DOES:   All the look of the home page: fonts, colours, the big headline, the growing photo,
+                  the pinned photo story, the yellow "Your turn" band and cards, and the header that
+                  tucks away when you scroll down.
+  WHERE TO PASTE: Pages > Custom Code > Code Injection > HEADER, then Save. Once for the whole site.
+  NEEDS:          A Core, Plus or Advanced plan for Code Injection.
+  PLACEHOLDERS:   none
+  GENERATED:      by build.py from assets/home.css, assets/styles.css and build.py.
+                  Change the sources and run `python3 build.py`; edits made here are overwritten.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;500;600;700&family=Oooh+Baby&display=swap" rel="stylesheet">
+<style>
+/* Brand colours */
+:root { --yellow: #fdcd17; --ink: #231f20; --bg: #ffffff; --muted: #6b6560; }
+
+/* Everything we add lives inside .sj-home so it does not disturb the rest of the site */
+.sj-home { font-family: "League Spartan", system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); line-height: 1.2; }
+.sj-home, .sj-home * { box-sizing: border-box; }
+.sj-home img { display: block; max-width: 100%; }
+.sj-home a { color: inherit; }
+
+/* --- Squarespace: let our sections run edge to edge, with no padding or gaps around them --- */
+.page-section:has(.sj-home) { padding: 0 !important; min-height: 0 !important; }
+.page-section:has(.sj-home) .content-wrapper,
+.page-section:has(.sj-home) .content { padding: 0 !important; max-width: none !important; width: 100% !important; }
+.page-section:has(.sj-home) .fluid-engine { display: block !important; }
+.page-section:has(.sj-home) .fe-block { grid-area: auto !important; }
+.page-section:has(.sj-home) .sqs-block-code,
+.page-section:has(.sj-home) .sqs-block-content { padding: 0 !important; margin: 0 !important; overflow: visible !important; }
+/* Squarespace gives headings, paragraphs and buttons their own font; make ours use the brand font */
+.sj-home h1, .sj-home h2, .sj-home h3, .sj-home p, .sj-home b, .sj-home button, .sj-home a { font-family: inherit; text-transform: none; font-style: normal; }
+
+/* --- Header that tucks away on scroll down (Squarespace header is #header) --- */
+#header { transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1); }
+#header.tucked { transform: translateY(-100%); }
+
+/* --- Button + script-only rules (used by the "Surprise me" card) --- */
+/* Rounded button style (yellow); .outline is the white version with a dark border */
+.pill {
+  display: inline-block; background: var(--yellow); color: var(--ink);
+  border: 2px solid var(--yellow); border-radius: 999px; padding: 8px 18px;
+  font: inherit; font-weight: 600; text-decoration: none; margin: 4px; cursor: pointer;
+}
+.pill.outline { background: var(--bg); border-color: var(--ink); }
+/* hidden until the script marks the page as .sj-js; survives the editor re-drawing a block */
+.sj-needs-js { display: none; }
+.sj-js .sj-needs-js { display: inline-block; }
+.sj-js .idea.sj-needs-js { display: block; }
+
+/* The line of text where the kindness idea appears */
+.idea { min-height: 3.2em; margin: 12px auto 0; max-width: 28em; font-size: 1.25rem; font-weight: 500; }
+
+/* --- Wave between the photo story and the yellow band --- */
+.sj-home .wave { display: block; width: 100%; height: 44px; margin: -1px 0; color: var(--yellow); fill: currentColor; }
+.sj-home .wave.flip { transform: scaleY(-1); }
+
+/* --- Home page layout (assets/home.css) --- */
+/* Home page only: big headline, growing photo, pinned scrolling story, photo cards.
+   Shared colours, fonts and the header come from styles.css. */
+
+/* ---- scroll reveal ---- */
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.9s cubic-bezier(0.2, 0.7, 0.2, 1), transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.reveal.in { opacity: 1; transform: none; }
+.reveal.d1 { transition-delay: 0.12s; }
+.reveal.d2 { transition-delay: 0.24s; }
+
+/* ---- 1. hero: giant line, photo card that grows as you scroll ---- */
+.hero { padding: 56px 0 0; text-align: center; }
+.hero h1 { margin: 0; font-size: clamp(3.2rem, 11vw, 9rem); font-weight: 700; letter-spacing: -0.03em; line-height: 0.98; }
+.hero .sub { margin: 18px 0 0; font-family: "Oooh Baby", cursive; font-size: clamp(1.8rem, 4vw, 3rem); }
+.hero-card {
+  position: relative; margin: 44px auto 0; width: min(1180px, 92vw); aspect-ratio: 16 / 9;
+  border-radius: 36px; overflow: hidden; will-change: transform; transform-origin: center top;
+  box-shadow: 0 30px 80px rgba(35, 31, 32, 0.18);
+}
+.hero-card > img { width: 100%; height: 100%; object-fit: cover; }
+
+/* the tap-the-heart pill that sits on the photo */
+.tap {
+  position: absolute; left: 50%; bottom: 26px; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 14px; padding: 8px 22px 8px 10px;
+  background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 999px;
+}
+.tap-stage-mini { position: relative; width: 56px; height: 56px; display: grid; place-items: center; }
+#sj-heart { position: relative; z-index: 1; background: none; border: 0; padding: 0; cursor: pointer; width: 48px; height: 48px; transition: transform 0.15s; }
+#sj-heart:active { transform: scale(0.9); }
+#sj-heart:focus-visible { outline: 3px solid var(--ink); outline-offset: 4px; border-radius: 12px; }
+#sj-heart img { width: 100%; }
+.tap .rings { position: absolute; inset: 0; pointer-events: none; }
+.tap .ring { position: absolute; left: 50%; top: 50%; width: 40px; height: 40px; border-radius: 50%; border: 3px solid var(--yellow); transform: translate(-50%, -50%) scale(1); animation: tap-out 1.6s ease-out forwards; }
+@keyframes tap-out { to { transform: translate(-50%, -50%) scale(5); opacity: 0; } }
+.tap p { margin: 0; font-size: 1rem; color: var(--muted); text-align: left; line-height: 1.2; }
+.tap b { color: var(--ink); }
+
+/* ---- 2. pinned story: the stage stays while photos and lines change with scroll ---- */
+.story { position: relative; height: 420vh; margin-top: 14vh; }
+.stage-pin { position: sticky; top: 0; height: 100vh; overflow: hidden; }
+.frames { position: absolute; inset: max(9vh, 92px) 5vw 9vh; border-radius: 36px; overflow: hidden; background: #eee; }
+.frame { position: absolute; inset: 0; will-change: opacity, transform; }
+.frame img { width: 100%; height: 100%; object-fit: cover; }
+.frame:nth-child(1) img { object-position: center 28%; }
+.shade { position: absolute; inset: 0; background: linear-gradient(transparent 45%, rgba(35, 31, 32, 0.72)); pointer-events: none; }
+.lines { position: absolute; left: 0; right: 0; bottom: calc(9vh + 5vw); color: #fff; pointer-events: none; }
+.line {
+  position: absolute; left: calc(5vw + 36px); right: calc(5vw + 36px); bottom: 0; margin: 0;
+  font-size: clamp(2.2rem, 6.4vw, 5.6rem); font-weight: 700; letter-spacing: -0.025em; line-height: 1.05;
+  opacity: 0; will-change: opacity, transform; text-shadow: 0 2px 24px rgba(0, 0, 0, 0.25);
+}
+.line .y { color: var(--yellow); }
+.dots { position: absolute; right: 24px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 10px; }
+.dots i { width: 8px; height: 8px; border-radius: 50%; background: rgba(255, 255, 255, 0.45); transition: background 0.3s, transform 0.3s; }
+.dots i.on { background: var(--yellow); transform: scale(1.5); }
+
+/* ---- 3. your turn: yellow band, wave, photo cards you swipe sideways ---- */
+.turn { background: var(--yellow); padding: 20px 0 110px; }
+.turn h2 { margin: 0 auto 36px; width: min(1180px, 92vw); font-size: clamp(3rem, 9vw, 7rem); font-weight: 700; letter-spacing: -0.03em; line-height: 1; }
+.cards {
+  display: flex; gap: 20px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none;
+  padding: 8px max(4vw, calc((100vw - 1180px) / 2)) 28px;
+}
+.cards::-webkit-scrollbar { display: none; }
+.cards { cursor: grab; }
+.cards.dragging { cursor: grabbing; scroll-snap-type: none; user-select: none; }
+.card {
+  position: relative; isolation: isolate; overflow: hidden; scroll-snap-align: start;
+  flex: 0 0 min(360px, 78vw); height: min(460px, 66vh); padding: 28px; border-radius: 32px;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  color: #fff; text-decoration: none; background: var(--ink);
+  transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.4s;
+}
+.card:hover { transform: translateY(-8px); box-shadow: 0 24px 50px rgba(35, 31, 32, 0.28); }
+.card > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.card:hover > img { transform: scale(1.07); }
+.card::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(rgba(35, 31, 32, 0) 30%, rgba(35, 31, 32, 0.82)); }
+.card h3 { margin: 0; font-size: clamp(1.9rem, 3.2vw, 2.5rem); font-weight: 700; letter-spacing: -0.02em; line-height: 1.05; }
+.card .go {
+  position: absolute; top: 22px; right: 22px; width: 48px; height: 48px; border-radius: 50%;
+  background: var(--yellow); color: var(--ink); display: grid; place-items: center; font-size: 1.4rem;
+  transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.card:hover .go { transform: rotate(-45deg) scale(1.1); }
+
+/* the "Surprise me" card: dark, with a heart that beats */
+.card.surprise { justify-content: space-between; align-items: flex-start; }
+.card.surprise::after { display: none; }
+.card > img.beat { position: static; inset: auto; z-index: auto; width: 96px; height: auto; object-fit: contain; }
+.card:hover > img.beat { transform: none; }
+.beat { animation: beat 2.4s ease-in-out infinite; }
+@keyframes beat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.12); } }
+.card.surprise .idea { margin: 0; color: #fff; min-height: 5em; max-width: none; font-size: 1.5rem; font-weight: 500; }
+.hint { width: min(1180px, 92vw); margin: 6px auto 0; font-size: 0.9rem; opacity: 0.7; }
+
+@media (max-width: 760px) {
+  .hero { padding-top: 36px; }
+  .hero-card { aspect-ratio: 4 / 5; border-radius: 26px; }
+  .tap { bottom: 16px; padding-right: 16px; }
+  .frames { inset: max(10vh, 96px) 3vw 8vh; border-radius: 26px; }
+  .line { left: calc(3vw + 22px); right: calc(3vw + 22px); }
+  .lines { bottom: calc(8vh + 3vw); }
+  .dots { right: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .hero-card, .frame, .line { transform: none !important; }
+  .tap .ring, .beat { animation: none; }
+  .tap .ring { display: none; }
+  .card, .card > img { transition: none; }
+}
+</style>

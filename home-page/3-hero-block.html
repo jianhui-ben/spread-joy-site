@@ -1,0 +1,24 @@
+<!--
+  PASTE 3 OF 5:   Hero: headline and growing photo with the heart
+  WHAT IT IS:     Giant headline, the photo that grows as you scroll, and the tap-the-heart pill on top of it.
+  WHERE TO PASTE: A Code Block (mode HTML) in the FIRST section of the Home page.
+  NEEDS:          Pastes 1 and 2 installed once (Code Injection Header and Footer).
+  PLACEHOLDERS:   {{IMG_SOCKS_CIRCLE}}, {{IMG_HEART}}
+  GENERATED:      by build.py. Change build.py (HOME_* sections) and run `python3 build.py`.
+-->
+<div class="sj-home">
+<section class="hero">
+  <h1 class="reveal">Small acts. <br>Big impact.</h1>
+  <p class="sub reveal d1">Spread joy.</p>
+  <div class="hero-card" id="heroCard">
+    <img src="{{IMG_SOCKS_CIRCLE}}" alt="A circle of volunteers holding up socks they collected">
+    <div class="tap">
+      <div class="tap-stage-mini">
+        <div id="sj-rings" class="rings" aria-hidden="true"></div>
+        <button id="sj-heart" type="button" aria-label="Tap to send a ripple of joy"><img src="{{IMG_HEART}}" alt=""></button>
+      </div>
+      <p aria-live="polite"><b id="sj-count">1,284</b> ripples of joy so far</p>
+    </div>
+  </div>
+</section>
+</div>

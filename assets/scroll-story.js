@@ -57,7 +57,9 @@
       }
 
       var span = story.offsetHeight - vh;
-      var state = storyState(span > 0 ? (y - story.offsetTop) / span : 0, frames.length, reduce);
+      // offsetTop is relative to the nearest positioned parent, which on Squarespace is not the page
+      var top = story.getBoundingClientRect().top + y;
+      var state = storyState(span > 0 ? (y - top) / span : 0, frames.length, reduce);
       frames.forEach(function (f, i) {
         f.style.opacity = state.frames[i].opacity;
         f.style.transform = 'scale(' + state.frames[i].scale + ')';
@@ -115,7 +117,7 @@
   }
 
   function initHeader(doc, win) {
-    var bar = doc.querySelector('.site-header');
+    var bar = doc.querySelector('.site-header, #header');
     if (!bar) return;
     var prev = win.scrollY, hidden = false;
     win.addEventListener('scroll', function () {

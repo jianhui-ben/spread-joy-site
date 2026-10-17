@@ -107,15 +107,7 @@ WAVE = '<svg class="wave{flip}" viewBox="0 0 1200 44" preserveAspectRatio="none"
 WAVE_DOWN = WAVE.format(flip="")
 WAVE_UP = WAVE.format(flip=" flip")
 
-PAGES["index.html"] = dict(
-    title="Home",
-    description="Spread Joy Collective supports families of individuals with disabilities. Small acts. Big impact. Spread joy.",
-    head_extra='<link rel="stylesheet" href="assets/home.css">',
-    scripts="""<script src="assets/joy.js" defer></script>
-<script src="assets/home.js" defer></script>
-<script src="assets/scroll-story.js" defer></script>""",
-    body=f"""
-<section class="hero">
+HOME_HERO = f"""<section class="hero">
   <h1 class="reveal">Small acts. <br>Big impact.</h1>
   <p class="sub reveal d1">Spread joy.</p>
   <div class="hero-card" id="heroCard">
@@ -129,8 +121,9 @@ PAGES["index.html"] = dict(
     </div>
   </div>
 </section>
+"""
 
-<section class="story" id="story">
+HOME_STORY = """<section class="story" id="story">
   <div class="stage-pin">
     <div class="frames">
       <div class="frame"><img src="assets/img/xavier-portrait.jpg" alt="Xavier, the kid whose story started it all"></div>
@@ -146,9 +139,9 @@ PAGES["index.html"] = dict(
     </div>
   </div>
 </section>
+"""
 
-{WAVE_UP}
-<section class="turn">
+HOME_TURN = f"""<section class="turn">
   <h2 class="reveal">Your turn.</h2>
   <div class="cards" id="cards">
     <a class="card" href="help.html"><img src="assets/img/family.jpg" alt=""><span class="go" aria-hidden="true">&rarr;</span><h3>I have time</h3></a>
@@ -162,7 +155,16 @@ PAGES["index.html"] = dict(
     </div>
   </div>
 </section>
-""",
+"""
+
+PAGES["index.html"] = dict(
+    title="Home",
+    description="Spread Joy Collective supports families of individuals with disabilities. Small acts. Big impact. Spread joy.",
+    head_extra='<link rel="stylesheet" href="assets/home.css">',
+    scripts="""<script src="assets/joy.js" defer></script>
+<script src="assets/home.js" defer></script>
+<script src="assets/scroll-story.js" defer></script>""",
+    body=HOME_HERO + "\n" + HOME_STORY + "\n" + WAVE_UP + "\n" + HOME_TURN,
 )
 
 PAGES["mission.html"] = dict(
@@ -363,6 +365,143 @@ def build_snippets():
     print("wrote squarespace/footer-injection.html")
 
 
+HOME_DIR = OUT / "home-page"
+
+# Images used on the home page: placeholder name -> local file (uploaded to Squarespace by hand)
+HOME_IMAGES = {
+    "SOCKS_CIRCLE": "socks-circle.jpg",
+    "XAVIER": "xavier-portrait.jpg",
+    "SOCK_PILE": "sock-pile.jpg",
+    "FAMILY": "family.jpg",
+    "SOCKS_CIRCLE_2": "socks-circle-2.jpg",
+    "HEART": "heart.png",
+}
+
+HOME_HEADER = """<!--
+  PASTE 1 OF 5:   Home page styles
+  WHAT IT DOES:   All the look of the home page: fonts, colours, the big headline, the growing photo,
+                  the pinned photo story, the yellow "Your turn" band and cards, and the header that
+                  tucks away when you scroll down.
+  WHERE TO PASTE: Pages > Custom Code > Code Injection > HEADER, then Save. Once for the whole site.
+  NEEDS:          A Core, Plus or Advanced plan for Code Injection.
+  PLACEHOLDERS:   none
+  GENERATED:      by build.py from assets/home.css, assets/styles.css and build.py.
+                  Change the sources and run `python3 build.py`; edits made here are overwritten.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;500;600;700&family=Oooh+Baby&display=swap" rel="stylesheet">
+<style>
+/* Brand colours */
+:root { --yellow: #fdcd17; --ink: #231f20; --bg: #ffffff; --muted: #6b6560; }
+
+/* Everything we add lives inside .sj-home so it does not disturb the rest of the site */
+.sj-home { font-family: "League Spartan", system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); line-height: 1.2; }
+.sj-home, .sj-home * { box-sizing: border-box; }
+.sj-home img { display: block; max-width: 100%; }
+.sj-home a { color: inherit; }
+
+/* --- Squarespace: let our sections run edge to edge, with no padding or gaps around them --- */
+__SQS__
+
+/* --- Header that tucks away on scroll down (Squarespace header is #header) --- */
+#header { transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1); }
+#header.tucked { transform: translateY(-100%); }
+
+/* --- Button + script-only rules (used by the "Surprise me" card) --- */
+__SURPRISE__
+
+/* --- Wave between the photo story and the yellow band --- */
+__WAVE__
+
+/* --- Home page layout (assets/home.css) --- */
+__HOMECSS__
+</style>
+"""
+
+SQS_OVERRIDES = """.page-section:has(.sj-home) { padding: 0 !important; min-height: 0 !important; }
+.page-section:has(.sj-home) .content-wrapper,
+.page-section:has(.sj-home) .content { padding: 0 !important; max-width: none !important; width: 100% !important; }
+.page-section:has(.sj-home) .fluid-engine { display: block !important; }
+.page-section:has(.sj-home) .fe-block { grid-area: auto !important; }
+.page-section:has(.sj-home) .sqs-block-code,
+.page-section:has(.sj-home) .sqs-block-content { padding: 0 !important; margin: 0 !important; overflow: visible !important; }
+/* Squarespace gives headings, paragraphs and buttons their own font; make ours use the brand font */
+.sj-home h1, .sj-home h2, .sj-home h3, .sj-home p, .sj-home b, .sj-home button, .sj-home a { font-family: inherit; text-transform: none; font-style: normal; }"""
+
+HOME_FOOTER = """<!--
+  PASTE 2 OF 5:   Home page script
+  WHAT IT DOES:   Makes the home page move. Part 1: heart counter, kindness ideas. Part 2: taps on the
+                  heart and "Surprise me" (listens on the whole page, so it survives Squarespace
+                  re-drawing a block). Part 3: the growing hero photo, the pinned photo story, fade-ins,
+                  dragging the cards, and the header tucking away.
+  WHERE TO PASTE: Pages > Custom Code > Code Injection > FOOTER, then Save. Once for the whole site.
+                  It does nothing on pages that have none of our blocks.
+  NEEDS:          A Core, Plus or Advanced plan.
+  PLACEHOLDERS:   none. Starting number: PLACEHOLDER_START_COUNT in Part 1. Kindness ideas: IDEAS in Part 1.
+  GENERATED:      by build.py from assets/joy.js, assets/home.js and assets/scroll-story.js.
+                  Change the sources and run `python3 build.py`; edits made here are overwritten.
+-->
+"""
+
+HOME_BLOCK = """<!--
+  PASTE __N__ OF 5:   __TITLE__
+  WHAT IT IS:     __WHAT__
+  WHERE TO PASTE: __WHERE__
+  NEEDS:          Pastes 1 and 2 installed once (Code Injection Header and Footer).
+  PLACEHOLDERS:   __PLACEHOLDERS__
+  GENERATED:      by build.py. Change build.py (HOME_* sections) and run `python3 build.py`.
+-->
+<div class="sj-home">
+__HTML__
+</div>
+"""
+
+
+def to_placeholders(html):
+    for key, name in HOME_IMAGES.items():
+        html = html.replace("assets/img/" + name, "{{IMG_%s}}" % key)
+    return html.replace('href="help.html"', 'href="{{LINK_HELP}}"').replace('href="contact.html"', 'href="{{LINK_CONTACT}}"')
+
+
+def build_home_page():
+    HOME_DIR.mkdir(exist_ok=True)
+    header = (HOME_HEADER.replace("__SQS__", SQS_OVERRIDES)
+              .replace("__SURPRISE__", snippet_css("surprise"))
+              .replace("__WAVE__", ".sj-home .wave { display: block; width: 100%; height: 44px; margin: -1px 0; color: var(--yellow); fill: currentColor; }\n.sj-home .wave.flip { transform: scaleY(-1); }")
+              .replace("__HOMECSS__", (OUT / "assets" / "home.css").read_text().strip()))
+    (HOME_DIR / "1-header-injection.html").write_text(header)
+
+    parts = [(OUT / "assets" / n).read_text() for n in ("joy.js", "home.js", "scroll-story.js")]
+    footer = (HOME_FOOTER + "<script>\n"
+              + "/* ===== PART 1: logic (assets/joy.js) ===== */\n" + parts[0] + "\n"
+              + "/* ===== PART 2: taps on heart and Surprise me (assets/home.js) ===== */\n" + parts[1] + "\n"
+              + "/* ===== PART 3: scroll story, cards, header (assets/scroll-story.js) ===== */\n" + parts[2]
+              + "</script>\n")
+    (HOME_DIR / "2-footer-injection.html").write_text(footer)
+
+    blocks = [
+        (3, "3-hero-block.html", "Hero: headline and growing photo with the heart",
+         "Giant headline, the photo that grows as you scroll, and the tap-the-heart pill on top of it.",
+         "A Code Block (mode HTML) in the FIRST section of the Home page.",
+         "{{IMG_SOCKS_CIRCLE}}, {{IMG_HEART}}", HOME_HERO),
+        (4, "4-story-block.html", "Pinned photo story",
+         "Three photos and three short lines that change as you scroll while the stage stays pinned.",
+         "A Code Block (mode HTML) in the SECOND section.",
+         "{{IMG_XAVIER}}, {{IMG_SOCKS_CIRCLE}}, {{IMG_SOCK_PILE}}", HOME_STORY),
+        (5, "5-your-turn-block.html", "Yellow wave and the Your turn cards",
+         "The wave, the yellow band, the Your turn headline and the swipeable photo cards, ending with Surprise me.",
+         "A Code Block (mode HTML) in the THIRD (last) section.",
+         "{{IMG_FAMILY}}, {{IMG_SOCK_PILE}}, {{IMG_SOCKS_CIRCLE_2}}, {{IMG_XAVIER}}, {{IMG_HEART}}, {{LINK_HELP}}, {{LINK_CONTACT}}",
+         WAVE_UP + "\n" + HOME_TURN),
+    ]
+    for n, fname, title, what, where, ph, html in blocks:
+        text = (HOME_BLOCK.replace("__N__", str(n)).replace("__TITLE__", title).replace("__WHAT__", what)
+                .replace("__WHERE__", where).replace("__PLACEHOLDERS__", ph)
+                .replace("__HTML__", to_placeholders(html.strip("\n"))))
+        (HOME_DIR / fname).write_text(text)
+    print("wrote home-page/ (5 files)")
+
+
 def nav_html(current):
     lines = []
     for href, label in NAV:
@@ -389,3 +528,4 @@ for filename, page in PAGES.items():
     print("wrote", filename)
 
 build_snippets()
+build_home_page()

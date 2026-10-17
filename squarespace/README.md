@@ -1,5 +1,7 @@
 # Squarespace snippets
 
+> The home page now has its own folder with a full rebuild guide: see `../home-page/README.md`. The files below are older, general snippets (tap-the-heart and "Surprise me" on their own).
+
 Paste-ready code for the Spread Joy Collective Squarespace site. Open a file, copy everything, paste it where the table says. Each file starts with a comment that says what it does, where to paste it and what it needs. That comment is safe to paste along with the code.
 
 ## Index
