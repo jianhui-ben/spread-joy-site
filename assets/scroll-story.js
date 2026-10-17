@@ -26,6 +26,13 @@
     return { index: index, frames: frames, lines: lines };
   }
 
+  // The story slides up over the hero photo like a sheet: its top corners are rounded while it is
+  // below the top of the screen and square off as it arrives; the hero photo dims underneath.
+  function sheetState(storyTop, vh) {
+    var arrived = clamp(1 - storyTop / vh, 0, 1);
+    return { radius: Math.round(40 * clamp(storyTop / 60, 0, 1)), dim: 1 - 0.35 * arrived };
+  }
+
   // Elements are looked up on every update, never kept: Squarespace can re-draw a Code Block's
   // HTML after this script has started, which would leave kept references pointing at removed nodes.
   function initStory(doc, win) {
@@ -44,6 +51,11 @@
 
       var story = doc.getElementById('story');
       if (!story) return;
+      var sheet = sheetState(story.getBoundingClientRect().top, vh);
+      var pin = story.querySelector('.stage-pin');
+      if (pin) pin.style.borderRadius = sheet.radius + 'px ' + sheet.radius + 'px 0 0';
+      var hero = doc.getElementById('heroCard');
+      if (hero) hero.style.filter = sheet.dim < 1 ? 'brightness(' + sheet.dim.toFixed(3) + ')' : '';
       var frames = all(story, '.frame');
       var lines = all(story, '.line');
       var dots = all(story, '.dots i');
@@ -129,7 +141,7 @@
     }, { passive: true });
   }
 
-  var api = { storyState: storyState, initStory: initStory, initCards: initCards, headerHidden: headerHidden, initHeader: initHeader };
+  var api = { sheetState: sheetState, storyState: storyState, initStory: initStory, initCards: initCards, headerHidden: headerHidden, initHeader: initHeader };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (typeof document !== 'undefined' && typeof window !== 'undefined') {
     root.StoryScroll = api;

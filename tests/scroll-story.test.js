@@ -73,6 +73,7 @@ function fakePage() {
   const story = () => ({
     offsetHeight: 4000,
     getBoundingClientRect: () => ({ top: -1500 }),
+    querySelector: () => null,
     querySelectorAll: (sel) => (sel === '.frame' ? page.frames : sel === '.line' ? page.lines : []),
   });
   const doc = {
@@ -119,4 +120,19 @@ test('initHeader only tucks the header on pages that contain the home blocks', (
   };
   assert.deepEqual(run(true), [['tucked', true]]);
   assert.deepEqual(run(false), []);
+});
+
+test('sheetState: story slides over the hero with a rounded edge that squares off once it reaches the top, and the hero dims', () => {
+  const { sheetState } = require('../assets/scroll-story.js');
+  const far = sheetState(2000, 800);
+  assert.equal(far.dim, 1, 'story far below: hero not dimmed');
+  assert.equal(far.radius, 40, 'rounded edge while the sheet is below the top');
+  const mid = sheetState(400, 800);
+  assert.ok(mid.dim < 1 && mid.dim > 0.6, 'hero dims as the story rises');
+  assert.equal(mid.radius, 40);
+  const top = sheetState(0, 800);
+  assert.equal(top.radius, 0, 'square once it reaches the top');
+  assert.ok(top.dim <= 0.65, 'hero fully dimmed');
+  assert.equal(sheetState(-900, 800).radius, 0, 'stays square once pinned and past');
+  assert.ok(sheetState(20, 800).radius > 0 && sheetState(20, 800).radius < 40, 'corner flattens smoothly near the top');
 });
