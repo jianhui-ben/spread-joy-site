@@ -435,9 +435,24 @@ HOME_FOOTER_CSS = """.sj-footer { background: var(--ink); color: #fff; padding: 
 .sj-signup input { flex: 1; min-width: 0; padding: 12px 16px; border: 0; border-radius: 12px; font: inherit; }
 .sj-signup button { padding: 12px 24px; border: 0; border-radius: 999px; background: var(--yellow); color: var(--ink); font: inherit; font-weight: 600; cursor: pointer; }"""
 
+# Squarespace header restyled to match the localhost header. Applies to EVERY page (one header for the site).
+SITE_HEADER_CSS = """#header .header-background { background: rgba(255, 255, 255, 0.86) !important; -webkit-backdrop-filter: saturate(180%) blur(14px); backdrop-filter: saturate(180%) blur(14px); }
+#header, #header .header-inner { background: transparent !important; }
+#header .header-border { background: #fdcd17 !important; height: 2px !important; opacity: 1 !important; }
+#header .header-dropshadow { display: none !important; }
+#header .header-nav-item a { font-family: "League Spartan", system-ui, sans-serif !important; text-transform: uppercase !important; letter-spacing: 0.14em !important; font-weight: 500 !important; font-size: 0.9rem !important; color: #231f20 !important; }
+#header .header-nav-item--active a { border-bottom: 3px solid #fdcd17; }
+#header .header-actions .btn { background: #fdcd17 !important; color: #231f20 !important; border: 0 !important; border-radius: 999px !important; font-family: "League Spartan", system-ui, sans-serif !important; font-weight: 600 !important; text-transform: none !important; letter-spacing: 0 !important; }
+/* logo: yellow heart picture + the name as text, like the localhost header */
+#header .header-title-logo img { display: none !important; }
+#header .header-title-logo a { display: inline-flex !important; align-items: center; gap: 10px; text-decoration: none; }
+#header .header-title-logo a::before { content: ""; width: 34px; height: 34px; background: url({{IMG_HEART}}) center / contain no-repeat; }
+#header .header-title-logo a::after { content: "Spread Joy Collective"; font-family: "League Spartan", system-ui, sans-serif; text-transform: uppercase; letter-spacing: 0.22em; font-weight: 500; font-size: 0.95rem; color: #231f20; white-space: nowrap; }"""
+
 HOME_HEADER = """<!--
   PASTE 1 OF 6:   Home page styles
-  WHAT IT DOES:   All the look of the home page: fonts, colours, the big headline, the growing photo,
+  WHAT IT DOES:   The site header look (white, yellow line, uppercase menu, yellow Donate pill; this changes the
+                  header on every page) and all the look of the home page: fonts, colours, the big headline, the growing photo,
                   the pinned photo story, the yellow "Your turn" band and cards, and the header that
                   tucks away when you scroll down.
   WHERE TO PASTE: Pages > Custom Code > Code Injection > HEADER, then Save. Once for the whole site.
@@ -461,7 +476,10 @@ HOME_HEADER = """<!--
 /* --- Squarespace: let our sections run edge to edge, with no padding or gaps around them --- */
 __SQS__
 
-/* --- Header that tucks away on scroll down (Squarespace header is #header) --- */
+/* --- Site header: white, yellow line, uppercase menu, Donate pill (all pages) --- */
+__HEADERCSS__
+
+/* --- Header that tucks away on scroll down (home page only) --- */
 body:has(.sj-home) #header { transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1); }
 body:has(.sj-home) #header.tucked { transform: translateY(-100%); }
 
@@ -532,9 +550,18 @@ def to_placeholders(html):
     return html
 
 
+def fill_urls(text):
+    urls_file = HOME_DIR / "image-urls.json"
+    if urls_file.exists():
+        for key, url in json.loads(urls_file.read_text()).items():
+            text = text.replace("{{%s}}" % key, url)
+    return text
+
+
 def build_home_page():
     HOME_DIR.mkdir(exist_ok=True)
     header = (HOME_HEADER.replace("__SQS__", SQS_OVERRIDES)
+              .replace("__HEADERCSS__", fill_urls(SITE_HEADER_CSS))
               .replace("__SURPRISE__", snippet_css("surprise"))
               .replace("__FOOTERCSS__", HOME_FOOTER_CSS)
               .replace("__WAVE__", ".sj-home .wave { display: block; width: 100%; height: 44px; margin: -1px 0; color: var(--yellow); fill: currentColor; }\n.sj-home .wave.flip { transform: scaleY(-1); }")

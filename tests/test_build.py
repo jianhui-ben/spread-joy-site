@@ -269,7 +269,7 @@ class HomePageFolderTests(unittest.TestCase):
 
     def test_header_has_all_the_css_and_the_squarespace_fixes(self):
         css = self.read("1-header-injection.html")
-        for needle in [".hero-card", ".stage-pin", ".card", ".page-section:has(.sj-home)", "#header.tucked", "font-family: inherit", "League+Spartan", "color-scheme: only light", ".hero { padding-top"]:
+        for needle in [".hero-card", ".stage-pin", ".card", ".page-section:has(.sj-home)", "#header.tucked", "font-family: inherit", "League+Spartan", "color-scheme: only light", ".hero { padding-top", "#header .header-title-logo a::after", "#header .header-actions .btn"]:
             self.assertIn(needle, css)
 
     def test_footer_has_every_script_part(self):
