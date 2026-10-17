@@ -62,16 +62,35 @@ def home_rule(selector):
 
 
 class GivebutterLinkTests(unittest.TestCase):
-    # Every Givebutter address on the site must be one the owner has confirmed (a typo'd or unowned slug would send gifts elsewhere).
+    # Every Givebutter address on the site must be a confirmed campaign (a typo'd or unowned slug would send gifts elsewhere).
     VERIFIED = {"SpreadJoyCollective", "socks-that-spread-joy"}
+    SCANNED = {".html", ".js", ".md", ".json"}
+
+    @classmethod
+    def setUpClass(cls):
+        build_index()  # scan fresh output, not stale files
 
     def test_givebutter_links_use_only_verified_campaign_slugs(self):
-        files = list(ROOT.glob("*.html")) + list((ROOT / "home-page").glob("*.html")) + list((ROOT / "squarespace").glob("*.html"))
+        from urllib.parse import urlsplit
+        files = [p for p in ROOT.rglob("*") if p.is_file() and p.suffix in self.SCANNED
+                 and not {".git", "node_modules", "docs"} & set(p.parts)]
         found = set()
         for f in files:
-            found |= set(re.findall(r"https://givebutter\.com/([A-Za-z0-9_-]+)", f.read_text()))
-        self.assertTrue(found)
-        self.assertLessEqual(found, self.VERIFIED)
+            text = f.read_text(errors="ignore")
+            # any URL token that mentions givebutter, whatever the spelling around it
+            for tok in re.findall(r"[A-Za-z][A-Za-z0-9+.-]*://[^\s\"'<>)`,]*givebutter[^\s\"'<>)`,]*", text, re.I):
+                parts = urlsplit(tok.rstrip("."))
+                host = (parts.hostname or "").lower()
+                if host == "widgets.givebutter.com":
+                    continue  # the goal-bar library, not a donation page
+                self.assertEqual(parts.scheme, "https", f"{f}: {tok}")
+                self.assertEqual(host, "givebutter.com", f"{f}: {tok}")
+                slug = parts.path.strip("/")
+                self.assertIn(slug, self.VERIFIED, f"{f}: {tok}")
+                self.assertEqual(parts.path.rstrip("/"), "/" + slug, f"{f}: {tok}")
+                self.assertFalse(parts.query or parts.fragment, f"{f}: {tok}")
+                found.add(slug)
+        self.assertEqual(found, self.VERIFIED)
 
 
 class HomeTests(unittest.TestCase):
