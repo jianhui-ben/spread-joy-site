@@ -3,7 +3,7 @@
   WHAT IT IS:     Giant headline, the photo that grows as you scroll, and the tap-the-heart pill on top of it.
   WHERE TO PASTE: A Code Block (mode HTML) in the FIRST section of the Home page.
   NEEDS:          Pastes 1 and 2 installed once (Code Injection Header and Footer).
-  PLACEHOLDERS:   {{IMG_SOCKS_CIRCLE}}, {{IMG_HEART}}
+  PLACEHOLDERS:   none (addresses come from home-page/image-urls.json)
   GENERATED:      by build.py. Change build.py (HOME_* sections) and run `python3 build.py`.
 -->
 <div class="sj-home">
@@ -11,11 +11,11 @@
   <h1 class="reveal">Small acts. <br>Big impact.</h1>
   <p class="sub reveal d1">Spread joy.</p>
   <div class="hero-card" id="heroCard">
-    <img src="{{IMG_SOCKS_CIRCLE}}" alt="A circle of volunteers holding up socks they collected">
+    <img src="https://images.squarespace-cdn.com/content/v1/6ad2ebbc79278455a0446dc4/71d903cc-761b-417c-a6b5-58032cecc054/socks-circle.jpg" alt="A circle of volunteers holding up socks they collected">
     <div class="tap">
       <div class="tap-stage-mini">
         <div id="sj-rings" class="rings" aria-hidden="true"></div>
-        <button id="sj-heart" type="button" aria-label="Tap to send a ripple of joy"><img src="{{IMG_HEART}}" alt=""></button>
+        <button id="sj-heart" type="button" aria-label="Tap to send a ripple of joy"><img src="https://images.squarespace-cdn.com/content/v1/6ad2ebbc79278455a0446dc4/9848640c-f765-4847-a5ea-7a44bf5b05ae/heart.png" alt=""></button>
       </div>
       <p aria-live="polite"><b id="sj-count">1,284</b> ripples of joy so far</p>
     </div>

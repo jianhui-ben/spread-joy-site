@@ -1,3 +1,4 @@
+import json
 import re
 import subprocess
 import sys
@@ -254,12 +255,16 @@ class HomePageFolderTests(unittest.TestCase):
             self.assertNotIn("<script", text, n)
             self.assertNotIn("assets/img", text, n)
             self.assertIn('<div class="sj-home">', text, n)
-        self.assertIn("{{IMG_SOCKS_CIRCLE}}", self.read("3-hero-block.html"))
-        self.assertIn("{{LINK_HELP}}", self.read("5-your-turn-block.html"))
+        urls = json.loads((self.dir / "image-urls.json").read_text())
+        hero = self.read("3-hero-block.html")
+        # a key in image-urls.json is filled in; a missing key stays a {{PLACEHOLDER}}
+        self.assertTrue(urls["IMG_SOCKS_CIRCLE"] in hero or "{{IMG_SOCKS_CIRCLE}}" in hero)
+        self.assertNotIn("{{IMG_SOCKS_CIRCLE}}" if urls.get("IMG_SOCKS_CIRCLE") else "@@", hero)
+        self.assertNotIn("{{LINK_HELP}}" if urls.get("LINK_HELP") else "@@", self.read("5-your-turn-block.html"))
 
     def test_header_has_all_the_css_and_the_squarespace_fixes(self):
         css = self.read("1-header-injection.html")
-        for needle in [".hero-card", ".stage-pin", ".card", ".page-section:has(.sj-home)", "#header.tucked", "font-family: inherit", "League+Spartan"]:
+        for needle in [".hero-card", ".stage-pin", ".card", ".page-section:has(.sj-home)", "#header.tucked", "font-family: inherit", "League+Spartan", "color-scheme: only light", ".hero { padding-top"]:
             self.assertIn(needle, css)
 
     def test_footer_has_every_script_part(self):

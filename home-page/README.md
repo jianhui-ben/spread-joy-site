@@ -12,21 +12,11 @@ Everything needed to rebuild the localhost home page (`index.html`) on Squarespa
 
 Needs a Core, Plus or Advanced plan (your trial allowed Code Injection). Do not hand-edit the numbered files: change `build.py` or `assets/*` and run `python3 build.py`, then paste again.
 
-## Step 0: upload the photos and get their web addresses
+## Step 0: photos (already done for the trial site)
 
-Code Blocks cannot read files from this repo, so the photos must live on Squarespace. Blocks 3-5 contain placeholders in double curly braces that you replace with those addresses.
+Code Blocks cannot read files from this repo, so the photos live on Squarespace. The six photos were uploaded to the trial site and their web addresses are saved in `image-urls.json`. `python3 build.py` puts those addresses into blocks 3-5, so the blocks are paste-ready as they are. The two page links (`LINK_HELP`, `LINK_CONTACT`) are in the same file; change them to your real page URLs if they differ.
 
-| Placeholder | Local file |
-|---|---|
-| `{{IMG_SOCKS_CIRCLE}}` | `assets/img/socks-circle.jpg` |
-| `{{IMG_XAVIER}}` | `assets/img/xavier-portrait.jpg` |
-| `{{IMG_SOCK_PILE}}` | `assets/img/sock-pile.jpg` |
-| `{{IMG_FAMILY}}` | `assets/img/family.jpg` |
-| `{{IMG_SOCKS_CIRCLE_2}}` | `assets/img/socks-circle-2.jpg` |
-| `{{IMG_HEART}}` | `assets/img/heart.png` |
-| `{{LINK_HELP}}`, `{{LINK_CONTACT}}` | the URLs of your How Can We Help and Contact pages, for example `/how-can-we-help` |
-
-Suggested way (not tested by me): make a spare "Not Linked" page, add an Image block per photo and upload it, open the page, right-click each image, **Copy Image Address**, and keep the list in a note. In each block use find-and-replace in your editor of choice before pasting, or edit the address inside the Code Block afterwards.
+To use another Squarespace site or new photos: upload each photo (for example in an Image block on a spare page, which uses the file picker), open the page, right-click the image, **Copy Image Address**, drop the `?format=...` ending, put the address into `image-urls.json` and rebuild. Any key missing from that file stays as a `{{PLACEHOLDER}}` in the block for you to replace by hand.
 
 ## Step 1 and 2: install the styles and the script
 
@@ -57,7 +47,9 @@ Squarespace wraps every block in a padded grid that clips overflow, which would 
 
 ## What I verified, and what I did not
 
-Tested on your trial site (`Home (new)`) with the three blocks in one section and coloured stand-ins for the photos: full-width layout, block order, the pinned story and its photo/line changes, heart counter, "Surprise me", fade-ins, scrollable cards, header slide. Not tested: the real photos (they cannot load from localhost inside Squarespace), the photo upload steps above, a fixed/white header set through Site Styles, a dragged mouse on the cards, other templates and other browsers. If something looks off, it is most likely one of those.
+Tested on your trial site (`Home (new)`), three Code Blocks in one section, real photos from Squarespace's image storage: white page even when the browser forces dark mode, full-width layout, block order, the pinned story with its photo and line changes, heart counter, "Surprise me", fade-ins, scrollable cards, header slide, and the story still updating after Squarespace re-draws the blocks. Not tested: a mouse drag on the cards, a fixed header set through Site Styles (on the trial the header is not fixed, so it scrolls away by itself and the slide never shows), a phone, other templates and other browsers.
+
+Two things Squarespace did that the localhost page does not: the header is laid over the top of the page, so the hero has 170px extra space on top (set in file 1); and the browser's forced dark mode turned the page black until file 1 declared the page light-only.
 
 ## Changing things later
 

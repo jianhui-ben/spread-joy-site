@@ -61,3 +61,45 @@ test('headerHidden: hides when scrolling down past the top, shows when scrolling
   assert.equal(headerHidden(300, 270, true), false, 'scrolling up shows');
   assert.equal(headerHidden(300, 20, true), false, 'back at the top shows');
 });
+
+// --- Squarespace re-draws Code Block HTML after the script has started; the story must follow the new elements ---
+function fakePage() {
+  const listeners = {};
+  const mk = (cls) => ({ cls, style: {}, classList: { toggle() {}, add(c) { this.added = c; } }, getBoundingClientRect: () => ({ top: -500, height: 100, bottom: -400 }) });
+  const page = {
+    frames: [mk('frame'), mk('frame'), mk('frame')],
+    lines: [mk('line'), mk('line'), mk('line')],
+  };
+  const story = () => ({
+    offsetHeight: 4000,
+    getBoundingClientRect: () => ({ top: -1500 }),
+    querySelectorAll: (sel) => (sel === '.frame' ? page.frames : sel === '.line' ? page.lines : []),
+  });
+  const doc = {
+    getElementById: (id) => (id === 'story' ? story() : null),
+    querySelectorAll: () => [],
+    querySelector: () => null,
+    addEventListener() {},
+  };
+  const win = {
+    scrollY: 1500, innerHeight: 1000,
+    matchMedia: () => ({ matches: false }),
+    requestAnimationFrame: (fn) => fn(),
+    addEventListener: (t, fn) => { (listeners[t] = listeners[t] || []).push(fn); },
+    fire: (t) => (listeners[t] || []).forEach((fn) => fn()),
+  };
+  return { doc, win, page, mk };
+}
+
+test('initStory keeps updating after the photos and lines are replaced by new elements', () => {
+  const { initStory } = require('../assets/scroll-story.js');
+  const { doc, win, page, mk } = fakePage();
+  initStory(doc, win);
+  // Squarespace swaps in fresh copies of the block HTML
+  page.frames = [mk('frame'), mk('frame'), mk('frame')];
+  page.lines = [mk('line'), mk('line'), mk('line')];
+  win.scrollY = 1500;
+  win.fire('scroll');
+  assert.ok(page.frames[0].style.opacity !== undefined, 'new photos were updated');
+  assert.ok(page.lines[1].style.opacity !== undefined, 'new lines were updated');
+});

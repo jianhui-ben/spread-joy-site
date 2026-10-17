@@ -3,7 +3,7 @@
   WHAT IT IS:     The wave, the yellow band, the Your turn headline and the swipeable photo cards, ending with Surprise me.
   WHERE TO PASTE: A Code Block (mode HTML) in the THIRD (last) section.
   NEEDS:          Pastes 1 and 2 installed once (Code Injection Header and Footer).
-  PLACEHOLDERS:   {{IMG_FAMILY}}, {{IMG_SOCK_PILE}}, {{IMG_SOCKS_CIRCLE_2}}, {{IMG_XAVIER}}, {{IMG_HEART}}, {{LINK_HELP}}, {{LINK_CONTACT}}
+  PLACEHOLDERS:   none (addresses come from home-page/image-urls.json)
   GENERATED:      by build.py. Change build.py (HOME_* sections) and run `python3 build.py`.
 -->
 <div class="sj-home">
@@ -11,12 +11,12 @@
 <section class="turn">
   <h2 class="reveal">Your turn.</h2>
   <div class="cards" id="cards">
-    <a class="card" href="{{LINK_HELP}}"><img src="{{IMG_FAMILY}}" alt=""><span class="go" aria-hidden="true">&rarr;</span><h3>I have time</h3></a>
-    <a class="card" href="#"><img src="{{IMG_SOCK_PILE}}" alt=""><span class="go" aria-hidden="true">&rarr;</span><h3>I want to give</h3></a>
-    <a class="card" href="{{LINK_HELP}}"><img src="{{IMG_SOCKS_CIRCLE_2}}" alt=""><span class="go" aria-hidden="true">&rarr;</span><h3>I have something to share</h3></a>
-    <a class="card" href="{{LINK_CONTACT}}"><img src="{{IMG_XAVIER}}" alt=""><span class="go" aria-hidden="true">&rarr;</span><h3>My family could use support</h3></a>
+    <a class="card" href="/how-can-we-help"><img src="https://images.squarespace-cdn.com/content/v1/6ad2ebbc79278455a0446dc4/00def73c-cf59-40e4-ac6f-87961e9a8ed2/family.jpg" alt=""><span class="go" aria-hidden="true">&rarr;</span><h3>I have time</h3></a>
+    <a class="card" href="#"><img src="https://images.squarespace-cdn.com/content/v1/6ad2ebbc79278455a0446dc4/4fb51a76-114c-46eb-a733-e762df8387d2/sock-pile.jpg" alt=""><span class="go" aria-hidden="true">&rarr;</span><h3>I want to give</h3></a>
+    <a class="card" href="/how-can-we-help"><img src="https://images.squarespace-cdn.com/content/v1/6ad2ebbc79278455a0446dc4/ad0e003e-bab1-4b8d-8e35-6b497061269f/socks-circle-2.jpg" alt=""><span class="go" aria-hidden="true">&rarr;</span><h3>I have something to share</h3></a>
+    <a class="card" href="/contact"><img src="https://images.squarespace-cdn.com/content/v1/6ad2ebbc79278455a0446dc4/d981d5f9-c668-4204-8931-f1eaa6abe089/xavier-portrait.jpg" alt=""><span class="go" aria-hidden="true">&rarr;</span><h3>My family could use support</h3></a>
     <div class="card surprise">
-      <img class="beat" src="{{IMG_HEART}}" alt="">
+      <img class="beat" src="https://images.squarespace-cdn.com/content/v1/6ad2ebbc79278455a0446dc4/9848640c-f765-4847-a5ea-7a44bf5b05ae/heart.png" alt="">
       <p id="sj-idea" class="idea sj-needs-js" aria-live="polite"></p>
       <button id="sj-surprise" class="pill outline sj-needs-js" type="button">Surprise me &#9829;</button>
     </div>

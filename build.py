@@ -3,6 +3,7 @@
 Edit page content below, rebuild, and open index.html in a browser.
 Links marked href="#" are placeholders: see README.md for the list to fill in.
 """
+import json
 import re
 from pathlib import Path
 
@@ -426,6 +427,8 @@ SQS_OVERRIDES = """.page-section:has(.sj-home) { padding: 0 !important; min-heig
 .page-section:has(.sj-home) .sqs-block-code,
 .page-section:has(.sj-home) .sqs-block-content { padding: 0 !important; margin: 0 !important; overflow: visible !important; }
 /* Squarespace gives headings, paragraphs and buttons their own font; make ours use the brand font */
+.page-section:has(.sj-home) .hero { padding-top: 170px; }
+:root { color-scheme: only light; }
 .sj-home h1, .sj-home h2, .sj-home h3, .sj-home p, .sj-home b, .sj-home button, .sj-home a { font-family: inherit; text-transform: none; font-style: normal; }"""
 
 HOME_FOOTER = """<!--
@@ -460,7 +463,13 @@ __HTML__
 def to_placeholders(html):
     for key, name in HOME_IMAGES.items():
         html = html.replace("assets/img/" + name, "{{IMG_%s}}" % key)
-    return html.replace('href="help.html"', 'href="{{LINK_HELP}}"').replace('href="contact.html"', 'href="{{LINK_CONTACT}}"')
+    html = html.replace('href="help.html"', 'href="{{LINK_HELP}}"').replace('href="contact.html"', 'href="{{LINK_CONTACT}}"')
+    # home-page/image-urls.json holds the real Squarespace addresses; any key it lacks stays a placeholder
+    urls_file = HOME_DIR / "image-urls.json"
+    if urls_file.exists():
+        for key, url in json.loads(urls_file.read_text()).items():
+            html = html.replace("{{%s}}" % key, url)
+    return html
 
 
 def build_home_page():
@@ -494,7 +503,10 @@ def build_home_page():
          "{{IMG_FAMILY}}, {{IMG_SOCK_PILE}}, {{IMG_SOCKS_CIRCLE_2}}, {{IMG_XAVIER}}, {{IMG_HEART}}, {{LINK_HELP}}, {{LINK_CONTACT}}",
          WAVE_UP + "\n" + HOME_TURN),
     ]
+    urls_file = HOME_DIR / "image-urls.json"
+    known = json.loads(urls_file.read_text()) if urls_file.exists() else {}
     for n, fname, title, what, where, ph, html in blocks:
+        ph = ", ".join(p for p in ph.split(", ") if p.strip("{}") not in known) or "none (addresses come from home-page/image-urls.json)"
         text = (HOME_BLOCK.replace("__N__", str(n)).replace("__TITLE__", title).replace("__WHAT__", what)
                 .replace("__WHERE__", where).replace("__PLACEHOLDERS__", ph)
                 .replace("__HTML__", to_placeholders(html.strip("\n"))))
