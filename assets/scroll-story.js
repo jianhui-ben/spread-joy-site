@@ -80,10 +80,47 @@
     tick();
   }
 
-  var api = { storyState: storyState, initStory: initStory };
+  // Cards row: arrow buttons scroll one card; a mouse can also drag the row (touch already scrolls natively)
+  function initCards(doc) {
+    var row = doc.getElementById('cards');
+    if (!row) return;
+    function step(dir) {
+      var card = row.querySelector('.card');
+      var w = card ? card.offsetWidth + 20 : 300;
+      row.scrollBy({ left: dir * w, behavior: 'smooth' });
+    }
+    var prev = doc.getElementById('cardsPrev');
+    var next = doc.getElementById('cardsNext');
+    if (prev) prev.addEventListener('click', function () { step(-1); });
+    if (next) next.addEventListener('click', function () { step(1); });
+
+    var down = false, moved = false, startX = 0, startLeft = 0;
+    row.addEventListener('pointerdown', function (e) {
+      if (e.pointerType !== 'mouse') return;
+      down = true; moved = false; startX = e.clientX; startLeft = row.scrollLeft;
+    });
+    doc.addEventListener('pointermove', function (e) {
+      if (!down) return;
+      var dx = e.clientX - startX;
+      if (Math.abs(dx) > 5) { moved = true; row.classList.add('dragging'); }
+      if (moved) row.scrollLeft = startLeft - dx;
+    });
+    doc.addEventListener('pointerup', function () {
+      if (!down) return;
+      down = false; row.classList.remove('dragging');
+    });
+    // a drag should not count as a click on the card underneath
+    row.addEventListener('click', function (e) {
+      if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; }
+    }, true);
+    row.addEventListener('dragstart', function (e) { e.preventDefault(); });
+  }
+
+  var api = { storyState: storyState, initStory: initStory, initCards: initCards };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (typeof document !== 'undefined' && typeof window !== 'undefined') {
     root.StoryScroll = api;
     initStory(document, window);
+    initCards(document);
   }
 })(typeof window !== 'undefined' ? window : globalThis);
