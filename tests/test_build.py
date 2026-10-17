@@ -322,7 +322,7 @@ class HomePageFolderTests(unittest.TestCase):
 
     def test_footer_has_every_script_part(self):
         js = self.read("2-footer-injection.html")
-        self.assertEqual(js.count("<script"), 1)
+        self.assertEqual(js.count("<script>"), 1)  # the Givebutter library tag, when configured, is a separate <script async>
         for needle in ["PART 1", "PART 2", "PART 3", "initStory", "initCards", "initHeader", "createShuffler"]:
             self.assertIn(needle, js)
 
