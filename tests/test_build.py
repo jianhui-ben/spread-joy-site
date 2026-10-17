@@ -121,11 +121,25 @@ class HomeTests(unittest.TestCase):
         cards = re.findall(r'<a class="card"[^>]*href="([^"]*)"[^>]*>(.*?)</a>', self.html, re.S)
         links = {text_of(re.search(r"<h3>(.*?)</h3>", body, re.S).group(1)): href for href, body in cards}
         self.assertEqual(links, {
-            "I have time": "get-involved.html#time",
+            "I have time": "events.html",
             "I want to give": "https://givebutter.com/SpreadJoyCollective",
-            "I have something to share": "get-involved.html#share",
+            "I have something to share": "#share-a-hope",
             "My family could use support": "help.html",
         })
+
+    def test_share_card_opens_the_hope_jar_overlay_without_a_second_button(self):
+        self.assertIn("data-sjc-hope-widget", self.html)
+        self.assertIn('a[href="#share-a-hope"]', self.html)
+        # the widget's own launch button is hidden; the card is the way in
+        self.assertIn('<div class="sjc-launch" hidden>', self.html)
+        # the teammate's code is used as supplied
+        src = (ROOT / "assets" / "hope-jar.html").read_text()
+        self.assertIn("dialog", src)
+        # Squarespace stops link clicks before they bubble up to the page, so the opener must listen
+        # in the capture phase (a bubbling listener never fired on the trial site)
+        self.assertRegex(src, r"closest\('a\[href=\"#share-a-hope\"\]'\);[\s\S]*?openModal\(link\);\s*\}, true\);")
+        self.assertNotIn("localStorage", self.html)
+        self.assertNotIn("fetch(", src)
 
     def test_every_link_card_has_a_photo_so_none_is_a_blank_white_block(self):
         cards = re.findall(r'<a class="card"[^>]*>(.*?)</a>', self.html, re.S)
@@ -288,6 +302,8 @@ class HomePageFolderTests(unittest.TestCase):
     def test_blocks_hold_html_only_with_image_placeholders_and_no_local_paths(self):
         for n in ["3-hero-block.html", "4-story-block.html", "5-your-turn-block.html", "6-footer-block.html"]:
             text = self.read(n)
+            # the supplied hope-jar overlay carries its own isolated (shadow DOM) style and script
+            text = re.sub(r"<div data-sjc-hope-widget></div>\s*<script>.*?</script>", "", text, flags=re.S)
             self.assertNotIn("<style", text, n)
             self.assertNotIn("<script", text, n)
             self.assertNotIn("assets/img", text, n)

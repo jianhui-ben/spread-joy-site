@@ -174,12 +174,17 @@ HOME_STORY = """<section class="story" id="story">
 </section>
 """
 
+# "I have something to share" overlay (the hope jar), supplied by a teammate and kept as supplied in
+# assets/hope-jar.html. Its own launch button is hidden: the card below opens it via #share-a-hope.
+HOPE_JAR = (Path(__file__).parent / "assets" / "hope-jar.html").read_text().replace(
+    '<div class="sjc-launch">', '<div class="sjc-launch" hidden>', 1).strip()
+
 HOME_TURN = f"""<section class="turn">
   <h2 class="reveal">Your turn.</h2>
   <div class="cards" id="cards">
-    <a class="card" href="get-involved.html#time"><img src="assets/img/family.jpg" alt="A family in Peace, Love and Inclusion shirts"><span class="go" aria-hidden="true">&rarr;</span><h3>I have time</h3></a>
+    <a class="card" href="events.html"><img src="assets/img/family.jpg" alt="A family in Peace, Love and Inclusion shirts"><span class="go" aria-hidden="true">&rarr;</span><h3>I have time</h3></a>
     <a class="card" href="{GIVE_URL}" target="_blank" rel="noopener"><img src="assets/img/sock-pile.jpg" alt="A pile of donated socks"><span class="go" aria-hidden="true">&rarr;</span><h3>I want to give</h3></a>
-    <a class="card" href="get-involved.html#share"><img src="assets/img/socks-circle-2.jpg" alt="People sitting in a circle holding socks"><span class="go" aria-hidden="true">&rarr;</span><h3>I have something to share</h3></a>
+    <a class="card" href="#share-a-hope"><img src="assets/img/socks-circle-2.jpg" alt="People sitting in a circle holding socks"><span class="go" aria-hidden="true">&rarr;</span><h3>I have something to share</h3></a>
     <a class="card" href="help.html"><img src="assets/img/xavier-portrait.jpg" alt="Xavier smiling with arms wide"><span class="go" aria-hidden="true">&rarr;</span><h3>My family could use support</h3></a>
     <div class="card surprise">
       <img class="beat" src="assets/img/heart.png" alt="">
@@ -191,6 +196,7 @@ HOME_TURN = f"""<section class="turn">
       <p id="sj-done" class="done" hidden></p>
     </div>
   </div>
+{HOPE_JAR}
 </section>
 <section class="give" id="sj-give">
   <h2 class="reveal">Help us keep it going.</h2>
@@ -696,7 +702,7 @@ def build_home_page():
         (5, "5-your-turn-block.html", "Yellow wave and the Your turn cards",
          "The wave, the yellow band, the Your turn headline and the swipeable photo cards, ending with Surprise me.",
          "A Code Block (mode HTML) in the THIRD (last) section.",
-         "{{IMG_FAMILY}}, {{IMG_SOCK_PILE}}, {{IMG_SOCKS_CIRCLE_2}}, {{IMG_XAVIER}}, {{IMG_HEART}}, {{LINK_TIME}}, {{LINK_SHARE}}, {{LINK_HELP}}",
+         "{{IMG_FAMILY}}, {{IMG_SOCK_PILE}}, {{IMG_SOCKS_CIRCLE_2}}, {{IMG_XAVIER}}, {{IMG_HEART}}, {{LINK_EVENTS}}, {{LINK_HELP}}",
          WAVE_UP + "\n" + HOME_TURN),
         (6, "6-footer-block.html", "Dark footer with links and sign-up",
          "The charcoal footer: logo, tagline, links, follow and the email sign-up box.",
