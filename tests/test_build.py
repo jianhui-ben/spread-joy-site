@@ -108,5 +108,43 @@ class HomeTests(unittest.TestCase):
             self.assertNotIn("yellow", self.moments[idx][0].split())
 
 
+class SnippetTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        build_index()
+        d = ROOT / "squarespace"
+        cls.heart = (d / "heart-block.html").read_text()
+        cls.surprise = (d / "surprise-block.html").read_text()
+        cls.footer = (d / "footer-injection.html").read_text()
+
+    def test_footer_injection_is_one_small_script_with_the_logic(self):
+        self.assertEqual(self.footer.count("<script"), 1)
+        self.assertEqual(self.footer.count("</script>"), 1)
+        self.assertIn("createCounter", self.footer)
+        self.assertIn("initHome", self.footer)
+        self.assertLess(len(self.footer.encode()), 20 * 1024)
+
+    def test_heart_block_has_its_ids_style_and_image_placeholder_but_no_script(self):
+        for ident in ["sj-heart", "sj-rings", "sj-count"]:
+            self.assertIn(f'id="{ident}"', self.heart)
+        self.assertIn("<style>", self.heart)
+        self.assertNotIn("<script", self.heart)
+        self.assertIn("{{HEART_IMAGE_URL}}", self.heart)
+        self.assertNotIn("assets/", self.heart)
+        self.assertIn("@keyframes ring-out", self.heart)
+
+    def test_surprise_block_has_its_ids_and_style_but_no_script(self):
+        for ident in ["sj-surprise", "sj-idea"]:
+            self.assertIn(f'id="{ident}"', self.surprise)
+        self.assertIn("<style>", self.surprise)
+        self.assertNotIn("<script", self.surprise)
+        self.assertRegex(self.surprise, r'<button[^>]*id="sj-surprise"[^>]*\bhidden\b')
+
+    def test_snippet_css_declares_the_brand_variables_it_uses(self):
+        for block in (self.heart, self.surprise):
+            self.assertIn("--yellow: #fdcd17", block)
+            self.assertIn("--ink: #231f20", block)
+
+
 if __name__ == "__main__":
     unittest.main()

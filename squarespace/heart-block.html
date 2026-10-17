@@ -1,0 +1,24 @@
+<!-- Spread Joy: tap-the-heart. Paste into a Code Block (HTML mode). Replace {{HEART_IMAGE_URL}} with the uploaded heart.png URL. -->
+<style>
+:root { --yellow: #fdcd17; --ink: #231f20; --bg: #ffffff; --muted: #6b6560; }
+.tap-stage { position: relative; width: min(320px, 80vw); aspect-ratio: 1; margin: 0 auto 8px; display: grid; place-items: center; }
+.heart-btn { position: relative; z-index: 1; background: none; border: 0; padding: 12px; cursor: pointer; width: 150px; min-height: 44px; transition: transform 0.15s ease; }
+.heart-btn:hover { transform: scale(1.05); }
+.heart-btn:active, .heart-btn.pulse { transform: scale(0.94); }
+.heart-btn:focus-visible { outline: 3px solid var(--ink); outline-offset: 4px; border-radius: 12px; }
+.heart-btn img { width: 100%; height: auto; }
+.rings { position: absolute; inset: 0; pointer-events: none; }
+.ring {
+  position: absolute; left: 50%; top: 50%; width: 60px; height: 60px; border-radius: 50%;
+  border: 3px solid var(--yellow); transform: translate(-50%, -50%) scale(1); opacity: 0.9;
+  animation: ring-out 1.8s ease-out forwards;
+}
+@keyframes ring-out { to { transform: translate(-50%, -50%) scale(6); opacity: 0; } }
+.counter { margin: 12px 0 0; color: var(--muted); font-size: 1.05rem; }
+.counter span { font-weight: 600; color: var(--ink); }
+</style>
+<div class="tap-stage">
+  <div id="sj-rings" class="rings" aria-hidden="true"></div>
+  <button id="sj-heart" class="heart-btn" type="button" aria-label="Tap to send a ripple of joy"><img src="{{HEART_IMAGE_URL}}" alt=""></button>
+</div>
+<p class="counter" aria-live="polite" style="text-align:center"><span id="sj-count">1,284</span> ripples of joy so far</p>

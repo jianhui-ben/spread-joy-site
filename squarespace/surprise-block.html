@@ -1,0 +1,16 @@
+<!-- Spread Joy: Surprise me. Paste into a Code Block (HTML mode). The button stays hidden until the footer script runs. -->
+<style>
+:root { --yellow: #fdcd17; --ink: #231f20; --bg: #ffffff; --muted: #6b6560; }
+.pill {
+  display: inline-block; background: var(--yellow); color: var(--ink);
+  border: 2px solid var(--yellow); border-radius: 999px; padding: 8px 18px;
+  font: inherit; font-weight: 600; text-decoration: none; margin: 4px; cursor: pointer;
+}
+.pill.outline { background: var(--bg); border-color: var(--ink); }
+
+.idea { min-height: 3.2em; margin: 12px auto 0; max-width: 28em; font-size: 1.25rem; font-weight: 500; }
+</style>
+<div style="text-align:center">
+  <button id="sj-surprise" class="pill outline" type="button" hidden>Surprise me &#9829;</button>
+  <p id="sj-idea" class="idea" aria-live="polite"></p>
+</div>

@@ -70,18 +70,21 @@ img { max-width: 100%; display: block; }
 .photo-card img { width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: 6px; box-shadow: 12px 12px 0 var(--ink); }
 .band.yellow .photo-card img { box-shadow: 12px 12px 0 var(--bg); }
 
+/* snippet:surprise:start */
 .pill {
   display: inline-block; background: var(--yellow); color: var(--ink);
   border: 2px solid var(--yellow); border-radius: 999px; padding: 8px 18px;
   font: inherit; font-weight: 600; text-decoration: none; margin: 4px; cursor: pointer;
 }
 .pill.outline { background: var(--bg); border-color: var(--ink); }
+/* snippet:surprise:end */
 
 .drift-heart { position: absolute; width: 30px; animation: drift 4s ease-in-out infinite; pointer-events: none; }
 @keyframes drift { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 .band { position: relative; }
 
 /* Tap-the-heart moment */
+/* snippet:heart:start */
 .tap-stage { position: relative; width: min(320px, 80vw); aspect-ratio: 1; margin: 0 auto 8px; display: grid; place-items: center; }
 .heart-btn { position: relative; z-index: 1; background: none; border: 0; padding: 12px; cursor: pointer; width: 150px; min-height: 44px; transition: transform 0.15s ease; }
 .heart-btn:hover { transform: scale(1.05); }
@@ -97,12 +100,15 @@ img { max-width: 100%; display: block; }
 @keyframes ring-out { to { transform: translate(-50%, -50%) scale(6); opacity: 0; } }
 .counter { margin: 12px 0 0; color: var(--muted); font-size: 1.05rem; }
 .counter span { font-weight: 600; color: var(--ink); }
+/* snippet:heart:end */
 .moment .accent { margin: 8px 0 0; }
 
 /* Your turn moment */
 .small-heart { width: 48px; margin: 0 auto 8px; }
 .choices { margin: 20px 0 8px; max-width: 40em; }
+/* snippet:surprise:start */
 .idea { min-height: 3.2em; margin: 12px auto 0; max-width: 28em; font-size: 1.25rem; font-weight: 500; }
+/* snippet:surprise:end */
 
 /* Sections used by the inner pages */
 section.block { padding: 56px 0; }

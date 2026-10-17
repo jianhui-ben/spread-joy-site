@@ -3,6 +3,7 @@
 Edit page content below, rebuild, and open index.html in a browser.
 Links marked href="#" are placeholders: see README.md for the list to fill in.
 """
+import re
 from pathlib import Path
 
 OUT = Path(__file__).parent
@@ -254,6 +255,55 @@ PAGES["contact.html"] = dict(
 )
 
 
+def snippet_css(name):
+    """Collect the CSS between /* snippet:NAME:start */ and /* snippet:NAME:end */ markers."""
+    css = (OUT / "assets" / "styles.css").read_text()
+    parts = re.findall(r"/\* snippet:%s:start \*/(.*?)/\* snippet:%s:end \*/" % (name, name), css, re.S)
+    return "".join(parts).strip()
+
+
+SNIPPET_VARS = ":root { --yellow: #fdcd17; --ink: #231f20; --bg: #ffffff; --muted: #6b6560; }"
+
+HEART_BLOCK = """<!-- Spread Joy: tap-the-heart. Paste into a Code Block (HTML mode). Replace {{HEART_IMAGE_URL}} with the uploaded heart.png URL. -->
+<style>
+__VARS__
+__CSS__
+</style>
+<div class="tap-stage">
+  <div id="sj-rings" class="rings" aria-hidden="true"></div>
+  <button id="sj-heart" class="heart-btn" type="button" aria-label="Tap to send a ripple of joy"><img src="{{HEART_IMAGE_URL}}" alt=""></button>
+</div>
+<p class="counter" aria-live="polite" style="text-align:center"><span id="sj-count">1,284</span> ripples of joy so far</p>
+"""
+
+SURPRISE_BLOCK = """<!-- Spread Joy: Surprise me. Paste into a Code Block (HTML mode). The button stays hidden until the footer script runs. -->
+<style>
+__VARS__
+__CSS__
+</style>
+<div style="text-align:center">
+  <button id="sj-surprise" class="pill outline" type="button" hidden>Surprise me &#9829;</button>
+  <p id="sj-idea" class="idea" aria-live="polite"></p>
+</div>
+"""
+
+
+def build_snippets():
+    out = OUT / "squarespace"
+    out.mkdir(exist_ok=True)
+    for filename, template, name in [("heart-block.html", HEART_BLOCK, "heart"),
+                                     ("surprise-block.html", SURPRISE_BLOCK, "surprise")]:
+        text = template.replace("__VARS__", SNIPPET_VARS).replace("__CSS__", snippet_css(name))
+        (out / filename).write_text(text)
+        print("wrote squarespace/" + filename)
+    joy = (OUT / "assets" / "joy.js").read_text()
+    home = (OUT / "assets" / "home.js").read_text()
+    script = ("<!-- Spread Joy: paste into Pages > Custom Code > Code Injection > Footer -->\n"
+              "<script>\n" + joy + "\n" + home + "</script>\n")
+    (out / "footer-injection.html").write_text(script)
+    print("wrote squarespace/footer-injection.html")
+
+
 def nav_html(current):
     lines = []
     for href, label in NAV:
@@ -277,3 +327,5 @@ for filename, page in PAGES.items():
     )
     (OUT / filename).write_text(html)
     print("wrote", filename)
+
+build_snippets()
