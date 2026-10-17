@@ -1,6 +1,6 @@
 # Recreating the Joy Ripple home page in Squarespace 7.1
 
-The prototype (`index.html`) is the visual reference. In Squarespace, layout, colors, waves and scroll animations are built with the editor. Only two things use custom code: the tap-to-ripple heart and "Surprise me". Menu names below match your site as of 2026-10-16 (checked: Pages panel > Custom Code > Code Injection exists). Squarespace renames things now and then, so if a label differs, use the search icon in the editor.
+The prototype (`index.html`) is the visual reference. In Squarespace, layout, colors, waves and scroll animations are built with the editor. Only two things use custom code: the tap-to-ripple heart and "Surprise me". Only one menu path was confirmed on your site on 2026-10-16: Pages panel > Custom Code > Code Injection. The other paths come from Squarespace's help pages and may be labeled differently, so if one is missing, use the search icon in the editor.
 
 ## Before you start
 
@@ -55,8 +55,8 @@ The made-up counter number lives in `PLACEHOLDER_START_COUNT` near the top of th
 
 ## 7. Check before swapping it in
 
-- Preview the page (Edit > Preview). Code may not show while you are logged in, so use Preview in Safe Mode if the heart does nothing.
-- Code Blocks may not render on index pages or with Ajax loading on. If the page shows plain text, turn Ajax loading off (search the site styles for "Ajax loading"; I did not confirm where it sits in your menu).
+- After saving, open the page in a private (incognito) window, logged out, since code may not run while you are logged in. Do not use Safe Mode: it turns custom code off.
+- Code Blocks may not render on index pages or with Ajax loading on. If the page shows plain text instead of the heart, check whether your site has an Ajax loading option; it may not exist in 7.1.
 - Tap the heart: rings appear, the number goes up by one. Tap "Surprise me": a new idea appears and never repeats twice in a row.
 - Check on a phone, and with the device's "reduce motion" setting on: rings are replaced by a quick pulse.
 

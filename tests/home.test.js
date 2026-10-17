@@ -91,3 +91,17 @@ test('initHome does nothing and does not throw when expected elements are missin
   assert.doesNotThrow(() => initHome(makeDoc(['sj-heart']), Joy));
   assert.doesNotThrow(() => initHome(makeDoc(['sj-surprise']), Joy));
 });
+
+test('on load the counter shows the constant, whatever the markup said', () => {
+  const doc = makeDoc(ALL);
+  doc.els['sj-count'].textContent = '999';
+  initHome(doc, Joy);
+  assert.equal(doc.els['sj-count'].textContent, Joy.formatCount(Joy.PLACEHOLDER_START_COUNT));
+});
+
+test('the idea line is revealed along with the surprise button', () => {
+  const doc = makeDoc(ALL);
+  doc.els['sj-idea'].hidden = true;
+  initHome(doc, Joy);
+  assert.equal(doc.els['sj-idea'].hidden, false);
+});

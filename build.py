@@ -8,6 +8,15 @@ from pathlib import Path
 
 OUT = Path(__file__).parent
 
+
+def start_count():
+    """The made-up starting number lives only in assets/joy.js; format it for the static markup."""
+    joy = (OUT / "assets" / "joy.js").read_text()
+    return f"{int(re.search(r'PLACEHOLDER_START_COUNT\s*=\s*(\d+)', joy).group(1)):,}"
+
+
+START_COUNT = start_count()
+
 NAV = [
     ("index.html", "Home"),
     ("mission.html", "Our Mission"),
@@ -110,7 +119,7 @@ PAGES["index.html"] = dict(
       <button id="sj-heart" class="heart-btn" type="button" aria-label="Tap to send a ripple of joy"><img src="assets/img/heart.png" alt=""></button>
     </div>
     <h2>Tap the <span class="hl">heart.</span></h2>
-    <p class="counter" aria-live="polite"><span id="sj-count">1,284</span> ripples of joy so far</p>
+    <p class="counter" aria-live="polite"><span id="sj-count">{START_COUNT}</span> ripples of joy so far</p>
     <p class="accent">Small acts. Big impact. Spread joy.</p>
   </div>
 </section>
@@ -154,7 +163,7 @@ PAGES["index.html"] = dict(
       <a class="pill" href="contact.html">My family could use support</a>
     </div>
     <button id="sj-surprise" class="pill outline" type="button" hidden>Surprise me &#9829;</button>
-    <p id="sj-idea" class="idea" aria-live="polite"></p>
+    <p id="sj-idea" class="idea" aria-live="polite" hidden></p>
   </div>
 </section>
 """,
@@ -273,7 +282,7 @@ __CSS__
   <div id="sj-rings" class="rings" aria-hidden="true"></div>
   <button id="sj-heart" class="heart-btn" type="button" aria-label="Tap to send a ripple of joy"><img src="{{HEART_IMAGE_URL}}" alt=""></button>
 </div>
-<p class="counter" aria-live="polite" style="text-align:center"><span id="sj-count">1,284</span> ripples of joy so far</p>
+<p class="counter" aria-live="polite" style="text-align:center"><span id="sj-count">__COUNT__</span> ripples of joy so far</p>
 """
 
 SURPRISE_BLOCK = """<!-- Spread Joy: Surprise me. Paste into a Code Block (HTML mode). The button stays hidden until the footer script runs. -->
@@ -283,7 +292,7 @@ __CSS__
 </style>
 <div style="text-align:center">
   <button id="sj-surprise" class="pill outline" type="button" hidden>Surprise me &#9829;</button>
-  <p id="sj-idea" class="idea" aria-live="polite"></p>
+  <p id="sj-idea" class="idea" aria-live="polite" hidden></p>
 </div>
 """
 
@@ -293,7 +302,7 @@ def build_snippets():
     out.mkdir(exist_ok=True)
     for filename, template, name in [("heart-block.html", HEART_BLOCK, "heart"),
                                      ("surprise-block.html", SURPRISE_BLOCK, "surprise")]:
-        text = template.replace("__VARS__", SNIPPET_VARS).replace("__CSS__", snippet_css(name))
+        text = template.replace("__COUNT__", START_COUNT).replace("__VARS__", SNIPPET_VARS).replace("__CSS__", snippet_css(name))
         (out / filename).write_text(text)
         print("wrote squarespace/" + filename)
     joy = (OUT / "assets" / "joy.js").read_text()

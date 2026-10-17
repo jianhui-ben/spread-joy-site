@@ -71,6 +71,7 @@ img { max-width: 100%; display: block; }
 .band.yellow .photo-card img { box-shadow: 12px 12px 0 var(--bg); }
 
 /* snippet:surprise:start */
+[hidden] { display: none !important; }
 .pill {
   display: inline-block; background: var(--yellow); color: var(--ink);
   border: 2px solid var(--yellow); border-radius: 999px; padding: 8px 18px;

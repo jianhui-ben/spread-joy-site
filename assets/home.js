@@ -14,6 +14,7 @@
 
     var counter = joy.createCounter(joy.PLACEHOLDER_START_COUNT);
     var calm = reducedMotion(doc);
+    count.textContent = joy.formatCount(counter.value());
 
     heart.addEventListener('click', function () {
       count.textContent = joy.formatCount(counter.tap());
@@ -39,6 +40,7 @@
 
     var shuffler = joy.createShuffler(joy.IDEAS);
     button.removeAttribute('hidden');
+    idea.removeAttribute('hidden');
     button.addEventListener('click', function () {
       idea.textContent = shuffler.next();
     });

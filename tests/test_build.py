@@ -140,6 +140,21 @@ class SnippetTests(unittest.TestCase):
         self.assertNotIn("<script", self.surprise)
         self.assertRegex(self.surprise, r'<button[^>]*id="sj-surprise"[^>]*\bhidden\b')
 
+    def test_hidden_elements_stay_hidden_despite_pill_display_rule(self):
+        self.assertRegex(self.surprise, r"\[hidden\]\s*\{[^}]*display:\s*none")
+        self.assertRegex(CSS_NO_COMMENTS, r"\[hidden\]\s*\{[^}]*display:\s*none")
+
+    def test_idea_line_is_hidden_until_the_script_runs(self):
+        self.assertRegex(self.surprise, r'<p[^>]*id="sj-idea"[^>]*\bhidden\b')
+        html = (ROOT / "index.html").read_text()
+        self.assertRegex(html, r'<p[^>]*id="sj-idea"[^>]*\bhidden\b')
+
+    def test_start_count_comes_from_the_single_constant(self):
+        const = re.search(r"PLACEHOLDER_START_COUNT\s*=\s*(\d+)", (ROOT / "assets" / "joy.js").read_text()).group(1)
+        formatted = f"{int(const):,}"
+        for text in (self.heart, (ROOT / "index.html").read_text()):
+            self.assertIn(f'id="sj-count">{formatted}<', text)
+
     def test_snippet_css_declares_the_brand_variables_it_uses(self):
         for block in (self.heart, self.surprise):
             self.assertIn("--yellow: #fdcd17", block)
