@@ -134,6 +134,10 @@ class HomeTests(unittest.TestCase):
         self.assertIsNotNone(rule_text, "no colour rule for story lines and card titles")
         self.assertRegex(rule_text.group(1), r"color:\s*#fff\s*!important")
 
+    def test_heart_pill_sits_above_the_part_of_the_hero_the_story_covers(self):
+        rule_text = home_rule(".tap")
+        self.assertRegex(rule_text, r"bottom:\s*calc\(9vh")
+
     def test_home_css_has_the_story_and_card_rules_and_a_reduced_motion_block(self):
         for sel in [".hero-card", ".story", ".stage-pin", ".frame", ".line", ".cards", ".card", ".reveal", ".reveal.in"]:
             self.assertIsNotNone(home_rule(sel), f"home.css missing {sel}")
