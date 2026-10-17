@@ -57,6 +57,7 @@ Scroll story: full-bleed hero with a tap-the-heart pill (counter, floating heart
 ## Squarespace facts
 
 - Trial site `minnow-begonia-3l5p.squarespace.com`: since 2026-10-17 the new page (slug `/home-new`, nav title "Home") **is the homepage**, first in Main Navigation. The previous Home is kept as "Home (old)" (`/home`) under Not Linked. The trial is viewable only inside the editor.
+- **Master site** `minnow-harpsichord-k3hw.squarespace.com` (domain spreadjoycollective.org, still private): page **"Home (new)"** (`/home-new`, Not Linked) holds the home build from 2026-10-17. Photos were uploaded to this site and `home-page/image-urls.json` now points at them (the trial's photos disappear when the trial expires, 2026-10-30). Its Footer injection already holds the team's `sjc-footer`; the home paste 2 is **appended after it**, not replacing it. The header injection was empty, so paste 1 went in as is, which restyles the header white site-wide (owner's choice). Block 6 (my footer) is **not** used on the master. The Give band is not on the master yet. Homepage swap (Home -> Home (new)) is pending the owner.
 - Code lessons (re-drawn blocks, `offsetTop`, forced dark mode, heading colors, sticky/overflow) are in SPEC.md §4.
 - The header sits on top of the first section, so the hero has extra top padding.
 - Code was pushed to the trial by setting editor contents from the generated files; the owner pastes the same files.
