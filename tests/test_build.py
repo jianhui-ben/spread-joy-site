@@ -322,7 +322,13 @@ class HomePageFolderTests(unittest.TestCase):
 
     def test_footer_has_every_script_part(self):
         js = self.read("2-footer-injection.html")
-        self.assertEqual(js.count("<script>"), 1)  # the Givebutter library tag, when configured, is a separate <script async>
+        # one inline script, plus at most one external script and only from Givebutter's widget host
+        srcs = re.findall(r'<script\b[^>]*\bsrc="([^"]+)"', js)
+        self.assertEqual(js.count("<script"), 1 + len(srcs))
+        self.assertEqual(js.count("<script>"), 1)
+        self.assertLessEqual(len(srcs), 1)
+        for src in srcs:
+            self.assertTrue(src.startswith("https://widgets.givebutter.com/"), src)
         for needle in ["PART 1", "PART 2", "PART 3", "initStory", "initCards", "initHeader", "createShuffler"]:
             self.assertIn(needle, js)
 
