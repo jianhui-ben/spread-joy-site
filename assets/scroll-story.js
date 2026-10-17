@@ -42,12 +42,6 @@
         if (r.top < vh * 0.92 && r.bottom > 0) el.classList.add('in');
       });
 
-      var card = doc.getElementById('heroCard');
-      if (card && !reduce) {
-        // the hero photo grows from 90% to full size as you scroll away
-        card.style.transform = 'scale(' + (0.9 + 0.1 * clamp(y / (vh * 0.7), 0, 1)) + ')';
-      }
-
       var story = doc.getElementById('story');
       if (!story) return;
       var frames = all(story, '.frame');

@@ -28,6 +28,7 @@ function makeEl(id, doc, docListeners) {
   const el = {
     id,
     textContent: '',
+    style: { setProperty(k, v) { this[k] = v; } },
     children: [],
     classList: { _s: new Set(), add(c) { this._s.add(c); }, remove(c) { this._s.delete(c); }, contains(c) { return this._s.has(c); } },
     parentNode: null,
@@ -143,4 +144,47 @@ test('initHome does nothing and does not throw when expected elements are missin
     initHome(doc, Joy);
     doc.els['sj-surprise'].fire('click');
   });
+});
+
+// --- floating hearts and confetti (live in an optional #sj-fx container over the photo) ---
+const FX = ALL.concat(['sj-fx']);
+const kinds = (el, cls) => el.children.filter((c) => c.classList.contains(cls));
+
+test('each tap floats one heart up from the button, and it removes itself when it finishes', () => {
+  const doc = makeDoc(FX);
+  initHome(doc, Joy);
+  doc.els['sj-heart'].fire('click');
+  const floats = kinds(doc.els['sj-fx'], 'float');
+  assert.equal(floats.length, 1);
+  floats[0].fire('animationend');
+  assert.equal(kinds(doc.els['sj-fx'], 'float').length, 0);
+});
+
+test('rapid taps never leave more than twelve floating hearts', () => {
+  const doc = makeDoc(FX);
+  initHome(doc, Joy);
+  for (let i = 0; i < 9; i++) doc.els['sj-heart'].fire('click');
+  assert.ok(kinds(doc.els['sj-fx'], 'float').length <= 12);
+});
+
+test('confetti bursts only on every tenth tap', () => {
+  const doc = makeDoc(FX);
+  initHome(doc, Joy);
+  for (let i = 0; i < 9; i++) doc.els['sj-heart'].fire('click');
+  assert.equal(kinds(doc.els['sj-fx'], 'bit').length, 0, 'none before the tenth tap');
+  doc.els['sj-heart'].fire('click');
+  assert.ok(kinds(doc.els['sj-fx'], 'bit').length >= 10, 'burst on the tenth tap');
+});
+
+test('with reduced motion there are no floating hearts or confetti', () => {
+  const doc = makeDoc(FX, { reduceMotion: true });
+  initHome(doc, Joy);
+  for (let i = 0; i < 10; i++) doc.els['sj-heart'].fire('click');
+  assert.equal(doc.els['sj-fx'].children.length, 0);
+});
+
+test('taps work when the page has no #sj-fx container', () => {
+  const doc = makeDoc(ALL);
+  initHome(doc, Joy);
+  assert.doesNotThrow(() => doc.els['sj-heart'].fire('click'));
 });

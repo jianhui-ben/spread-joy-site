@@ -113,6 +113,7 @@ HOME_HERO = f"""<section class="hero">
   <p class="sub reveal d1">Spread joy.</p>
   <div class="hero-card" id="heroCard">
     <img src="assets/img/socks-circle.jpg" alt="A circle of volunteers holding up socks they collected">
+    <div id="sj-fx" class="fx" aria-hidden="true"></div>
     <div class="tap">
       <div class="tap-stage-mini">
         <div id="sj-rings" class="rings" aria-hidden="true"></div>
