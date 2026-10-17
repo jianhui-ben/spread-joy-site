@@ -337,6 +337,15 @@ class HomePageFolderTests(unittest.TestCase):
         self.assertRegex(index, r'class="btn btn-dark"[^>]*>Give &#9829;</a>')
         self.assertIn("#header .header-menu-cta a", css)
 
+    def test_page_script_block_runs_the_site_script_from_a_code_block_once(self):
+        text = self.read("7-page-script-block.html")
+        self.assertIn("PASTE 7", text.split("-->")[0])
+        self.assertEqual(text.count("<script>"), 1)
+        self.assertNotIn("<script async", text)
+        self.assertIn("window.__sjHome", text)  # guard against running twice if Squarespace re-draws the block
+        for needle in ["PART 1", "PART 2", "PART 3", "PART 4", "initStory", "initGive", "createShuffler"]:
+            self.assertIn(needle, text)
+
     def test_footer_has_every_script_part(self):
         js = self.read("2-footer-injection.html")
         # one inline script, plus at most one external script and only from Givebutter's widget host

@@ -754,6 +754,22 @@ def build_home_page():
               + "</script>\n")
     (HOME_DIR / "2-footer-injection.html").write_text(footer)
 
+    # Same script as paste 2, for a Code Block on the home page. Use it when the site's Footer injection
+    # belongs to someone else. The guard stops it from running twice if Squarespace re-draws the block.
+    page_script = ("<!--\n"
+                   "  PASTE 7:        Page script (alternative to paste 2)\n"
+                   "  WHAT IT IS:     The same script as paste 2 (counter, ideas, I did it, scroll story, cards, floating Give pill).\n"
+                   "  WHERE TO PASTE: A Code Block (mode HTML) in the last section of the Home page, under block 5.\n"
+                   "                  Use this INSTEAD of paste 2 when the Footer injection is not yours to edit.\n"
+                   "  GENERATED:      by build.py from assets/*.js. Do not hand-edit.\n"
+                   "-->\n<script>\nif (!window.__sjHome) { window.__sjHome = true;\n"
+                   + "/* ===== PART 1: logic (assets/joy.js) ===== */\n" + parts[0] + "\n"
+                   + "/* ===== PART 2: taps on heart and Surprise me (assets/home.js) ===== */\n" + parts[1] + "\n"
+                   + "/* ===== PART 3: scroll story, cards, header (assets/scroll-story.js) ===== */\n" + parts[2] + "\n"
+                   + "/* ===== PART 4: floating Give pill (assets/give-pill.js) ===== */\n" + parts[3]
+                   + "\n}\n</script>\n")
+    (HOME_DIR / "7-page-script-block.html").write_text(page_script)
+
     blocks = [
         (3, "3-hero-block.html", "Hero: headline and growing photo with the heart",
          "Giant headline, the photo that grows as you scroll, and the tap-the-heart pill on top of it.",
