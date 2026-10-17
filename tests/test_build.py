@@ -149,6 +149,7 @@ class HomeTests(unittest.TestCase):
         self.assertNotIn("Interactive preview", src)
         self.assertNotIn("Preview only", src)
         self.assertNotIn("A shared hope", src)
+        self.assertNotIn("preview", src.lower().replace("preview-", ""))
         self.assertNotIn("Local preview only", src)
         self.assertNotIn("sample:", src)
         # starter hopes live in one editable list, each with a text and a name (name may stay empty)
