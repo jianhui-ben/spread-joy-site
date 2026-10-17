@@ -42,7 +42,8 @@
       heart.style.setProperty('--x', Math.round((Math.random() - 0.5) * 120) + 'px');
       heart.addEventListener('animationend', function () { heart.remove(); });
       fx.appendChild(heart);
-      var floats = fx.children.filter(function (c) { return c.classList.contains('float'); });
+      // children is a live HTMLCollection in browsers (no filter/shift), so copy it into an array first
+      var floats = Array.prototype.filter.call(fx.children, function (c) { return c.classList.contains('float'); });
       while (floats.length > MAX_FLOATS) fx.removeChild(floats.shift());
 
       if (taps % CONFETTI_EVERY === 0) {

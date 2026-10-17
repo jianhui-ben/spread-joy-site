@@ -148,6 +148,17 @@ test('initHome does nothing and does not throw when expected elements are missin
 
 // --- floating hearts and confetti (live in an optional #sj-fx container over the photo) ---
 const FX = ALL.concat(['sj-fx']);
+
+// A browser's element.children is an HTMLCollection: indexable and iterable, but with no .filter/.map/.shift
+function asHtmlCollection(el) {
+  let list = [];
+  Object.defineProperty(el, 'children', {
+    get() { const c = list.slice(); c.filter = undefined; c.map = undefined; c.forEach = undefined; return c; },
+    set(v) { list = v; },
+  });
+  el.children = [];
+}
+
 const kinds = (el, cls) => el.children.filter((c) => c.classList.contains(cls));
 
 test('each tap floats one heart up from the button, and it removes itself when it finishes', () => {
@@ -187,4 +198,15 @@ test('taps work when the page has no #sj-fx container', () => {
   const doc = makeDoc(ALL);
   initHome(doc, Joy);
   assert.doesNotThrow(() => doc.els['sj-heart'].fire('click'));
+});
+
+test('works when children is a browser HTMLCollection (no array methods): hearts, confetti and rings all still appear', () => {
+  const doc = makeDoc(FX);
+  asHtmlCollection(doc.els['sj-fx']);
+  asHtmlCollection(doc.els['sj-rings']);
+  initHome(doc, Joy);
+  for (let i = 0; i < 10; i++) assert.doesNotThrow(() => doc.els['sj-heart'].fire('click'));
+  const all = Array.prototype.slice.call(doc.els['sj-fx'].children);
+  assert.ok(all.some((c) => c.classList.contains('bit')), 'confetti on the tenth tap');
+  assert.ok(Array.prototype.slice.call(doc.els['sj-rings'].children).length >= 1, 'ring still added');
 });
