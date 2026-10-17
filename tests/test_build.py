@@ -92,7 +92,7 @@ class HomeTests(unittest.TestCase):
 
     def test_give_pill_is_on_every_page_and_in_the_squarespace_paste(self):
         build_index()
-        for name in ("index", "mission", "contact", "get-involved"):
+        for name in ("index", "mission", "contact"):
             html = (ROOT / f"{name}.html").read_text()
             self.assertIn("assets/give-pill.js", html)
             self.assertIn("assets/give-pill.css", html)
@@ -422,7 +422,7 @@ class SiteLinkTests(unittest.TestCase):
         cls.pages = {p.name: p.read_text() for p in ROOT.glob("*.html")}
 
     def test_every_internal_page_link_resolves_and_nothing_is_a_dead_hash(self):
-        self.assertIn("get-involved.html", self.pages)
+        self.assertNotIn("get-involved.html", self.pages)
         for name, html in self.pages.items():
             self.assertNotIn('href="#"', html, name)
             self.assertNotIn("hello@example.com", html, name)
@@ -442,4 +442,4 @@ class SiteLinkTests(unittest.TestCase):
         self.assertNotIn("DEC", self.pages["events.html"])
         self.assertIn("Every family deserves support, connection, and joy.", self.pages["help.html"])
         self.assertIn("givebutter.com/SpreadJoyCollective", self.pages["index.html"])
-        self.assertIn("Get Involved", self.pages["index.html"])
+        self.assertNotIn("Get Involved", self.pages["index.html"])

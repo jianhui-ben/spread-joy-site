@@ -14,4 +14,4 @@ A note from Marisa, the sock photo, and three links: email (`marisa@spreadjoycol
 2. Add one Code Block, set its mode to HTML, and paste `1-contact-block.html`.
 3. Save. The block carries its own photo, so nothing else needs uploading.
 
-Get Involved still links to `contact.html#time`, `#share`, and `#idea`. Those anchors are not on this page. X is still `[TBD]` in the footer.
+X is still `[TBD]` in the footer.

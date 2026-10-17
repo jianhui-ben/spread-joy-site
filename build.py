@@ -21,7 +21,7 @@ START_COUNT = start_count()
 
 # Live Squarespace slugs, checked in the editor on 2026-10-17.
 # Our Mission and Our Story are not pages yet: the nav items jump to /home#ourmission and /home#ourstory.
-# Get Involved is in SPEC.md and the brainstorm doc, and is not on Squarespace yet.
+# There is no Get Involved page (dropped by the owner 2026-10-17), though SPEC.md still lists it in the nav.
 GIVE_URL = "https://givebutter.com/SpreadJoyCollective"
 SOCKS_URL = "https://givebutter.com/socks-that-spread-joy"
 
@@ -47,7 +47,6 @@ NAV = [
     ("mission.html", "Our Mission"),
     ("story.html", "Our Story"),
     ("events.html", "Events"),
-    ("get-involved.html", "Get Involved"),
     ("help.html", "How Can We Help"),
     ("contact.html", "Contact"),
 ]
@@ -129,7 +128,6 @@ CTA = f"""
     <p class="section-lead">Every gift, hour and share helps.</p>
     <div class="cta-row">
       <a class="btn btn-yellow" href="{GIVE_URL}" target="_blank" rel="noopener">Give</a>
-      <a class="btn btn-outline" href="get-involved.html">Get involved</a>
     </div>
   </div>
 </section>
@@ -284,26 +282,6 @@ PAGES["events.html"] = dict(
   </div>
 </section>
 """ + CTA,
-)
-
-PAGES["get-involved.html"] = dict(
-    title="Get Involved",
-    description="Find your way to spread joy: time, a gift, something to share, an idea, or support for your family.",
-    body=f"""
-<div class="wrap page-title"><h1>Find your way</h1></div>
-<section class="block">
-  <div class="wrap">
-    <p class="section-lead">Everyone matters, and there are many ways to be part of this community.</p>
-    <div class="cards">
-      <div class="card path" id="time"><h3>I have time</h3><p>Volunteer at an event or a sock drive.</p><a class="btn btn-outline" href="contact.html#time">Tell us you have time</a><p class="note"><span class="tbd">[TBD: volunteer signup]</span></p></div>
-      <div class="card path" id="share"><h3>I have something to share</h3><p>An item, a service, or an experience.</p><a class="btn btn-outline" href="contact.html#share">Share it with us</a></div>
-      <div class="card path" id="give"><h3>I want to give</h3><p>A gift through Givebutter supports local families.</p><a class="btn btn-yellow" href="{GIVE_URL}" target="_blank" rel="noopener">Give</a></div>
-      <div class="card path" id="idea"><h3>I have an idea</h3><p>A collaboration, a connection, or a skill.</p><a class="btn btn-outline" href="contact.html#idea">Send the idea</a></div>
-      <div class="card path" id="support"><h3>I need support</h3><p>Tell us what would make a difference.</p><a class="btn btn-yellow" href="help.html">How can we help</a></div>
-    </div>
-  </div>
-</section>
-""",
 )
 
 PAGES["help.html"] = dict(
@@ -521,7 +499,6 @@ HOME_FOOTER_HTML = """<footer class="sj-footer">
           <li><a href="mission.html">Our Mission</a></li>
           <li><a href="story.html">Our Story</a></li>
           <li><a href="events.html">Events</a></li>
-          <li><a href="get-involved.html">Get Involved</a></li>
           <li><a href="help.html">How Can We Help</a></li>
           <li><a href="contact.html">Contact</a></li>
         </ul>
@@ -701,9 +678,6 @@ __HTML__
 
 
 LINK_TOKENS = [
-    ("get-involved.html#time", "{{LINK_TIME}}"),
-    ("get-involved.html#share", "{{LINK_SHARE}}"),
-    ("get-involved.html", "{{LINK_INVOLVED}}"),
     ("help.html", "{{LINK_HELP}}"),
     ("contact.html", "{{LINK_CONTACT}}"),
     ("mission.html", "{{LINK_MISSION}}"),
@@ -788,7 +762,7 @@ def build_home_page():
         (6, "6-footer-block.html", "Dark footer with links and sign-up",
          "The charcoal footer: logo, tagline, links, follow and the email sign-up box.",
          "Do not paste this block. Paste 2 already includes this footer on every page. Pasting it here as well shows two.",
-         "{{IMG_HEART}}, {{LINK_MISSION}}, {{LINK_STORY}}, {{LINK_EVENTS}}, {{LINK_INVOLVED}}, {{LINK_HELP}}, {{LINK_CONTACT}}", HOME_FOOTER_HTML),
+         "{{IMG_HEART}}, {{LINK_MISSION}}, {{LINK_STORY}}, {{LINK_EVENTS}}, {{LINK_HELP}}, {{LINK_CONTACT}}", HOME_FOOTER_HTML),
     ]
     urls_file = HOME_DIR / "image-urls.json"
     known = json.loads(urls_file.read_text()) if urls_file.exists() else {}

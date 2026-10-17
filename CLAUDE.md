@@ -44,11 +44,10 @@ Local preview is the full nav from SPEC.md §3. Each page folder has the Squares
 | `mission.html` | `mission-page/` | Not a page. Nav link goes to `/home#ourmission`. |
 | `story.html` | `story-page/` | Not a page. Nav link goes to `/home#ourstory`. |
 | `events.html` | `events-page/` | `/events` exists and is empty. |
-| `get-involved.html` | `get-involved-page/` | Not created yet. Spec and the brainstorm doc ask for it. |
 | `help.html` | `help-page/` | Published at `/volunteer`. |
 | `contact.html` | `contact-page/` | `/contact` is the note from Marisa (email, Instagram, Facebook). Saved on the master 2026-10-17. |
 
-Give, everywhere, is `https://givebutter.com/SpreadJoyCollective`. Home cards: time and share → Get Involved, give → Givebutter, family support → How Can We Help. "Surprise me" uses the brainstorm kindness list; "I did it!" only confirms the tap.
+Give, everywhere, is `https://givebutter.com/SpreadJoyCollective`. There is no Get Involved page (owner dropped it; SPEC.md §3 still lists it, flagged to the owner). Home cards: time → Events, "Socks that spread joy" → its Givebutter page, share → hope jar, support → How Can We Help. "Surprise me" uses the brainstorm kindness list; "I did it!" only confirms the tap.
 
 ## Home page (current)
 
