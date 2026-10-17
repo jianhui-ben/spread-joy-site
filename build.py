@@ -3,6 +3,7 @@
 Edit page content below, rebuild, and open index.html in a browser.
 Links marked href="#" are placeholders: see README.md for the list to fill in.
 """
+import base64
 import json
 import re
 from pathlib import Path
@@ -70,7 +71,7 @@ SHELL = """<!doctype html>
     <nav aria-label="Main">
 {nav}
     </nav>
-    <a class="btn btn-dark" href="{give}" target="_blank" rel="noopener">Give</a>
+    <a class="btn btn-dark" href="{give}" target="_blank" rel="noopener">Give &#9829;</a>
   </div>
 </header>
 <main>
@@ -185,7 +186,7 @@ HOME_TURN = f"""<section class="turn">
     <a class="card" href="events.html"><img src="assets/img/family.jpg" alt="A family in Peace, Love and Inclusion shirts"><span class="go" aria-hidden="true">&rarr;</span><h3>I have time</h3></a>
     <a class="card" href="{GIVE_URL}" target="_blank" rel="noopener"><img src="assets/img/sock-pile.jpg" alt="A pile of donated socks"><span class="go" aria-hidden="true">&rarr;</span><h3>I want to give</h3></a>
     <a class="card" href="#share-a-hope"><img src="assets/img/socks-circle-2.jpg" alt="People sitting in a circle holding socks"><span class="go" aria-hidden="true">&rarr;</span><h3>I have something to share</h3></a>
-    <a class="card" href="help.html"><img src="assets/img/xavier-portrait.jpg" alt="Xavier smiling with arms wide"><span class="go" aria-hidden="true">&rarr;</span><h3>My family could use support</h3></a>
+    <a class="card" href="help.html"><img src="assets/img/xavier-portrait.jpg" alt="Xavier smiling with arms wide"><span class="go" aria-hidden="true">&rarr;</span><h3>I need support</h3></a>
     <div class="card surprise">
       <img class="beat" src="assets/img/heart.png" alt="">
       <p id="sj-idea" class="idea sj-needs-js" aria-live="polite"></p>
@@ -297,7 +298,7 @@ PAGES["get-involved.html"] = dict(
       <div class="card path" id="share"><h3>I have something to share</h3><p>An item, a service, or an experience.</p><a class="btn btn-outline" href="contact.html#share">Share it with us</a></div>
       <div class="card path" id="give"><h3>I want to give</h3><p>A gift through Givebutter supports local families.</p><a class="btn btn-yellow" href="{GIVE_URL}" target="_blank" rel="noopener">Give</a></div>
       <div class="card path" id="idea"><h3>I have an idea</h3><p>A collaboration, a connection, or a skill.</p><a class="btn btn-outline" href="contact.html#idea">Send the idea</a></div>
-      <div class="card path" id="support"><h3>My family could use support</h3><p>Tell us what would make a difference.</p><a class="btn btn-yellow" href="help.html">How can we help</a></div>
+      <div class="card path" id="support"><h3>I need support</h3><p>Tell us what would make a difference.</p><a class="btn btn-yellow" href="help.html">How can we help</a></div>
     </div>
   </div>
 </section>
@@ -331,31 +332,61 @@ PAGES["help.html"] = dict(
 """,
 )
 
+# Words and links for the contact page. The photo is assets/img/contact-socks.jpg.
+CONTACT_EMAIL = "marisa@spreadjoycollective.org"
+CONTACT_INSTAGRAM = "https://www.instagram.com/spreadjoycollective/"
+CONTACT_FACEBOOK = "https://www.facebook.com/share/1FK6ceyMsn/?mibextid=wwXIfr"
+
+CONTACT_SECTION = """<section id="sjc-contact" aria-label="Contact Spread Joy Collective">
+  <section class="personal" aria-label="A note from Marisa">
+    <div class="intro">
+      <div class="tinyheart" aria-hidden="true">♥</div>
+      <h1>Good things start <br>with a hello.</h1>
+      <p>Have a question, an idea, or a little joy to share? I’d love to hear from you.</p>
+      <p>Reach out by email, or find Spread Joy Collective on Instagram and Facebook.</p>
+      <div class="signature">Marisa</div>
+      <div class="role">Organizer, Spread Joy Collective</div>
+    </div>
+    <div class="photo-composition">
+      <figure class="sock-photo">
+        <img src="{img}" alt="A circle of people wearing colorful, mismatched socks">
+        <figcaption>A little different. Better together.</figcaption>
+      </figure>
+      <div class="contact-note">
+        <h2>Let’s connect.</h2>
+        <div id="contact-list">
+          <a class="channel" href="mailto:{email}">
+            <span class="icon" aria-hidden="true"><svg viewBox="0 0 28 28"><rect x="3" y="5" width="22" height="17" rx="3"/><path d="m4 7 10 8 10-8"/></svg></span>
+            <span><strong>Email us</strong><small>{email}</small></span>
+            <span class="arrow" aria-hidden="true">↗</span>
+          </a>
+          <a class="channel" href="{instagram}" target="_blank" rel="noopener noreferrer">
+            <span class="icon" aria-hidden="true"><svg viewBox="0 0 28 28"><rect x="4" y="4" width="20" height="20" rx="6"/><circle cx="14" cy="14" r="5"/><circle cx="20" cy="8" r="1"/></svg></span>
+            <span><strong>Instagram</strong><small>@spreadjoycollective</small></span>
+            <span class="arrow" aria-hidden="true">↗</span>
+          </a>
+          <a class="channel" href="{facebook}" target="_blank" rel="noopener noreferrer">
+            <span class="icon" aria-hidden="true"><svg viewBox="0 0 28 28"><path d="M17 25V15h4l1-5h-5V8q0-3 4-3h1V1h-4q-6 0-6 7v2H8v5h4v10"/></svg></span>
+            <span><strong>Facebook</strong><small>Spread Joy Collective</small></span>
+            <span class="arrow" aria-hidden="true">↗</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</section>
+"""
+
 PAGES["contact.html"] = dict(
     title="Contact",
-    description="Reach Spread Joy Collective.",
-    body=f"""
-<div class="wrap page-title"><h1>Contact</h1></div>
-<section class="block">
-  <div class="wrap" style="display:grid;gap:40px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));align-items:start">
-    <form class="stack" data-preview-form>
-      <div><label for="cname">Name</label><input id="cname" name="name" type="text" required autocomplete="name"></div>
-      <div><label for="cemail">Email</label><input id="cemail" name="email" type="email" required autocomplete="email"></div>
-      <div><label for="cmsg">Message</label><textarea id="cmsg" name="message" rows="5" required></textarea></div>
-      <button class="btn btn-yellow" type="submit">Send message</button>
-      <p class="form-note" hidden data-preview-note="{PREVIEW_NOTE}"></p>
-    </form>
-    <div class="prose">
-      <p id="time"><strong>I have time.</strong> Say how you’d like to help and when you’re free.</p>
-      <p id="share"><strong>I have something to share.</strong> Tell us about the item, service, or experience.</p>
-      <p id="idea"><strong>I have an idea.</strong> A collaboration, a connection, or a skill — we want to hear it.</p>
-      <p><strong>Email</strong><br><span class="tbd">[TBD: public contact email]</span></p>
-      <p><strong>Give</strong><br><a href="{GIVE_URL}" target="_blank" rel="noopener">Give through Givebutter</a></p>
-      <p class="note">The live Contact page on Squarespace is still empty. This form is the local version of what to put there. It does not send mail.</p>
-    </div>
-  </div>
-</section>
-""",
+    description="Reach Spread Joy Collective. A note from Marisa, with email, Instagram, and Facebook.",
+    head_extra='<link rel="stylesheet" href="assets/contact.css">',
+    body=CONTACT_SECTION.format(
+        img="assets/img/contact-socks.jpg",
+        email=CONTACT_EMAIL,
+        instagram=CONTACT_INSTAGRAM,
+        facebook=CONTACT_FACEBOOK,
+    ),
 )
 
 
@@ -501,36 +532,43 @@ HOME_FOOTER_HTML = """<footer class="sj-footer">
         </ul>
         <h4>Follow</h4>
         <ul>
-          <li>[TBD: Instagram]</li>
-          <li>[TBD: Facebook]</li>
-          <li>[TBD: X]</li>
+          <li><span class="sj-tbd">[TBD: Instagram]</span></li>
+          <li><span class="sj-tbd">[TBD: Facebook]</span></li>
+          <li><span class="sj-tbd">[TBD: X]</span></li>
         </ul>
       </div>
       <div>
         <h4>Stay in the loop</h4>
-        <p>Use Squarespace's newsletter block here. This preview does not collect email.</p>
+        <form class="sj-signup" onsubmit="event.preventDefault();var n=this.querySelector('.sj-form-note');if(n)n.hidden=false;return false;">
+          <input type="email" placeholder="Your email" aria-label="Email address" required>
+          <button type="submit">Join</button>
+          <p class="sj-form-note" hidden>Nothing you type here is sent or stored.</p>
+        </form>
       </div>
     </div>
-    <p class="sj-legal">&copy; Spread Joy Collective &middot; [TBD: contact email]</p>
+    <p class="sj-legal">&copy; Spread Joy Collective &middot; <span class="sj-tbd">[TBD: contact email]</span></p>
   </div>
 </footer>
 """
 
-HOME_FOOTER_CSS = """.sj-footer { background: var(--ink); color: #fff; padding: 56px 0 32px; }
+HOME_FOOTER_CSS = """.sj-footer { background: var(--ink); color: #fff; padding: 56px 0 32px; font-family: "League Spartan", system-ui, sans-serif; line-height: 1.6; }
 .sj-footer-wrap { width: min(1180px, 92vw); margin: 0 auto; }
 .sj-footer-cols { display: grid; gap: 36px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
-.sj-footer h4 { margin: 0 0 12px; color: var(--yellow) !important; font-size: 0.85rem; letter-spacing: 0.15em; text-transform: uppercase !important; }
+.sj-footer h4 { margin: 0 0 12px; color: var(--yellow) !important; font-family: inherit !important; font-weight: 600; font-size: 0.85rem; letter-spacing: 0.15em; text-transform: uppercase !important; }
 .sj-footer ul { list-style: none; margin: 0; padding: 0; }
 .sj-footer li { margin: 8px 0; }
 .sj-footer a { color: #fff !important; text-decoration: none; }
 .sj-footer a:hover { color: var(--yellow) !important; }
-.sj-footer .sj-brand { display: inline-flex; align-items: center; gap: 10px; text-transform: uppercase; letter-spacing: 0.22em; font-weight: 500; font-size: 0.95rem; }
+.sj-footer .sj-brand { display: inline-flex; align-items: center; gap: 10px; text-transform: uppercase; letter-spacing: 0.22em; font-weight: 500; font-size: 0.95rem; color: #fff !important; }
 .sj-footer .sj-brand img { height: 40px; width: auto; }
-.sj-footer .sj-accent { margin: 14px 0 0; color: var(--yellow) !important; font-family: "Oooh Baby", cursive; font-size: 1.5rem; }
+.sj-footer .sj-accent { margin: 14px 0 0; color: var(--yellow) !important; font-family: "Oooh Baby", cursive; font-size: 1.5rem; line-height: 1.2; }
 .sj-footer .sj-legal { margin: 36px 0 0; color: #b8b2ad !important; font-size: 0.8rem; }
-.sj-signup { display: flex; gap: 8px; }
-.sj-signup input { flex: 1; min-width: 0; padding: 12px 16px; border: 0; border-radius: 12px; font: inherit; }
-.sj-signup button { padding: 12px 24px; border: 0; border-radius: 999px; background: var(--yellow); color: var(--ink); font: inherit; font-weight: 600; cursor: pointer; }"""
+.sj-footer .sj-tbd { background: var(--yellow); color: var(--ink) !important; padding: 0 0.25em; }
+.sj-signup { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.sj-signup input { flex: 1; min-width: 140px; width: auto !important; padding: 12px 16px; border: 0; border-radius: 12px; font: inherit; color: var(--ink); background: #fff; }
+.sj-signup button { padding: 12px 24px; min-height: 44px; border: 0; border-radius: 999px; background: var(--yellow); color: var(--ink); font: inherit; font-weight: 600; cursor: pointer; }
+.sj-form-note { flex-basis: 100%; margin: 4px 0 0; color: #fff !important; font-weight: 500; }
+#footer-sections, .sjc-footer { display: none !important; }"""
 
 # Squarespace header restyled to match the localhost header. Applies to EVERY page (one header for the site).
 SITE_HEADER_CSS = """#header .header-background { background: rgba(255, 255, 255, 0.86) !important; -webkit-backdrop-filter: saturate(180%) blur(14px); backdrop-filter: saturate(180%) blur(14px); }
@@ -548,7 +586,7 @@ SITE_HEADER_CSS = """#header .header-background { background: rgba(255, 255, 255
 
 HOME_HEADER = """<!--
   PASTE 1 OF 6:   Home page styles
-  WHAT IT DOES:   The site header look (white, yellow line, uppercase menu, yellow Donate pill; this changes the
+  WHAT IT DOES:   The site header look (white, yellow line, uppercase menu, yellow Give heart pill; this changes the
                   header on every page) and all the look of the home page: fonts, colours, the big headline, the growing photo,
                   the pinned photo story, the yellow "Your turn" band and cards, and the header that
                   tucks away when you scroll down.
@@ -573,7 +611,7 @@ HOME_HEADER = """<!--
 /* --- Squarespace: let our sections run edge to edge, with no padding or gaps around them --- */
 __SQS__
 
-/* --- Site header: white, yellow line, uppercase menu, Donate pill (all pages) --- */
+/* --- Site header: white, yellow line, uppercase menu, Give heart pill (all pages) --- */
 __HEADERCSS__
 
 /* --- Header that tucks away on scroll down (home page only) --- */
@@ -594,6 +632,22 @@ __HOMECSS__
 
 __GIVEPILLCSS__
 </style>
+<script>
+/* The header button is Squarespace's own. Relabel Donate or a plain Give so it matches the local header. */
+(function () {
+  var LABEL = 'Give \\u2665';
+  function labelHeader() {
+    var nodes = document.querySelectorAll('#header .header-actions a, #header .header-menu-cta a');
+    for (var i = 0; i < nodes.length; i++) {
+      var text = (nodes[i].textContent || '').replace(/\\s+/g, ' ').trim();
+      if (text === 'Donate' || text === 'Give') nodes[i].textContent = LABEL;
+    }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', labelHeader);
+  labelHeader();
+  [300, 1200].forEach(function (ms) { setTimeout(labelHeader, ms); });
+})();
+</script>
 """
 
 SQS_OVERRIDES = """.page-section:has(.sj-home) { padding: 0 !important; min-height: 0 !important; }
@@ -609,18 +663,26 @@ SQS_OVERRIDES = """.page-section:has(.sj-home) { padding: 0 !important; min-heig
 .sj-home h1, .sj-home h2, .sj-home h3, .sj-home p, .sj-home b, .sj-home button, .sj-home a { font-family: inherit; text-transform: none; font-style: normal; }"""
 
 HOME_FOOTER = """<!--
-  PASTE 2 OF 6:   Home page script
-  WHAT IT DOES:   Makes the home page move. Part 1: heart counter, kindness ideas. Part 2: taps on the
-                  heart and "Surprise me" (listens on the whole page, so it survives Squarespace
-                  re-drawing a block). Part 3: the growing hero photo, the pinned photo story, fade-ins,
-                  dragging the cards, and the header tucking away.
-  WHERE TO PASTE: Pages > Custom Code > Code Injection > FOOTER, then Save. Once for the whole site.
-                  It does nothing on pages that have none of our blocks.
-  NEEDS:          A Core, Plus or Advanced plan.
-  PLACEHOLDERS:   none. Starting number: PLACEHOLDER_START_COUNT in Part 1. Kindness ideas: IDEAS in Part 1.
-  GENERATED:      by build.py from assets/joy.js, assets/home.js and assets/scroll-story.js.
+  PASTE 2 OF 6:   Footer and home page script
+  WHAT IT DOES:   Replaces the site footer with the same charcoal footer as the local preview (logo,
+                  Explore, Give, Follow, Stay in the loop), and hides Squarespace's own footer so the
+                  white logo row does not sit above it. Then the home page script. Part 1: heart counter,
+                  kindness ideas. Part 2: taps on the heart and "Surprise me". Part 3: the growing hero
+                  photo, the pinned photo story, fade-ins, dragging the cards, and the header tucking away.
+  WHERE TO PASTE: Pages > Custom Code > Code Injection > FOOTER, then Save. Replace the whole field.
+                  Once for the whole site. Do not leave an older footer above this paste.
+  NEEDS:          A Core, Plus or Advanced plan. Paste 1 (header) for the brand colours and fonts.
+  PLACEHOLDERS:   Follow links and the contact email are [TBD]. Starting number: PLACEHOLDER_START_COUNT in Part 1.
+  GENERATED:      by build.py from assets/joy.js, assets/home.js, assets/scroll-story.js and assets/give-pill.js.
                   Change the sources and run `python3 build.py`; edits made here are overwritten.
 -->
+<style>
+:root { --yellow: #fdcd17; --ink: #231f20; }
+__FOOTERCSS__
+</style>
+<div class="sj-home">
+__FOOTERHTML__
+</div>
 """
 
 HOME_BLOCK = """<!--
@@ -682,7 +744,9 @@ def build_home_page():
     (HOME_DIR / "1-header-injection.html").write_text(header)
 
     parts = [(OUT / "assets" / n).read_text() for n in ("joy.js", "home.js", "scroll-story.js", "give-pill.js")]
-    footer = (HOME_FOOTER + (GB_LIBRARY + "\n" if GB_LIBRARY else "") + "<script>\n"
+    footer_html = to_placeholders(HOME_FOOTER_HTML.strip("\n"))
+    footer = (HOME_FOOTER.replace("__FOOTERCSS__", HOME_FOOTER_CSS).replace("__FOOTERHTML__", footer_html)
+              + (GB_LIBRARY + "\n" if GB_LIBRARY else "") + "<script>\n"
               + "/* ===== PART 1: logic (assets/joy.js) ===== */\n" + parts[0] + "\n"
               + "/* ===== PART 2: taps on heart and Surprise me (assets/home.js) ===== */\n" + parts[1] + "\n"
               + "/* ===== PART 3: scroll story, cards, header (assets/scroll-story.js) ===== */\n" + parts[2] + "\n"
@@ -706,7 +770,7 @@ def build_home_page():
          WAVE_UP + "\n" + HOME_TURN),
         (6, "6-footer-block.html", "Dark footer with links and sign-up",
          "The charcoal footer: logo, tagline, links, follow and the email sign-up box.",
-         "A Code Block (mode HTML) in the LAST section, under block 5. Squarespace also has its own footer (Edit Site Footer): remove its content so the page does not show two.",
+         "Do not paste this block. Paste 2 already includes this footer on every page. Pasting it here as well shows two.",
          "{{IMG_HEART}}, {{LINK_MISSION}}, {{LINK_STORY}}, {{LINK_EVENTS}}, {{LINK_INVOLVED}}, {{LINK_HELP}}, {{LINK_CONTACT}}", HOME_FOOTER_HTML),
     ]
     urls_file = HOME_DIR / "image-urls.json"
@@ -747,5 +811,33 @@ for filename, page in PAGES.items():
     (OUT / filename).write_text(html)
     print("wrote", filename)
 
+def build_contact_block():
+    """Paste-ready Code Block. The photo is inlined so the block does not depend on a repo path."""
+    photo = base64.b64encode((OUT / "assets" / "img" / "contact-socks.jpg").read_bytes()).decode()
+    css = (OUT / "assets" / "contact.css").read_text().strip()
+    html = CONTACT_SECTION.format(
+        img="data:image/jpeg;base64," + photo,
+        email=CONTACT_EMAIL,
+        instagram=CONTACT_INSTAGRAM,
+        facebook=CONTACT_FACEBOOK,
+    ).strip()
+    block = f"""<!--
+  PASTE 1 of 1:  Contact page
+  WHAT IT DOES:  A note from Marisa, the sock photo, and links for email, Instagram, and Facebook.
+  WHERE TO PASTE: The only Code Block (mode HTML) on the Contact page (/contact).
+  EDIT:          The words and links live in build.py (CONTACT_EMAIL and the section). Rebuild, then paste this file again.
+-->
+<style>
+{css}
+</style>
+{html}
+"""
+    folder = OUT / "contact-page"
+    folder.mkdir(exist_ok=True)
+    (folder / "1-contact-block.html").write_text(block)
+    print("wrote contact-page/1-contact-block.html")
+
+
 build_snippets()
 build_home_page()
+build_contact_block()

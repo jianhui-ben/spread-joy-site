@@ -124,7 +124,7 @@ class HomeTests(unittest.TestCase):
             "I have time": "events.html",
             "I want to give": "https://givebutter.com/SpreadJoyCollective",
             "I have something to share": "#share-a-hope",
-            "My family could use support": "help.html",
+            "I need support": "help.html",
         })
 
     def test_share_card_opens_the_hope_jar_overlay_without_a_second_button(self):
@@ -331,8 +331,11 @@ class HomePageFolderTests(unittest.TestCase):
 
     def test_header_has_all_the_css_and_the_squarespace_fixes(self):
         css = self.read("1-header-injection.html")
-        for needle in [".hero-card", ".stage-pin", ".card", ".page-section:has(.sj-home)", "#header.tucked", "font-family: inherit", "League+Spartan", "color-scheme: only light", ".hero { padding-top", "#header .header-title-logo a::after", "#header .header-actions .btn"]:
+        for needle in [".hero-card", ".stage-pin", ".card", ".page-section:has(.sj-home)", "#header.tucked", "font-family: inherit", "League+Spartan", "color-scheme: only light", ".hero { padding-top", "#header .header-title-logo a::after", "#header .header-actions .btn", "Give \\u2665"]:
             self.assertIn(needle, css)
+        index = (ROOT / "index.html").read_text()
+        self.assertRegex(index, r'class="btn btn-dark"[^>]*>Give &#9829;</a>')
+        self.assertIn("#header .header-menu-cta a", css)
 
     def test_footer_has_every_script_part(self):
         js = self.read("2-footer-injection.html")
@@ -345,9 +348,46 @@ class HomePageFolderTests(unittest.TestCase):
             self.assertTrue(src.startswith("https://widgets.givebutter.com/"), src)
         for needle in ["PART 1", "PART 2", "PART 3", "initStory", "initCards", "initHeader", "createShuffler"]:
             self.assertIn(needle, js)
+        self.assertIn('class="sj-footer"', js)
+        self.assertIn("#footer-sections, .sjc-footer { display: none", js)
+        self.assertIn('href="/volunteer"', js)
+        self.assertIn("Stay in the loop", js)
+        self.assertNotIn("hello@yourdomain.org", js)
+        self.assertNotIn(">Donate<", js)
 
     def test_story_position_does_not_use_offsettop(self):
         self.assertNotRegex((ROOT / "assets" / "scroll-story.js").read_text(), r"\.offsetTop")
+
+
+class ContactPageTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        build_index()
+        cls.html = (ROOT / "contact.html").read_text()
+
+    def test_contact_page_is_the_hello_note_with_real_channels(self):
+        self.assertEqual(len(re.findall(r"<h1[\s>]", self.html)), 1)
+        h1 = text_of(re.search(r"<h1[^>]*>(.*?)</h1>", self.html, re.S).group(1))
+        self.assertEqual(h1, "Good things start with a hello.")
+        self.assertIn("I’d love to hear from you.", self.html)
+        self.assertIn("marisa@spreadjoycollective.org", self.html)
+        self.assertIn('href="mailto:marisa@spreadjoycollective.org"', self.html)
+        self.assertIn('href="https://www.instagram.com/spreadjoycollective/"', self.html)
+        self.assertIn("https://www.facebook.com/share/1FK6ceyMsn/", self.html)
+        self.assertIn("A little different. Better together.", self.html)
+        self.assertIn('alt="A circle of people wearing colorful, mismatched socks"', self.html)
+        self.assertIn('src="assets/img/contact-socks.jpg"', self.html)
+        self.assertTrue((ROOT / "assets" / "img" / "contact-socks.jpg").exists())
+        self.assertIn("assets/contact.css", self.html)
+        self.assertIn("#sjc-contact", (ROOT / "assets" / "contact.css").read_text())
+        self.assertNotIn("The live Contact page on Squarespace is still empty", self.html)
+        self.assertNotIn("[TBD: public contact email]", self.html)
+        paste = (ROOT / "contact-page" / "1-contact-block.html").read_text()
+        self.assertIn("Good things start", paste)
+        self.assertIn("mailto:marisa@spreadjoycollective.org", paste)
+        self.assertIn("<style>", paste)
+        self.assertNotIn("assets/img", paste)
+        self.assertTrue("data:image/jpeg;base64," in paste or "images.squarespace-cdn.com" in paste)
 
 
 class SiteLinkTests(unittest.TestCase):

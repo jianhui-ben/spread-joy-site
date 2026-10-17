@@ -5,11 +5,11 @@ Everything needed to rebuild the localhost home page (`index.html`) on Squarespa
 | # | File | Paste into | Notes |
 |---|------|------------|-------|
 | 1 | `1-header-injection.html` | Pages > Custom Code > Code Injection > **Header** | All the styles. Once for the whole site. |
-| 2 | `2-footer-injection.html` | Pages > Custom Code > Code Injection > **Footer** | All the scripts. Once for the whole site. Replaces any older footer script from the heart/surprise snippets. |
+| 2 | `2-footer-injection.html` | Pages > Custom Code > Code Injection > **Footer** | The charcoal footer (same as localhost) and all the scripts. Replace the whole Footer field. This also hides Squarespace's own footer, so the white logo row does not sit on top. |
 | 3 | `3-hero-block.html` | Code Block 1 | Headline, growing photo, tap-the-heart |
 | 4 | `4-story-block.html` | Code Block 2 | Pinned photo story |
 | 5 | `5-your-turn-block.html` | Code Block 3 | Yellow wave, "Your turn" cards, "Surprise me" |
-| 6 | `6-footer-block.html` | Code Block 4 | Dark footer: links, follow, sign-up. Clear Squarespace's own footer content (Edit Site Footer) so there are not two. |
+| 6 | `6-footer-block.html` | Do not paste | Same footer markup, kept for reference. Paste 2 already puts it on every page. Pasting this block as well shows two footers. |
 
 Needs a Core, Plus or Advanced plan (your trial allowed Code Injection). Do not hand-edit the numbered files: change `build.py` or `assets/*` and run `python3 build.py`, then paste again.
 
@@ -22,12 +22,12 @@ To use another Squarespace site or new photos: upload each photo (for example in
 ## Step 1 and 2: install the styles and the script
 
 1. Pages > Custom Code > Code Injection. Paste file 1 into **Header**, file 2 into **Footer**. Click Save.
-2. If the footer already has an older script from `squarespace/footer-injection.html`, replace it. Two copies would both count taps.
+2. File 2 replaces the whole Footer field, including any older footer. Do not leave the old footer above it, and do not paste file 6 onto the page. Two copies of the script would both count taps, and two footers would stack.
 
 ## Step 3: the page
 
 1. Create (or use) the page. Give it **one** section. Section background white.
-2. In that section add **four Code Blocks**, one under the other, in this order: 3, 4, 5, 6.
+2. In that section add **three Code Blocks**, one under the other, in this order: 3, 4, 5. The footer comes from file 2, not from a block.
 3. For each block: open it, set the mode to **HTML**, make sure **Display Source Code** is off, paste the file (with the placeholders replaced), close the editor.
 4. Header look: in Site Styles set the header background to white (or translucent white) and keep it fixed to the top if your template offers that. The script adds a class to `#header` so it slides away when you scroll down and comes back when you scroll up. The yellow line under the header is optional.
 5. **Save, then test in Preview** (the play icon), not in the editing view. In the editor a click selects the block, and the script can hold stale references to blocks the editor re-drew.
@@ -43,7 +43,7 @@ Squarespace wraps every block in a padded grid that clips overflow, which would 
 - The story stays pinned while three photos and lines change.
 - The yellow band and wave appear full width; cards drag sideways with a mouse and swipe on a phone.
 - "Surprise me" shows a different kindness idea each tap. "I did it!" shows "You just put more kindness into the world." The next idea clears that line. Nothing is saved.
-- "I have time" and "I have something to share" go to Get Involved. "I want to give" opens Givebutter. "My family could use support" goes to `/volunteer`.
+- "I have time" and "I have something to share" go to Get Involved. "I want to give" opens Givebutter. "I need support" goes to `/volunteer`.
 - The header slides away when scrolling down and returns when scrolling up.
 - Check a phone width and the private window (Safe Mode turns custom code off).
 

@@ -13,7 +13,7 @@ This page **does not exist** yet. SPEC.md lists it in the nav (Home, Our Mission
 | I have time | `get-involved.html#time` | `/get-involved#time` |
 | I have something to share | `get-involved.html#share` | `/get-involved#share` |
 | I want to give | Givebutter | `https://givebutter.com/SpreadJoyCollective` |
-| My family could use support | `help.html` | `/volunteer` |
+| I need support | `help.html` | `/volunteer` |
 
 ## How to make the page
 
@@ -27,4 +27,4 @@ This page **does not exist** yet. SPEC.md lists it in the nav (Home, Our Mission
 - **I have something to share** — An item, a service, or an experience. Link to Contact.
 - **I want to give** — Button label **Give**, to Givebutter. Do not label it Donate.
 - **I have an idea** — A collaboration, a connection, or a skill. Link to Contact.
-- **My family could use support** — Link to How Can We Help (`/volunteer`).
+- **I need support** — Link to How Can We Help (`/volunteer`).

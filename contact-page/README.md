@@ -2,18 +2,16 @@
 
 Local preview: `contact.html`. Live Squarespace page: **`/contact`**.
 
-## What Squarespace has now
+## What the page is
 
-`/contact` is in Main Navigation. In the editor on 2026-10-17 the page body was **empty**. No public email, phone, or address was on the pages that were readable. Social links (Instagram, Facebook, X) are also not on the site, so the local footer marks them `[TBD]` instead of linking nowhere.
+A note from Marisa, the sock photo, and three links: email (`marisa@spreadjoycollective.org`), Instagram (`@spreadjoycollective`), and Facebook. There is no form. The words live in `build.py`. The layout lives in `assets/contact.css`. The photo is `assets/img/contact-socks.jpg`.
 
-An address appeared in the logged-in editor source. It was not confirmed as the public contact, so it is not used here.
+`python3 build.py` writes `contact-page/1-contact-block.html`, a self-contained Code Block with the photo inlined.
 
-## How to make the page
+## How to put it on Squarespace
 
-1. On the existing Contact page, add a Squarespace form: name, email, message, and a submit button.
-2. Add three short lines so the Get Involved links have somewhere to land: “I have time.”, “I have something to share.”, “I have an idea.”
-3. Add a **Give** link to `https://givebutter.com/SpreadJoyCollective`.
-4. When the founder confirms a public email, replace `[TBD: public contact email]` in the footer. Until then, leave the placeholder.
-5. `LINK_CONTACT` is `/contact`.
+1. Open the existing Contact page (`/contact`).
+2. Add one Code Block, set its mode to HTML, and paste `1-contact-block.html`.
+3. Save. The block carries its own photo, so nothing else needs uploading.
 
-The local form uses the same rule as How Can We Help: Submit shows a preview note and does not send or store the message.
+Get Involved still links to `contact.html#time`, `#share`, and `#idea`. Those anchors are not on this page. X is still `[TBD]` in the footer.

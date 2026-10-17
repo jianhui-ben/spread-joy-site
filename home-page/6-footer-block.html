@@ -1,7 +1,7 @@
 <!--
   PASTE 6 OF 6:   Dark footer with links and sign-up
   WHAT IT IS:     The charcoal footer: logo, tagline, links, follow and the email sign-up box.
-  WHERE TO PASTE: A Code Block (mode HTML) in the LAST section, under block 5. Squarespace also has its own footer (Edit Site Footer): remove its content so the page does not show two.
+  WHERE TO PASTE: Do not paste this block. Paste 2 already includes this footer on every page. Pasting it here as well shows two.
   NEEDS:          Pastes 1 and 2 installed once (Code Injection Header and Footer).
   PLACEHOLDERS:   none (addresses come from home-page/image-urls.json)
   GENERATED:      by build.py. Change build.py (HOME_* sections) and run `python3 build.py`.
@@ -33,17 +33,21 @@
         </ul>
         <h4>Follow</h4>
         <ul>
-          <li>[TBD: Instagram]</li>
-          <li>[TBD: Facebook]</li>
-          <li>[TBD: X]</li>
+          <li><span class="sj-tbd">[TBD: Instagram]</span></li>
+          <li><span class="sj-tbd">[TBD: Facebook]</span></li>
+          <li><span class="sj-tbd">[TBD: X]</span></li>
         </ul>
       </div>
       <div>
         <h4>Stay in the loop</h4>
-        <p>Use Squarespace's newsletter block here. This preview does not collect email.</p>
+        <form class="sj-signup" onsubmit="event.preventDefault();var n=this.querySelector('.sj-form-note');if(n)n.hidden=false;return false;">
+          <input type="email" placeholder="Your email" aria-label="Email address" required>
+          <button type="submit">Join</button>
+          <p class="sj-form-note" hidden>Nothing you type here is sent or stored.</p>
+        </form>
       </div>
     </div>
-    <p class="sj-legal">&copy; Spread Joy Collective &middot; [TBD: contact email]</p>
+    <p class="sj-legal">&copy; Spread Joy Collective &middot; <span class="sj-tbd">[TBD: contact email]</span></p>
   </div>
 </footer>
 </div>

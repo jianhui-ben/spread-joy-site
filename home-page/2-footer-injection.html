@@ -1,16 +1,83 @@
 <!--
-  PASTE 2 OF 6:   Home page script
-  WHAT IT DOES:   Makes the home page move. Part 1: heart counter, kindness ideas. Part 2: taps on the
-                  heart and "Surprise me" (listens on the whole page, so it survives Squarespace
-                  re-drawing a block). Part 3: the growing hero photo, the pinned photo story, fade-ins,
-                  dragging the cards, and the header tucking away.
-  WHERE TO PASTE: Pages > Custom Code > Code Injection > FOOTER, then Save. Once for the whole site.
-                  It does nothing on pages that have none of our blocks.
-  NEEDS:          A Core, Plus or Advanced plan.
-  PLACEHOLDERS:   none. Starting number: PLACEHOLDER_START_COUNT in Part 1. Kindness ideas: IDEAS in Part 1.
-  GENERATED:      by build.py from assets/joy.js, assets/home.js and assets/scroll-story.js.
+  PASTE 2 OF 6:   Footer and home page script
+  WHAT IT DOES:   Replaces the site footer with the same charcoal footer as the local preview (logo,
+                  Explore, Give, Follow, Stay in the loop), and hides Squarespace's own footer so the
+                  white logo row does not sit above it. Then the home page script. Part 1: heart counter,
+                  kindness ideas. Part 2: taps on the heart and "Surprise me". Part 3: the growing hero
+                  photo, the pinned photo story, fade-ins, dragging the cards, and the header tucking away.
+  WHERE TO PASTE: Pages > Custom Code > Code Injection > FOOTER, then Save. Replace the whole field.
+                  Once for the whole site. Do not leave an older footer above this paste.
+  NEEDS:          A Core, Plus or Advanced plan. Paste 1 (header) for the brand colours and fonts.
+  PLACEHOLDERS:   Follow links and the contact email are [TBD]. Starting number: PLACEHOLDER_START_COUNT in Part 1.
+  GENERATED:      by build.py from assets/joy.js, assets/home.js, assets/scroll-story.js and assets/give-pill.js.
                   Change the sources and run `python3 build.py`; edits made here are overwritten.
 -->
+<style>
+:root { --yellow: #fdcd17; --ink: #231f20; }
+.sj-footer { background: var(--ink); color: #fff; padding: 56px 0 32px; font-family: "League Spartan", system-ui, sans-serif; line-height: 1.6; }
+.sj-footer-wrap { width: min(1180px, 92vw); margin: 0 auto; }
+.sj-footer-cols { display: grid; gap: 36px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+.sj-footer h4 { margin: 0 0 12px; color: var(--yellow) !important; font-family: inherit !important; font-weight: 600; font-size: 0.85rem; letter-spacing: 0.15em; text-transform: uppercase !important; }
+.sj-footer ul { list-style: none; margin: 0; padding: 0; }
+.sj-footer li { margin: 8px 0; }
+.sj-footer a { color: #fff !important; text-decoration: none; }
+.sj-footer a:hover { color: var(--yellow) !important; }
+.sj-footer .sj-brand { display: inline-flex; align-items: center; gap: 10px; text-transform: uppercase; letter-spacing: 0.22em; font-weight: 500; font-size: 0.95rem; color: #fff !important; }
+.sj-footer .sj-brand img { height: 40px; width: auto; }
+.sj-footer .sj-accent { margin: 14px 0 0; color: var(--yellow) !important; font-family: "Oooh Baby", cursive; font-size: 1.5rem; line-height: 1.2; }
+.sj-footer .sj-legal { margin: 36px 0 0; color: #b8b2ad !important; font-size: 0.8rem; }
+.sj-footer .sj-tbd { background: var(--yellow); color: var(--ink) !important; padding: 0 0.25em; }
+.sj-signup { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.sj-signup input { flex: 1; min-width: 140px; width: auto !important; padding: 12px 16px; border: 0; border-radius: 12px; font: inherit; color: var(--ink); background: #fff; }
+.sj-signup button { padding: 12px 24px; min-height: 44px; border: 0; border-radius: 999px; background: var(--yellow); color: var(--ink); font: inherit; font-weight: 600; cursor: pointer; }
+.sj-form-note { flex-basis: 100%; margin: 4px 0 0; color: #fff !important; font-weight: 500; }
+#footer-sections, .sjc-footer { display: none !important; }
+</style>
+<div class="sj-home">
+<footer class="sj-footer">
+  <div class="sj-footer-wrap">
+    <div class="sj-footer-cols">
+      <div>
+        <a class="sj-brand" href="/"><img src="https://images.squarespace-cdn.com/content/v1/6aab64d440806136e6ed3821/cbb418f5-0516-48e5-b071-4673e3ad00b2/heart.png" alt="">Spread Joy Collective</a>
+        <p class="sj-accent">Small acts. Big impact. Spread joy.</p>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/home#ourmission">Our Mission</a></li>
+          <li><a href="/home#ourstory">Our Story</a></li>
+          <li><a href="/events">Events</a></li>
+          <li><a href="/get-involved">Get Involved</a></li>
+          <li><a href="/volunteer">How Can We Help</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Give</h4>
+        <ul>
+          <li><a href="https://givebutter.com/SpreadJoyCollective">Give</a></li>
+        </ul>
+        <h4>Follow</h4>
+        <ul>
+          <li><span class="sj-tbd">[TBD: Instagram]</span></li>
+          <li><span class="sj-tbd">[TBD: Facebook]</span></li>
+          <li><span class="sj-tbd">[TBD: X]</span></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Stay in the loop</h4>
+        <form class="sj-signup" onsubmit="event.preventDefault();var n=this.querySelector('.sj-form-note');if(n)n.hidden=false;return false;">
+          <input type="email" placeholder="Your email" aria-label="Email address" required>
+          <button type="submit">Join</button>
+          <p class="sj-form-note" hidden>Nothing you type here is sent or stored.</p>
+        </form>
+      </div>
+    </div>
+    <p class="sj-legal">&copy; Spread Joy Collective &middot; <span class="sj-tbd">[TBD: contact email]</span></p>
+  </div>
+</footer>
+</div>
 <script async src="https://widgets.givebutter.com/latest.umd.cjs?acct=414900"></script>
 <script>
 /* ===== PART 1: logic (assets/joy.js) ===== */
