@@ -80,20 +80,10 @@
     tick();
   }
 
-  // Cards row: arrow buttons scroll one card; a mouse can also drag the row (touch already scrolls natively)
+  // Cards row: a mouse can drag the row sideways (touch already scrolls natively)
   function initCards(doc) {
     var row = doc.getElementById('cards');
     if (!row) return;
-    function step(dir) {
-      var card = row.querySelector('.card');
-      var w = card ? card.offsetWidth + 20 : 300;
-      row.scrollBy({ left: dir * w, behavior: 'smooth' });
-    }
-    var prev = doc.getElementById('cardsPrev');
-    var next = doc.getElementById('cardsNext');
-    if (prev) prev.addEventListener('click', function () { step(-1); });
-    if (next) next.addEventListener('click', function () { step(1); });
-
     var down = false, moved = false, startX = 0, startLeft = 0;
     row.addEventListener('pointerdown', function (e) {
       if (e.pointerType !== 'mouse') return;
@@ -116,11 +106,32 @@
     row.addEventListener('dragstart', function (e) { e.preventDefault(); });
   }
 
-  var api = { storyState: storyState, initStory: initStory, initCards: initCards };
+  // Apple-style bar: tucks away while you scroll down, comes back as soon as you scroll up.
+  function headerHidden(prevY, y, wasHidden) {
+    if (y < 80) return false;
+    if (y > prevY + 4) return true;
+    if (y < prevY - 8) return false;
+    return wasHidden;
+  }
+
+  function initHeader(doc, win) {
+    var bar = doc.querySelector('.site-header');
+    if (!bar) return;
+    var prev = win.scrollY, hidden = false;
+    win.addEventListener('scroll', function () {
+      var y = win.scrollY;
+      var next = headerHidden(prev, y, hidden);
+      if (next !== hidden) { hidden = next; bar.classList.toggle('tucked', hidden); }
+      prev = y;
+    }, { passive: true });
+  }
+
+  var api = { storyState: storyState, initStory: initStory, initCards: initCards, headerHidden: headerHidden, initHeader: initHeader };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (typeof document !== 'undefined' && typeof window !== 'undefined') {
     root.StoryScroll = api;
     initStory(document, window);
     initCards(document);
+    initHeader(document, window);
   }
 })(typeof window !== 'undefined' ? window : globalThis);

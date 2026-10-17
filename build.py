@@ -150,10 +150,6 @@ PAGES["index.html"] = dict(
 {WAVE_UP}
 <section class="turn">
   <h2 class="reveal">Your turn.</h2>
-  <div class="cards-nav">
-    <button id="cardsPrev" type="button" aria-label="Previous">&larr;</button>
-    <button id="cardsNext" type="button" aria-label="Next">&rarr;</button>
-  </div>
   <div class="cards" id="cards">
     <a class="card" href="help.html"><img src="assets/img/family.jpg" alt=""><span class="go" aria-hidden="true">&rarr;</span><h3>I have time</h3></a>
     <a class="card" href="#"><img src="assets/img/sock-pile.jpg" alt=""><span class="go" aria-hidden="true">&rarr;</span><h3>I want to give</h3></a>

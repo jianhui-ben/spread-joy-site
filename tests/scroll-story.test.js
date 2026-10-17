@@ -52,3 +52,12 @@ test('reduced motion shows one line at a time with no zoom or slide', () => {
     assert.equal(l.opacity, i === s.index ? 1 : 0);
   });
 });
+
+test('headerHidden: hides when scrolling down past the top, shows when scrolling up', () => {
+  const { headerHidden } = require('../assets/scroll-story.js');
+  assert.equal(headerHidden(0, 40, false), false, 'near the top stays visible');
+  assert.equal(headerHidden(100, 300, false), true, 'scrolling down hides');
+  assert.equal(headerHidden(300, 296, true), true, 'tiny upward jitter keeps it hidden');
+  assert.equal(headerHidden(300, 270, true), false, 'scrolling up shows');
+  assert.equal(headerHidden(300, 20, true), false, 'back at the top shows');
+});

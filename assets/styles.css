@@ -30,7 +30,9 @@ img { max-width: 100%; display: block; }
   background: rgba(255, 255, 255, 0.84); color: var(--ink);
   backdrop-filter: saturate(180%) blur(14px); -webkit-backdrop-filter: saturate(180%) blur(14px);
   position: sticky; top: 0; z-index: 10; border-bottom: 2px solid var(--yellow);
+  transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
+.site-header.tucked { transform: translateY(-100%); }
 .site-header .wrap {
   display: flex; flex-wrap: wrap; align-items: center;
   gap: 12px 20px; padding-top: 16px; padding-bottom: 16px;

@@ -106,10 +106,9 @@ class HomeTests(unittest.TestCase):
             self.assertIsNotNone(m, "card without a photo")
             self.assertTrue((ROOT / m.group(1)).exists(), m.group(1))
 
-    def test_cards_row_has_prev_next_buttons_for_mouse_users(self):
-        for ident in ['cards', 'cardsPrev', 'cardsNext']:
-            self.assertEqual(len(re.findall(r'id="%s"' % ident, self.html)), 1, ident)
-        self.assertRegex(self.html, r'<button[^>]*id="cardsNext"')
+    def test_cards_row_has_no_extra_arrow_buttons(self):
+        self.assertNotIn('cardsPrev', self.html)
+        self.assertNotIn('cardsNext', self.html)
 
     def test_interaction_ids_exist_exactly_once(self):
         for ident in ["sj-heart", "sj-rings", "sj-count", "sj-surprise", "sj-idea"]:
