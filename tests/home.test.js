@@ -157,6 +157,8 @@ function asHtmlCollection(el) {
     set(v) { list = v; },
   });
   el.children = [];
+  el.appendChild = (child) => { child.parentNode = el; list.push(child); return child; };
+  el.removeChild = (child) => { list = list.filter((c) => c !== child); };
 }
 
 const kinds = (el, cls) => el.children.filter((c) => c.classList.contains(cls));
