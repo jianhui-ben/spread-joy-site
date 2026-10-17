@@ -72,6 +72,7 @@ SHELL = """<!doctype html>
     <p class="legal">&copy; Spread Joy Collective &middot; <a href="#">Privacy Policy</a> &middot; <a href="mailto:hello@example.com">hello@example.com</a></p>
   </div>
 </footer>
+{scripts}
 </body>
 </html>
 """
@@ -91,50 +92,71 @@ CTA = """
 
 PAGES = {}
 
+WAVE = '<svg class="wave{flip}" viewBox="0 0 1200 44" preserveAspectRatio="none" aria-hidden="true"><path d="M0,20 C200,48 400,0 600,22 C800,44 1000,4 1200,24 L1200,44 L0,44 Z"/></svg>'
+WAVE_DOWN = WAVE.format(flip="")
+WAVE_UP = WAVE.format(flip=" flip")
+
 PAGES["index.html"] = dict(
     title="Home",
-    description="Spread Joy Collective: replace with a one-sentence description for search results.",
-    body="""
-<section class="hero">
+    description="Spread Joy Collective supports families of individuals with disabilities. Small acts. Big impact. Spread joy.",
+    scripts="""<script src="assets/joy.js" defer></script>
+<script src="assets/home.js" defer></script>""",
+    body=f"""
+<section class="moment band center" id="tap">
   <div class="wrap">
-    <div>
-      <div class="eyebrow">Spread Joy Collective</div>
-      <h1>Small acts.<br>Big impact.<br>Spread joy.</h1>
-      <p class="lead">We strengthen and support families of individuals with disabilities by building community, creating opportunities, and providing meaningful assistance wherever it is needed most.</p>
-      <div class="cta-row">
-        <a class="btn btn-yellow" href="#">Donate</a>
-        <a class="btn btn-outline" href="help.html">Get involved</a>
-      </div>
+    <div class="tap-stage">
+      <div id="sj-rings" class="rings" aria-hidden="true"></div>
+      <button id="sj-heart" class="heart-btn" type="button" aria-label="Tap to send a ripple of joy"><img src="assets/img/heart.png" alt=""></button>
     </div>
-    <div class="photo-frame">
-      <img src="assets/img/socks-circle.jpg" alt="Xavier smiling in a circle of friends in colorful socks">
-    </div>
+    <h2>Tap the <span class="hl">heart.</span></h2>
+    <p class="counter" aria-live="polite"><span id="sj-count">1,284</span> ripples of joy so far</p>
+    <p class="accent">Small acts. Big impact. Spread joy.</p>
   </div>
 </section>
+{WAVE_DOWN}
 
-<section class="block alt">
+<section class="moment band yellow">
+  <img class="drift-heart" src="assets/img/heart-white.png" alt="" style="left:5%;top:36px">
   <div class="wrap">
-    <h2>Ways to join in</h2>
-    <p class="section-lead">Three quick paths for new visitors.</p>
-    <div class="cards">
-      <div class="card"><h3>Our Mission</h3><p>What we believe and who we serve.</p><a href="mission.html">Read our mission &rarr;</a></div>
-      <div class="card"><h3>Upcoming Events</h3><p>Come celebrate with us.</p><a href="events.html">See events &rarr;</a></div>
-      <div class="card"><h3>How Can We Help</h3><p>Volunteer, partner, or give.</p><a href="help.html">Find your way in &rarr;</a></div>
-    </div>
+    <div class="photo-card"><img src="assets/img/xavier-portrait.jpg" alt="Xavier smiling with his arms wide open"></div>
+    <h2>It started with <span class="hl">one kid.</span></h2>
   </div>
 </section>
+{WAVE_UP}
 
-<section class="block">
+<section class="moment band">
+  <img class="drift-heart" src="assets/img/heart.png" alt="" style="right:5%;top:36px;animation-delay:1s">
   <div class="wrap">
-    <h2>Next event</h2>
-    <div class="event">
-      <div class="date">DEC<br>14</div>
-      <div class="info"><strong>Event name placeholder</strong><span>Location &middot; Time</span></div>
-      <a class="btn btn-outline" href="#">Register</a>
-    </div>
+    <h2>Then a whole <span class="hl">circle</span> showed up.</h2>
+    <div class="photo-card"><img src="assets/img/socks-circle.jpg" alt="Xavier smiling in a circle of friends in colorful socks"></div>
   </div>
 </section>
-""" + CTA,
+{WAVE_DOWN}
+
+<section class="moment band yellow">
+  <img class="drift-heart" src="assets/img/heart-white.png" alt="" style="left:5%;top:36px;animation-delay:2s">
+  <div class="wrap">
+    <div class="photo-card"><img src="assets/img/sock-pile.jpg" alt="A huge pile of donated colorful socks"></div>
+    <h2><span class="hl">578</span> socks. One kindness at a time.</h2>
+  </div>
+</section>
+{WAVE_UP}
+
+<section class="moment band center" id="your-turn">
+  <div class="wrap">
+    <img class="small-heart" src="assets/img/heart.png" alt="">
+    <h2>Your <span class="hl">turn.</span></h2>
+    <div class="choices">
+      <a class="pill" href="help.html">I have time</a>
+      <a class="pill" href="#">I want to give</a>
+      <a class="pill" href="help.html">I have something to share</a>
+      <a class="pill" href="contact.html">My family could use support</a>
+    </div>
+    <button id="sj-surprise" class="pill outline" type="button" hidden>Surprise me &#9829;</button>
+    <p id="sj-idea" class="idea" aria-live="polite"></p>
+  </div>
+</section>
+""",
 )
 
 PAGES["mission.html"] = dict(
@@ -250,6 +272,7 @@ for filename, page in PAGES.items():
         description=page["description"],
         nav=nav_html(filename),
         body=page["body"].strip("\n"),
+        scripts=page.get("scripts", ""),
         footer_links=footer_links(),
     )
     (OUT / filename).write_text(html)
