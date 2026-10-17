@@ -1,5 +1,7 @@
 # Spread Joy Collective: HTML mock
 
+> Site-wide rules for every page: [SPEC.md](SPEC.md). Repo context for Claude sessions and known gaps against the spec: [CLAUDE.md](CLAUDE.md).
+
 A static mock of the Squarespace site, used to settle layout, copy and links before rebuilding it in the Squarespace editor.
 
 ## Run
