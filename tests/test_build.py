@@ -341,7 +341,10 @@ class HomePageFolderTests(unittest.TestCase):
         text = self.read("7-page-script-block.html")
         self.assertIn("PASTE 7", text.split("-->")[0])
         self.assertEqual(text.count("<script>"), 1)
-        self.assertNotIn("<script async", text)
+        # the Givebutter goal bar needs its library; here it travels with the script, from Givebutter's host only
+        srcs = re.findall(r'<script\b[^>]*\bsrc="([^"]+)"', text)
+        self.assertEqual(len(srcs), 1)
+        self.assertTrue(srcs[0].startswith("https://widgets.givebutter.com/"), srcs[0])
         self.assertIn("window.__sjHome", text)  # guard against running twice if Squarespace re-draws the block
         for needle in ["PART 1", "PART 2", "PART 3", "PART 4", "initStory", "initGive", "createShuffler"]:
             self.assertIn(needle, text)

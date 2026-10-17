@@ -762,7 +762,7 @@ def build_home_page():
                    "  WHERE TO PASTE: A Code Block (mode HTML) in the last section of the Home page, under block 5.\n"
                    "                  Use this INSTEAD of paste 2 when the Footer injection is not yours to edit.\n"
                    "  GENERATED:      by build.py from assets/*.js. Do not hand-edit.\n"
-                   "-->\n<script>\nif (!window.__sjHome) { window.__sjHome = true;\n"
+                   "-->\n" + (GB_LIBRARY + "\n" if GB_LIBRARY else "") + "<script>\nif (!window.__sjHome) { window.__sjHome = true;\n"
                    + "/* ===== PART 1: logic (assets/joy.js) ===== */\n" + parts[0] + "\n"
                    + "/* ===== PART 2: taps on heart and Surprise me (assets/home.js) ===== */\n" + parts[1] + "\n"
                    + "/* ===== PART 3: scroll story, cards, header (assets/scroll-story.js) ===== */\n" + parts[2] + "\n"
