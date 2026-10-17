@@ -322,7 +322,8 @@
     win.addEventListener('scroll', function () {
       var y = win.scrollY;
       var next = headerHidden(prev, y, hidden);
-      var bar = doc.querySelector('.site-header, #header');
+      // only pages that carry the home blocks tuck their header away
+      var bar = doc.querySelector('.sj-home') && doc.querySelector('.site-header, #header');
       if (bar && next !== hidden) { hidden = next; bar.classList.toggle('tucked', hidden); }
       prev = y;
     }, { passive: true });

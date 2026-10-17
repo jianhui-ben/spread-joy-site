@@ -103,3 +103,20 @@ test('initStory keeps updating after the photos and lines are replaced by new el
   assert.ok(page.frames[0].style.opacity !== undefined, 'new photos were updated');
   assert.ok(page.lines[1].style.opacity !== undefined, 'new lines were updated');
 });
+
+test('initHeader only tucks the header on pages that contain the home blocks', () => {
+  const { initHeader } = require('../assets/scroll-story.js');
+  const run = (hasHome) => {
+    const toggles = [];
+    const bar = { classList: { toggle: (c, on) => toggles.push([c, on]) } };
+    const listeners = [];
+    const doc = { querySelector: (sel) => (sel.includes('sj-home') ? (hasHome ? {} : null) : bar) };
+    const win = { scrollY: 0, addEventListener: (t, fn) => listeners.push(fn) };
+    initHeader(doc, win);
+    win.scrollY = 600;
+    listeners.forEach((fn) => fn());
+    return toggles;
+  };
+  assert.deepEqual(run(true), [['tucked', true]]);
+  assert.deepEqual(run(false), []);
+});

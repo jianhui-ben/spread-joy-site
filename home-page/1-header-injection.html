@@ -35,8 +35,8 @@
 .sj-home h1, .sj-home h2, .sj-home h3, .sj-home p, .sj-home b, .sj-home button, .sj-home a { font-family: inherit; text-transform: none; font-style: normal; }
 
 /* --- Header that tucks away on scroll down (Squarespace header is #header) --- */
-#header { transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1); }
-#header.tucked { transform: translateY(-100%); }
+body:has(.sj-home) #header { transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1); }
+body:has(.sj-home) #header.tucked { transform: translateY(-100%); }
 
 /* --- Button + script-only rules (used by the "Surprise me" card) --- */
 /* Rounded button style (yellow); .outline is the white version with a dark border */
