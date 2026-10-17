@@ -1,5 +1,5 @@
 <!--
-  PASTE 1 OF 5:   Home page styles
+  PASTE 1 OF 6:   Home page styles
   WHAT IT DOES:   All the look of the home page: fonts, colours, the big headline, the growing photo,
                   the pinned photo story, the yellow "Your turn" band and cards, and the header that
                   tucks away when you scroll down.
@@ -54,6 +54,23 @@
 /* The line of text where the kindness idea appears */
 .idea { min-height: 3.2em; margin: 12px auto 0; max-width: 28em; font-size: 1.25rem; font-weight: 500; }
 
+/* --- Footer block (paste 6) --- */
+.sj-footer { background: var(--ink); color: #fff; padding: 56px 0 32px; }
+.sj-footer-wrap { width: min(1180px, 92vw); margin: 0 auto; }
+.sj-footer-cols { display: grid; gap: 36px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+.sj-footer h4 { margin: 0 0 12px; color: var(--yellow) !important; font-size: 0.85rem; letter-spacing: 0.15em; text-transform: uppercase !important; }
+.sj-footer ul { list-style: none; margin: 0; padding: 0; }
+.sj-footer li { margin: 8px 0; }
+.sj-footer a { color: #fff !important; text-decoration: none; }
+.sj-footer a:hover { color: var(--yellow) !important; }
+.sj-footer .sj-brand { display: inline-flex; align-items: center; gap: 10px; text-transform: uppercase; letter-spacing: 0.22em; font-weight: 500; font-size: 0.95rem; }
+.sj-footer .sj-brand img { height: 40px; width: auto; }
+.sj-footer .sj-accent { margin: 14px 0 0; color: var(--yellow) !important; font-family: "Oooh Baby", cursive; font-size: 1.5rem; }
+.sj-footer .sj-legal { margin: 36px 0 0; color: #b8b2ad !important; font-size: 0.8rem; }
+.sj-signup { display: flex; gap: 8px; }
+.sj-signup input { flex: 1; min-width: 0; padding: 12px 16px; border: 0; border-radius: 12px; font: inherit; }
+.sj-signup button { padding: 12px 24px; border: 0; border-radius: 999px; background: var(--yellow); color: var(--ink); font: inherit; font-weight: 600; cursor: pointer; }
+
 /* --- Wave between the photo story and the yellow band --- */
 .sj-home .wave { display: block; width: 100%; height: 44px; margin: -1px 0; color: var(--yellow); fill: currentColor; }
 .sj-home .wave.flip { transform: scaleY(-1); }
@@ -97,7 +114,7 @@
 .tap b { color: var(--ink); }
 
 /* ---- 2. pinned story: the stage stays while photos and lines change with scroll ---- */
-.story { position: relative; height: 420vh; margin-top: 14vh; }
+.story { position: relative; height: 420vh; margin-top: -8vh; }
 .stage-pin { position: sticky; top: 0; height: 100vh; overflow: hidden; }
 .frames { position: absolute; inset: max(9vh, 92px) 5vw 9vh; border-radius: 36px; overflow: hidden; background: #eee; }
 .frame { position: absolute; inset: 0; will-change: opacity, transform; }

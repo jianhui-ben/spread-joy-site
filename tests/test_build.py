@@ -249,12 +249,12 @@ class HomePageFolderTests(unittest.TestCase):
         return (self.dir / name).read_text()
 
     def test_folder_has_the_five_pastes_in_order(self):
-        for n in ["1-header-injection.html", "2-footer-injection.html", "3-hero-block.html", "4-story-block.html", "5-your-turn-block.html"]:
+        for n in ["1-header-injection.html", "2-footer-injection.html", "3-hero-block.html", "4-story-block.html", "5-your-turn-block.html", "6-footer-block.html"]:
             self.assertTrue((self.dir / n).exists(), n)
             self.assertIn("PASTE", self.read(n).split("-->")[0], n)
 
     def test_blocks_hold_html_only_with_image_placeholders_and_no_local_paths(self):
-        for n in ["3-hero-block.html", "4-story-block.html", "5-your-turn-block.html"]:
+        for n in ["3-hero-block.html", "4-story-block.html", "5-your-turn-block.html", "6-footer-block.html"]:
             text = self.read(n)
             self.assertNotIn("<style", text, n)
             self.assertNotIn("<script", text, n)

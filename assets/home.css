@@ -36,7 +36,7 @@
 .tap b { color: var(--ink); }
 
 /* ---- 2. pinned story: the stage stays while photos and lines change with scroll ---- */
-.story { position: relative; height: 420vh; margin-top: 14vh; }
+.story { position: relative; height: 420vh; margin-top: -8vh; }
 .stage-pin { position: sticky; top: 0; height: 100vh; overflow: hidden; }
 .frames { position: absolute; inset: max(9vh, 92px) 5vw 9vh; border-radius: 36px; overflow: hidden; background: #eee; }
 .frame { position: absolute; inset: 0; will-change: opacity, transform; }

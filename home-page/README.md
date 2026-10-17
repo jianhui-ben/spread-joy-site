@@ -1,6 +1,6 @@
 # Home page on Squarespace
 
-Everything needed to rebuild the localhost home page (`index.html`) on Squarespace 7.1. The five numbered files are generated from the local page, so what you see on localhost is what you paste. Open a file, copy everything, paste it where the table says.
+Everything needed to rebuild the localhost home page (`index.html`) on Squarespace 7.1. The six numbered files are generated from the local page, so what you see on localhost is what you paste. Open a file, copy everything, paste it where the table says.
 
 | # | File | Paste into | Notes |
 |---|------|------------|-------|
@@ -9,6 +9,7 @@ Everything needed to rebuild the localhost home page (`index.html`) on Squarespa
 | 3 | `3-hero-block.html` | Code Block 1 | Headline, growing photo, tap-the-heart |
 | 4 | `4-story-block.html` | Code Block 2 | Pinned photo story |
 | 5 | `5-your-turn-block.html` | Code Block 3 | Yellow wave, "Your turn" cards, "Surprise me" |
+| 6 | `6-footer-block.html` | Code Block 4 | Dark footer: links, follow, sign-up. Clear Squarespace's own footer content (Edit Site Footer) so there are not two. |
 
 Needs a Core, Plus or Advanced plan (your trial allowed Code Injection). Do not hand-edit the numbered files: change `build.py` or `assets/*` and run `python3 build.py`, then paste again.
 
@@ -26,7 +27,7 @@ To use another Squarespace site or new photos: upload each photo (for example in
 ## Step 3: the page
 
 1. Create (or use) the page. Give it **one** section. Section background white.
-2. In that section add **three Code Blocks**, one under the other, in this order: 3, 4, 5.
+2. In that section add **four Code Blocks**, one under the other, in this order: 3, 4, 5, 6.
 3. For each block: open it, set the mode to **HTML**, make sure **Display Source Code** is off, paste the file (with the placeholders replaced), close the editor.
 4. Header look: in Site Styles set the header background to white (or translucent white) and keep it fixed to the top if your template offers that. The script adds a class to `#header` so it slides away when you scroll down and comes back when you scroll up. The yellow line under the header is optional.
 5. **Save, then test in Preview** (the play icon), not in the editing view. In the editor a click selects the block, and the script can hold stale references to blocks the editor re-drew.

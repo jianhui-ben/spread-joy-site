@@ -378,8 +378,64 @@ HOME_IMAGES = {
     "HEART": "heart.png",
 }
 
+
+HOME_FOOTER_HTML = """<footer class="sj-footer">
+  <div class="sj-footer-wrap">
+    <div class="sj-footer-cols">
+      <div>
+        <a class="sj-brand" href="/"><img src="{{IMG_HEART}}" alt="">Spread Joy Collective</a>
+        <p class="sj-accent">Small acts. Big impact. Spread joy.</p>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/our-mission">Our Mission</a></li>
+          <li><a href="/our-story">Our Story</a></li>
+          <li><a href="/events">Events</a></li>
+          <li><a href="{{LINK_HELP}}">How Can We Help</a></li>
+          <li><a href="{{LINK_CONTACT}}">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Follow</h4>
+        <ul>
+          <li><a href="#">Instagram</a></li>
+          <li><a href="#">Facebook</a></li>
+          <li><a href="#">YouTube</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Stay in the loop</h4>
+        <form class="sj-signup" action="#" onsubmit="return false">
+          <input type="email" placeholder="Your email" aria-label="Email address">
+          <button type="submit">Join</button>
+        </form>
+      </div>
+    </div>
+    <p class="sj-legal">&copy; Spread Joy Collective &middot; <a href="#">Privacy Policy</a> &middot; <a href="mailto:hello@example.com">hello@example.com</a></p>
+  </div>
+</footer>
+"""
+
+HOME_FOOTER_CSS = """.sj-footer { background: var(--ink); color: #fff; padding: 56px 0 32px; }
+.sj-footer-wrap { width: min(1180px, 92vw); margin: 0 auto; }
+.sj-footer-cols { display: grid; gap: 36px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+.sj-footer h4 { margin: 0 0 12px; color: var(--yellow) !important; font-size: 0.85rem; letter-spacing: 0.15em; text-transform: uppercase !important; }
+.sj-footer ul { list-style: none; margin: 0; padding: 0; }
+.sj-footer li { margin: 8px 0; }
+.sj-footer a { color: #fff !important; text-decoration: none; }
+.sj-footer a:hover { color: var(--yellow) !important; }
+.sj-footer .sj-brand { display: inline-flex; align-items: center; gap: 10px; text-transform: uppercase; letter-spacing: 0.22em; font-weight: 500; font-size: 0.95rem; }
+.sj-footer .sj-brand img { height: 40px; width: auto; }
+.sj-footer .sj-accent { margin: 14px 0 0; color: var(--yellow) !important; font-family: "Oooh Baby", cursive; font-size: 1.5rem; }
+.sj-footer .sj-legal { margin: 36px 0 0; color: #b8b2ad !important; font-size: 0.8rem; }
+.sj-signup { display: flex; gap: 8px; }
+.sj-signup input { flex: 1; min-width: 0; padding: 12px 16px; border: 0; border-radius: 12px; font: inherit; }
+.sj-signup button { padding: 12px 24px; border: 0; border-radius: 999px; background: var(--yellow); color: var(--ink); font: inherit; font-weight: 600; cursor: pointer; }"""
+
 HOME_HEADER = """<!--
-  PASTE 1 OF 5:   Home page styles
+  PASTE 1 OF 6:   Home page styles
   WHAT IT DOES:   All the look of the home page: fonts, colours, the big headline, the growing photo,
                   the pinned photo story, the yellow "Your turn" band and cards, and the header that
                   tucks away when you scroll down.
@@ -411,6 +467,9 @@ __SQS__
 /* --- Button + script-only rules (used by the "Surprise me" card) --- */
 __SURPRISE__
 
+/* --- Footer block (paste 6) --- */
+__FOOTERCSS__
+
 /* --- Wave between the photo story and the yellow band --- */
 __WAVE__
 
@@ -432,7 +491,7 @@ SQS_OVERRIDES = """.page-section:has(.sj-home) { padding: 0 !important; min-heig
 .sj-home h1, .sj-home h2, .sj-home h3, .sj-home p, .sj-home b, .sj-home button, .sj-home a { font-family: inherit; text-transform: none; font-style: normal; }"""
 
 HOME_FOOTER = """<!--
-  PASTE 2 OF 5:   Home page script
+  PASTE 2 OF 6:   Home page script
   WHAT IT DOES:   Makes the home page move. Part 1: heart counter, kindness ideas. Part 2: taps on the
                   heart and "Surprise me" (listens on the whole page, so it survives Squarespace
                   re-drawing a block). Part 3: the growing hero photo, the pinned photo story, fade-ins,
@@ -447,7 +506,7 @@ HOME_FOOTER = """<!--
 """
 
 HOME_BLOCK = """<!--
-  PASTE __N__ OF 5:   __TITLE__
+  PASTE __N__ OF 6:   __TITLE__
   WHAT IT IS:     __WHAT__
   WHERE TO PASTE: __WHERE__
   NEEDS:          Pastes 1 and 2 installed once (Code Injection Header and Footer).
@@ -476,6 +535,7 @@ def build_home_page():
     HOME_DIR.mkdir(exist_ok=True)
     header = (HOME_HEADER.replace("__SQS__", SQS_OVERRIDES)
               .replace("__SURPRISE__", snippet_css("surprise"))
+              .replace("__FOOTERCSS__", HOME_FOOTER_CSS)
               .replace("__WAVE__", ".sj-home .wave { display: block; width: 100%; height: 44px; margin: -1px 0; color: var(--yellow); fill: currentColor; }\n.sj-home .wave.flip { transform: scaleY(-1); }")
               .replace("__HOMECSS__", (OUT / "assets" / "home.css").read_text().strip()))
     (HOME_DIR / "1-header-injection.html").write_text(header)
@@ -502,6 +562,10 @@ def build_home_page():
          "A Code Block (mode HTML) in the THIRD (last) section.",
          "{{IMG_FAMILY}}, {{IMG_SOCK_PILE}}, {{IMG_SOCKS_CIRCLE_2}}, {{IMG_XAVIER}}, {{IMG_HEART}}, {{LINK_HELP}}, {{LINK_CONTACT}}",
          WAVE_UP + "\n" + HOME_TURN),
+        (6, "6-footer-block.html", "Dark footer with links and sign-up",
+         "The charcoal footer: logo, tagline, links, follow and the email sign-up box.",
+         "A Code Block (mode HTML) in the LAST section, under block 5. Squarespace also has its own footer (Edit Site Footer): remove its content so the page does not show two.",
+         "{{IMG_HEART}}, {{LINK_HELP}}, {{LINK_CONTACT}}", HOME_FOOTER_HTML),
     ]
     urls_file = HOME_DIR / "image-urls.json"
     known = json.loads(urls_file.read_text()) if urls_file.exists() else {}
@@ -511,7 +575,7 @@ def build_home_page():
                 .replace("__WHERE__", where).replace("__PLACEHOLDERS__", ph)
                 .replace("__HTML__", to_placeholders(html.strip("\n"))))
         (HOME_DIR / fname).write_text(text)
-    print("wrote home-page/ (5 files)")
+    print("wrote home-page/ (6 files)")
 
 
 def nav_html(current):
