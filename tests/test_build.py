@@ -141,6 +141,16 @@ class HomeTests(unittest.TestCase):
         self.assertNotIn("localStorage", self.html)
         self.assertNotIn("fetch(", src)
 
+    def test_hope_jar_has_no_consent_checkbox_and_starters_are_not_labelled_sample(self):
+        src = (ROOT / "assets" / "hope-jar.html").read_text()
+        self.assertNotIn('id="consent"', src)
+        self.assertNotIn("#consent", src)
+        self.assertNotIn("Sample message", src)
+        self.assertNotIn("Local preview only", src)
+        self.assertNotIn("sample:", src)
+        # starter hopes live in one editable list, each with a text and a name (name may stay empty)
+        self.assertRegex(src, r"const messages=\[\{text:'[^']+',name:'[^']*'\}")
+
     def test_every_link_card_has_a_photo_so_none_is_a_blank_white_block(self):
         cards = re.findall(r'<a class="card"[^>]*>(.*?)</a>', self.html, re.S)
         self.assertEqual(len(cards), 4)
