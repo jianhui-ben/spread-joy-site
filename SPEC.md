@@ -104,22 +104,37 @@ Each rule is paired with what to do instead.
 - **Performance:** compressed images, lazy-loaded below the fold, light enough for a phone connection.
 - **SEO basics:** page title, description, one H1, descriptive link text.
 - **Browsers:** current Safari, Chrome, Firefox, Edge; iOS Safari and Android Chrome.
+- **Code Blocks on Squarespace (learned by building the home page; every code owner needs these):**
+  - Squarespace **re-draws a Code Block's HTML after the page loads**. Never keep references to elements; look them up when the event happens (listen on `document` and find the element then).
+  - Test in Squarespace **Preview or the saved page**, not the editing view (clicks select the block there and scripts run unreliably). Safe Mode turns custom code off, so test in a private window instead.
+  - `element.offsetTop` is relative to the nearest positioned parent, which is not the page on Squarespace. Use `getBoundingClientRect().top + window.scrollY`.
+  - Squarespace gives headings, paragraphs and buttons their own colour, size and font. Inside your own container set `font-family: inherit` and set the colour of any text that must differ (for example white text over a photo) with enough specificity or `!important`.
+  - A browser or device with **forced dark mode** can turn a white page black. Check your block in a forced-dark browser.
+  - `position: sticky` stops working if any parent has `overflow: hidden` or `auto`. Squarespace's section grid clips overflow by default; check this for pinned or scroll-driven effects.
+  - Images in a Code Block must be uploaded to Squarespace (a Code Block cannot read repo files). Use the Squarespace image address.
+  - JavaScript in Code Injection or a Code Block needs a Core, Plus or Advanced plan.
 - **Fallback when code is unavailable or unsafe:** use native Squarespace blocks (galleries, buttons, forms) and Givebutter's own embeds, keeping the same brand and tone.
 
 ## 9. Squarespace variables in use (fill in after inspecting the live site)
 
 | Purpose | Variable | Verified |
 |---|---|---|
-| Brand yellow | `--accent-hsl` (confirm) | [ ] |
-| Dark background | `--black-hsl` (confirm) | [ ] |
-| Light text | `--white-hsl` (confirm) | [ ] |
-| Heading color in a section | `--headingLargeColor` (confirm) | [ ] |
+| Brand yellow | `--accent-hsl` = `47.48,98.29%,54.12%` (matches `#FDCD17`) | [x] on the trial site; confirm on the live site |
+| Dark background | `--black-hsl` = `0,0%,0%` (**pure black**, not the logo's charcoal `#231F20`, see §10) | [x] on the trial site |
+| Light text | `--white-hsl` = `0,0%,100%` | [x] on the trial site |
+| Heading color in a section | `--headingLargeColor` = `hsla(0,0%,0%,1)` (black in the default light theme) | [x] on the trial site |
+| Light grey | `--lightAccent-hsl` = `270,8%,90.2%` | [x] on the trial site |
+| Mid grey | `--darkAccent-hsl` = `0,0%,47.45%` | [x] on the trial site |
+
+Read on 2026-10-17 from the trial site's `:root` (the live site was not inspected). Not verified: the variables in dark section themes, and any variable for the logo's charcoal (`#231F20`).
 
 ## 10. Undecided site-wide: ask, don't assume
 
 Use a visible placeholder and list each in your response.
 
-- Which Squarespace palette slot holds the brand yellow
+- Which Squarespace palette slot holds the brand yellow: **`--accent-hsl` on the trial site**; owner to confirm it is the same on the live site
+- Dark colour for footers and dark sections: palette `--black-hsl` is pure black, the logo's charcoal `#231F20` is not in the palette. Use pure black, or add the charcoal to the palette in Site Styles?
+- Fonts: the site's own font is Poppins; the brand guide uses League Spartan (text) and Oooh Baby (accent). Keep the site font, or set the brand fonts in Site Styles so code can inherit them?
 - Whether stock photography is used
 - Where videos are hosted (Squarespace, YouTube, or Vimeo)
 - Final nav order if a page is added or merged

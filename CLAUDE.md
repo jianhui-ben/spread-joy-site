@@ -66,7 +66,7 @@ White page, brand yellow `#FDCD17`, charcoal `#231F20`. League Spartan text, Ooo
 
 ## SPEC.md versus the current code: known gaps
 
-SPEC.md was adopted **after** the home page was built. The home page code **does not yet comply** with these rules. Do not treat the current code as the standard; when touching the home page, either fix the gap or flag it to the owner. Do not quietly pick a side.
+SPEC.md was adopted **after** the home page was built (and was updated on 2026-10-17 with the Code Block lessons in §8 and the variables read from the trial site in §9). The home page code **does not yet comply** with these rules. Do not treat the current code as the standard; when touching the home page, either fix the gap or flag it to the owner. Do not quietly pick a side.
 
 | SPEC.md rule | Current home-page code |
 |---|---|
@@ -84,9 +84,21 @@ SPEC.md was adopted **after** the home page was built. The home page code **does
 | §5: contrast AA, 44px targets, 360px width | Not audited. White text over photos relies on a gradient; reduced-motion handled |
 | §6: identifiable photos need recorded consent | Photos of people are used (including a child); consent not recorded in the repo |
 | §6: autoplay/auto-advance | None (the card row is user-scrolled; the story is scroll-driven) |
-| §9: variables in use | Not inspected or filled in |
+| §9: variables in use | Read from the trial site on 2026-10-17 (see SPEC.md §9): `--accent-hsl` is the brand yellow, `--black-hsl` is pure black (not the charcoal `#231F20`), `--white-hsl` white. The home page code uses none of them yet |
+| §3: fonts inherited | The site's own font is Poppins; the code forces League Spartan, so text only matches the brand guide because of our override |
 
 Before changing the home page to follow the spec, confirm with the owner which of these to fix first. Items that need an owner decision are in SPEC.md §10.
+
+## Open decisions (owner)
+
+Also listed in SPEC.md §10. Do not decide these silently:
+
+- Brand yellow: confirm `--accent-hsl` on the live site.
+- Charcoal `#231F20` is not in the palette; the palette black is pure black. Use pure black or add the charcoal in Site Styles.
+- Fonts: keep Poppins (site) or set League Spartan and Oooh Baby in Site Styles.
+- How to bring the home page into line with SPEC.md (see the gaps table above); the biggest piece is moving header, footer and colours into native Squarespace settings.
+- Extra story photos: the owner will save photos into `assets/story/` later; the story stays at three photos until then.
+- The slide-away header applies to the home page only; every page shares the restyled header.
 
 ## Working agreements with the owner
 
