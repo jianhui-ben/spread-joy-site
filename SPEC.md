@@ -50,7 +50,7 @@ Reference build: `index.html` and `assets/styles.css` (local preview), and the h
 
 ## 3. Shared structure (native Squarespace, not rebuilt in code)
 
-- **Header:** fixed to the top on desktop and phone. **Nav order:** Home · Our Mission · Our Story · Events · Get Involved · How Can We Help · Contact · **Give** (button). At most 8 top-level items.
+- **Header:** fixed to the top on desktop and phone. **Nav order:** Home · Our Mission · Our Story · Events · How Can We Help · Contact · **Give** (button). At most 8 top-level items.
 - **Give:** the one label for donating, everywhere, always linking to the Givebutter campaign. **MUST NOT** use "Donate", "Contribute" or "Support" for that action. Every page offers a natural, unpushy place to Give.
 - **Footer:** logo, Give link, Facebook, Instagram, X, contact email, newsletter signup.
 - **Every page:** one H1, one clear purpose, one primary next step. Unfinished pages stay hidden from the nav (no "coming soon" pages).
