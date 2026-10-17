@@ -26,7 +26,7 @@ The home page is the "Joy Ripple" design: five moments on white and yellow bands
 
 ## Squarespace
 
-`squarespace/` holds the ready-to-paste snippets (`heart-block.html`, `surprise-block.html`, `footer-injection.html`). Follow `docs/squarespace-setup.md` to recreate the page in Squarespace 7.1. Design and plan: `docs/superpowers/specs/` and `docs/superpowers/plans/`.
+`squarespace/` is the library of ready-to-paste, commented snippets (`heart-block.html`, `surprise-block.html`, `footer-injection.html`). Start at `squarespace/README.md`: it indexes every snippet, says where each goes, and explains how to add new ones. Follow `docs/squarespace-setup.md` to recreate the page in Squarespace 7.1. Design and plan: `docs/superpowers/specs/` and `docs/superpowers/plans/`.
 
 ## Placeholders to fill in
 

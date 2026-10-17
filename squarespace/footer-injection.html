@@ -1,5 +1,18 @@
-<!-- Spread Joy: paste into Pages > Custom Code > Code Injection > Footer -->
+<!--
+  SNIPPET:        Site script (counter, ideas, click handling)
+  WHAT IT DOES:   Makes the heart and "Surprise me" blocks work. Part 1 holds the logic (counter,
+                  idea list, shuffler). Part 2 listens for taps on the whole page, so it keeps working
+                  even when Squarespace's editor re-draws a Code Block.
+  WHERE TO PASTE: Pages > Custom Code > Code Injection > FOOTER, then Save. Paste it once for the whole
+                  site. It does nothing on pages that have no heart or "Surprise me" block.
+  NEEDS:          A Core, Plus or Advanced plan (JavaScript is not allowed on Basic).
+  PLACEHOLDERS:   none. To change the made-up starting number, edit PLACEHOLDER_START_COUNT in Part 1.
+                  To change the kindness ideas, edit the IDEAS list in Part 1.
+  GENERATED:      by build.py (CSS from assets/styles.css, logic from assets/joy.js and assets/home.js).
+                  Change the sources and run `python3 build.py`; edits made here are overwritten.
+-->
 <script>
+/* ===== PART 1: logic (assets/joy.js) ===== */
 (function (root) {
   // PLACEHOLDER: made-up starting number for the "ripples of joy" counter.
   // Replace with real data later; nothing is stored between visits.
@@ -72,6 +85,7 @@
   root.Joy = Joy;
 })(typeof window !== 'undefined' ? window : globalThis);
 
+/* ===== PART 2: click handling (assets/home.js) ===== */
 (function (root) {
   var MAX_RINGS = 6;
 

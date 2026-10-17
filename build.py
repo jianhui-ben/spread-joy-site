@@ -273,27 +273,78 @@ def snippet_css(name):
 
 SNIPPET_VARS = ":root { --yellow: #fdcd17; --ink: #231f20; --bg: #ffffff; --muted: #6b6560; }"
 
-HEART_BLOCK = """<!-- Spread Joy: tap-the-heart. Paste into a Code Block (HTML mode). Replace {{HEART_IMAGE_URL}} with the uploaded heart.png URL. -->
+GENERATED_NOTE = (
+    "GENERATED:      by build.py (CSS from assets/styles.css, logic from assets/joy.js and assets/home.js).\n"
+    "                  Change the sources and run `python3 build.py`; edits made here are overwritten."
+)
+
+HEART_BLOCK = """<!--
+  SNIPPET:        Tap-the-heart (heart button, rings, counter)
+  WHAT IT DOES:   Shows a yellow heart. Each tap sends a ring across the screen and adds 1 to
+                  the "ripples of joy so far" number. The number is made up (see footer-injection.html).
+  WHERE TO PASTE: A Code Block in the section where the heart should appear. Set the block's mode to HTML.
+  NEEDS:          footer-injection.html installed once (Pages > Custom Code > Code Injection > Footer).
+                  Without it the heart still shows but does nothing.
+  PLACEHOLDERS:   {{HEART_IMAGE_URL}}  replace with the URL of the uploaded assets/img/heart.png.
+  __GENERATED__
+-->
 <style>
+/* Brand colours used below */
 __VARS__
+
 __CSS__
 </style>
+
+<!-- The heart, and the container the rings are added to -->
 <div class="tap-stage">
   <div id="sj-rings" class="rings" aria-hidden="true"></div>
-  <button id="sj-heart" class="heart-btn" type="button" aria-label="Tap to send a ripple of joy"><img src="{{HEART_IMAGE_URL}}" alt=""></button>
+  <button id="sj-heart" class="heart-btn" type="button" aria-label="Tap to send a ripple of joy">
+    <img src="{{HEART_IMAGE_URL}}" alt="">
+  </button>
 </div>
-<p class="counter" aria-live="polite" style="text-align:center"><span id="sj-count">__COUNT__</span> ripples of joy so far</p>
+
+<!-- The counter line. aria-live lets screen readers announce the new number -->
+<p class="counter" aria-live="polite" style="text-align:center">
+  <span id="sj-count">__COUNT__</span> ripples of joy so far
+</p>
 """
 
-SURPRISE_BLOCK = """<!-- Spread Joy: Surprise me. Paste into a Code Block (HTML mode). The button stays hidden until the footer script runs. -->
+SURPRISE_BLOCK = """<!--
+  SNIPPET:        "Surprise me" button and idea line
+  WHAT IT DOES:   A button that shows a random kindness idea each time it is tapped. It never shows
+                  the same idea twice in a row. The ideas live in footer-injection.html (the IDEAS list).
+  WHERE TO PASTE: A Code Block in the "Your turn" section. Set the block's mode to HTML.
+  NEEDS:          footer-injection.html installed once (Pages > Custom Code > Code Injection > Footer).
+                  Without it the button and the idea line stay hidden, so nothing looks broken.
+  PLACEHOLDERS:   none
+  __GENERATED__
+-->
 <style>
+/* Brand colours used below */
 __VARS__
+
 __CSS__
 </style>
+
+<!-- Both elements are hidden (class sj-needs-js) until the footer script has run -->
 <div style="text-align:center">
   <button id="sj-surprise" class="pill outline sj-needs-js" type="button">Surprise me &#9829;</button>
   <p id="sj-idea" class="idea sj-needs-js" aria-live="polite"></p>
 </div>
+"""
+
+FOOTER_HEADER = """<!--
+  SNIPPET:        Site script (counter, ideas, click handling)
+  WHAT IT DOES:   Makes the heart and "Surprise me" blocks work. Part 1 holds the logic (counter,
+                  idea list, shuffler). Part 2 listens for taps on the whole page, so it keeps working
+                  even when Squarespace's editor re-draws a Code Block.
+  WHERE TO PASTE: Pages > Custom Code > Code Injection > FOOTER, then Save. Paste it once for the whole
+                  site. It does nothing on pages that have no heart or "Surprise me" block.
+  NEEDS:          A Core, Plus or Advanced plan (JavaScript is not allowed on Basic).
+  PLACEHOLDERS:   none. To change the made-up starting number, edit PLACEHOLDER_START_COUNT in Part 1.
+                  To change the kindness ideas, edit the IDEAS list in Part 1.
+  __GENERATED__
+-->
 """
 
 
@@ -302,13 +353,16 @@ def build_snippets():
     out.mkdir(exist_ok=True)
     for filename, template, name in [("heart-block.html", HEART_BLOCK, "heart"),
                                      ("surprise-block.html", SURPRISE_BLOCK, "surprise")]:
-        text = template.replace("__COUNT__", START_COUNT).replace("__VARS__", SNIPPET_VARS).replace("__CSS__", snippet_css(name))
+        text = template.replace("__GENERATED__", GENERATED_NOTE.replace("\n                  ", "\n                  ")).replace("__COUNT__", START_COUNT).replace("__VARS__", SNIPPET_VARS).replace("__CSS__", snippet_css(name))
         (out / filename).write_text(text)
         print("wrote squarespace/" + filename)
     joy = (OUT / "assets" / "joy.js").read_text()
     home = (OUT / "assets" / "home.js").read_text()
-    script = ("<!-- Spread Joy: paste into Pages > Custom Code > Code Injection > Footer -->\n"
-              "<script>\n" + joy + "\n" + home + "</script>\n")
+    script = (FOOTER_HEADER.replace("__GENERATED__", GENERATED_NOTE)
+              + "<script>\n"
+              + "/* ===== PART 1: logic (assets/joy.js) ===== */\n" + joy + "\n"
+              + "/* ===== PART 2: click handling (assets/home.js) ===== */\n" + home
+              + "</script>\n")
     (out / "footer-injection.html").write_text(script)
     print("wrote squarespace/footer-injection.html")
 

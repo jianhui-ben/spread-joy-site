@@ -1,6 +1,19 @@
-<!-- Spread Joy: Surprise me. Paste into a Code Block (HTML mode). The button stays hidden until the footer script runs. -->
+<!--
+  SNIPPET:        "Surprise me" button and idea line
+  WHAT IT DOES:   A button that shows a random kindness idea each time it is tapped. It never shows
+                  the same idea twice in a row. The ideas live in footer-injection.html (the IDEAS list).
+  WHERE TO PASTE: A Code Block in the "Your turn" section. Set the block's mode to HTML.
+  NEEDS:          footer-injection.html installed once (Pages > Custom Code > Code Injection > Footer).
+                  Without it the button and the idea line stay hidden, so nothing looks broken.
+  PLACEHOLDERS:   none
+  GENERATED:      by build.py (CSS from assets/styles.css, logic from assets/joy.js and assets/home.js).
+                  Change the sources and run `python3 build.py`; edits made here are overwritten.
+-->
 <style>
+/* Brand colours used below */
 :root { --yellow: #fdcd17; --ink: #231f20; --bg: #ffffff; --muted: #6b6560; }
+
+/* Rounded button style (yellow); .outline is the white version with a dark border */
 .pill {
   display: inline-block; background: var(--yellow); color: var(--ink);
   border: 2px solid var(--yellow); border-radius: 999px; padding: 8px 18px;
@@ -12,8 +25,11 @@
 .sj-js .sj-needs-js { display: inline-block; }
 .sj-js .idea.sj-needs-js { display: block; }
 
+/* The line of text where the kindness idea appears */
 .idea { min-height: 3.2em; margin: 12px auto 0; max-width: 28em; font-size: 1.25rem; font-weight: 500; }
 </style>
+
+<!-- Both elements are hidden (class sj-needs-js) until the footer script has run -->
 <div style="text-align:center">
   <button id="sj-surprise" class="pill outline sj-needs-js" type="button">Surprise me &#9829;</button>
   <p id="sj-idea" class="idea sj-needs-js" aria-live="polite"></p>

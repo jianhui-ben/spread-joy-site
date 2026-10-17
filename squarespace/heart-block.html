@@ -1,12 +1,32 @@
-<!-- Spread Joy: tap-the-heart. Paste into a Code Block (HTML mode). Replace {{HEART_IMAGE_URL}} with the uploaded heart.png URL. -->
+<!--
+  SNIPPET:        Tap-the-heart (heart button, rings, counter)
+  WHAT IT DOES:   Shows a yellow heart. Each tap sends a ring across the screen and adds 1 to
+                  the "ripples of joy so far" number. The number is made up (see footer-injection.html).
+  WHERE TO PASTE: A Code Block in the section where the heart should appear. Set the block's mode to HTML.
+  NEEDS:          footer-injection.html installed once (Pages > Custom Code > Code Injection > Footer).
+                  Without it the heart still shows but does nothing.
+  PLACEHOLDERS:   {{HEART_IMAGE_URL}}  replace with the URL of the uploaded assets/img/heart.png.
+  GENERATED:      by build.py (CSS from assets/styles.css, logic from assets/joy.js and assets/home.js).
+                  Change the sources and run `python3 build.py`; edits made here are overwritten.
+-->
 <style>
+/* Brand colours used below */
 :root { --yellow: #fdcd17; --ink: #231f20; --bg: #ffffff; --muted: #6b6560; }
+
+/* Square area that holds the heart and the rings that spread out from it */
 .tap-stage { position: relative; width: min(320px, 80vw); aspect-ratio: 1; margin: 0 auto 8px; display: grid; place-items: center; }
-.heart-btn { position: relative; z-index: 1; background: none; border: 0; padding: 12px; cursor: pointer; width: 150px; min-height: 44px; transition: transform 0.15s ease; }
+/* The tappable heart: a real button, so keyboard and screen readers work */
+.heart-btn {
+  position: relative; z-index: 1;
+  background: none; border: 0; padding: 12px; cursor: pointer;
+  width: 150px; min-height: 44px;
+  transition: transform 0.15s ease;
+}
 .heart-btn:hover { transform: scale(1.05); }
 .heart-btn:active, .heart-btn.pulse { transform: scale(0.94); }
 .heart-btn:focus-visible { outline: 3px solid var(--ink); outline-offset: 4px; border-radius: 12px; }
 .heart-btn img { width: 100%; height: auto; }
+/* Rings: added by the script on each tap, removed when their animation ends */
 .rings { position: absolute; inset: 0; pointer-events: none; }
 .ring {
   position: absolute; left: 50%; top: 50%; width: 60px; height: 60px; border-radius: 50%;
@@ -14,11 +34,20 @@
   animation: ring-out 1.8s ease-out forwards;
 }
 @keyframes ring-out { to { transform: translate(-50%, -50%) scale(6); opacity: 0; } }
+/* The "ripples of joy so far" line */
 .counter { margin: 12px 0 0; color: var(--muted); font-size: 1.05rem; }
 .counter span { font-weight: 600; color: var(--ink); }
 </style>
+
+<!-- The heart, and the container the rings are added to -->
 <div class="tap-stage">
   <div id="sj-rings" class="rings" aria-hidden="true"></div>
-  <button id="sj-heart" class="heart-btn" type="button" aria-label="Tap to send a ripple of joy"><img src="{{HEART_IMAGE_URL}}" alt=""></button>
+  <button id="sj-heart" class="heart-btn" type="button" aria-label="Tap to send a ripple of joy">
+    <img src="{{HEART_IMAGE_URL}}" alt="">
+  </button>
 </div>
-<p class="counter" aria-live="polite" style="text-align:center"><span id="sj-count">1,284</span> ripples of joy so far</p>
+
+<!-- The counter line. aria-live lets screen readers announce the new number -->
+<p class="counter" aria-live="polite" style="text-align:center">
+  <span id="sj-count">1,284</span> ripples of joy so far
+</p>

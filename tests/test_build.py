@@ -130,7 +130,7 @@ class SnippetTests(unittest.TestCase):
         self.assertIn("<style>", self.heart)
         self.assertNotIn("<script", self.heart)
         self.assertIn("{{HEART_IMAGE_URL}}", self.heart)
-        self.assertNotIn("assets/", self.heart)
+        self.assertNotIn('src="assets/', self.heart)  # header comments may mention repo paths, markup may not
         self.assertIn("@keyframes ring-out", self.heart)
 
     def test_surprise_block_has_its_ids_and_style_but_no_script(self):
@@ -160,6 +160,47 @@ class SnippetTests(unittest.TestCase):
         for block in (self.heart, self.surprise):
             self.assertIn("--yellow: #fdcd17", block)
             self.assertIn("--ink: #231f20", block)
+
+
+class SnippetLibraryTests(unittest.TestCase):
+    """squarespace/ is a paste-ready library: every file is formatted, commented and indexed."""
+
+    @classmethod
+    def setUpClass(cls):
+        build_index()
+        cls.dir = ROOT / "squarespace"
+        cls.files = sorted(cls.dir.glob("*.html"))
+
+    def test_every_snippet_starts_with_a_documenting_header(self):
+        self.assertGreaterEqual(len(self.files), 3)
+        for f in self.files:
+            text = f.read_text()
+            self.assertTrue(text.startswith("<!--"), f"{f.name} has no header comment")
+            header = text[: text.index("-->")]
+            for key in ("SNIPPET:", "WHAT IT DOES:", "WHERE TO PASTE:", "NEEDS:"):
+                self.assertIn(key, header, f"{f.name} header is missing {key}")
+
+    def test_snippets_are_formatted_not_minified(self):
+        for f in self.files:
+            lines = f.read_text().split("\n")
+            self.assertGreater(len(lines), 10, f"{f.name} is too short to be formatted")
+            self.assertLess(max(len(l) for l in lines), 160, f"{f.name} has a very long line")
+
+    def test_footer_script_is_commented_by_section(self):
+        footer = (self.dir / "footer-injection.html").read_text()
+        self.assertIn("PART 1", footer)
+        self.assertIn("PART 2", footer)
+
+    def test_css_inside_block_snippets_is_commented(self):
+        for name in ("heart-block.html", "surprise-block.html"):
+            style = re.search(r"<style>(.*?)</style>", (self.dir / name).read_text(), re.S).group(1)
+            self.assertIn("/*", style, f"{name} CSS has no comments")
+
+    def test_readme_index_lists_every_snippet_and_the_convention(self):
+        readme = (self.dir / "README.md").read_text()
+        for f in self.files:
+            self.assertIn(f.name, readme)
+        self.assertIn("Adding a new snippet", readme)
 
 
 if __name__ == "__main__":
