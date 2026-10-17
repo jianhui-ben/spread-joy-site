@@ -55,6 +55,7 @@ The made-up counter number lives in `PLACEHOLDER_START_COUNT` near the top of th
 
 ## 7. Check before swapping it in
 
+- **Test in Preview, not in the editing view.** While you edit, a click on the heart just selects the block. Click the Preview (play) icon at the top right of the editor and tap the heart there. Verified 2026-10-16: in Preview, a real click raises the counter. Squarespace's editor can re-draw a Code Block's HTML, which resets the number shown on screen to 1,284 and makes the next tap jump ahead; this only happens while editing, not for visitors.
 - After saving, open the page in a private (incognito) window, logged out, since code may not run while you are logged in. Do not use Safe Mode: it turns custom code off.
 - Code Blocks may not render on index pages or with Ajax loading on. If the page shows plain text instead of the heart, check whether your site has an Ajax loading option; it may not exist in 7.1.
 - Tap the heart: rings appear, the number goes up by one. Tap "Surprise me": a new idea appears and never repeats twice in a row.
