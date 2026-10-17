@@ -23,6 +23,7 @@ START_COUNT = start_count()
 # Our Mission and Our Story are not pages yet: the nav items jump to /home#ourmission and /home#ourstory.
 # Get Involved is in SPEC.md and the brainstorm doc, and is not on Squarespace yet.
 GIVE_URL = "https://givebutter.com/SpreadJoyCollective"
+SOCKS_URL = "https://givebutter.com/socks-that-spread-joy"
 
 # Givebutter ids from the owner's dashboard (Settings > account id; campaign code beside the campaign title).
 # Left empty until supplied: nothing is shown or invented without them.
@@ -184,7 +185,7 @@ HOME_TURN = f"""<section class="turn">
   <h2 class="reveal">Your turn.</h2>
   <div class="cards" id="cards">
     <a class="card" href="events.html"><img src="assets/img/family.jpg" alt="A family in Peace, Love and Inclusion shirts"><span class="go" aria-hidden="true">&rarr;</span><h3>I have time</h3></a>
-    <a class="card" href="{GIVE_URL}" target="_blank" rel="noopener"><img src="assets/img/sock-pile.jpg" alt="A pile of donated socks"><span class="go" aria-hidden="true">&rarr;</span><h3>I want to give</h3></a>
+    <a class="card" href="{SOCKS_URL}" target="_blank" rel="noopener"><img src="assets/img/sock-pile.jpg" alt="A pile of donated socks"><span class="go" aria-hidden="true">&rarr;</span><h3>Socks that spread joy</h3></a>
     <a class="card" href="#share-a-hope"><img src="assets/img/socks-circle-2.jpg" alt="People sitting in a circle holding socks"><span class="go" aria-hidden="true">&rarr;</span><h3>I have something to share</h3></a>
     <a class="card" href="help.html"><img src="assets/img/xavier-portrait.jpg" alt="Xavier smiling with arms wide"><span class="go" aria-hidden="true">&rarr;</span><h3>I need support</h3></a>
     <div class="card surprise">
