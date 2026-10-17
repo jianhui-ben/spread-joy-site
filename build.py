@@ -18,11 +18,34 @@ def start_count():
 
 START_COUNT = start_count()
 
+# Live Squarespace slugs, checked in the editor on 2026-10-17.
+# Our Mission and Our Story are not pages yet: the nav items jump to /home#ourmission and /home#ourstory.
+# Get Involved is in SPEC.md and the brainstorm doc, and is not on Squarespace yet.
+GIVE_URL = "https://givebutter.com/SpreadJoyCollective"
+
+# Givebutter ids from the owner's dashboard (Settings > account id; campaign code beside the campaign title).
+# Left empty until supplied: nothing is shown or invented without them.
+_gb = json.loads((Path(__file__).parent / "home-page" / "image-urls.json").read_text()) if (Path(__file__).parent / "home-page" / "image-urls.json").exists() else {}
+GB_ACCOUNT = _gb.get("GB_ACCOUNT", "")
+GB_CAMPAIGN = _gb.get("GB_CAMPAIGN", "")
+GB_LIBRARY = ('<script async src="https://widgets.givebutter.com/latest.umd.cjs?acct=%s"></script>' % GB_ACCOUNT) if GB_ACCOUNT else ""
+GB_GOAL = ('<givebutter-goal-bar campaign="%s"></givebutter-goal-bar>' % GB_CAMPAIGN) if (GB_ACCOUNT and GB_CAMPAIGN) \
+    else "<!-- Live total: add GB_ACCOUNT and GB_CAMPAIGN to home-page/image-urls.json and rebuild -->"
+KOMO_URL = (
+    "https://komonews.com/amazing-america/amazing-washington-kirkland-social-media-down-syndrome-"
+    "weekly-tradition-blessed-chaos-happy-hour-marisa-mancke-david-jones-10-year-old-son-xavier"
+)
+PREVIEW_NOTE = (
+    "This is a preview. On Squarespace this form is saved for the team to review. "
+    "Nothing you type here is sent or stored."
+)
+
 NAV = [
     ("index.html", "Home"),
     ("mission.html", "Our Mission"),
     ("story.html", "Our Story"),
     ("events.html", "Events"),
+    ("get-involved.html", "Get Involved"),
     ("help.html", "How Can We Help"),
     ("contact.html", "Contact"),
 ]
@@ -37,6 +60,7 @@ SHELL = """<!doctype html>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;500;600&family=Oooh+Baby&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/styles.css">
+  <link rel="stylesheet" href="assets/give-pill.css">
 {head_extra}
 </head>
 <body>
@@ -46,7 +70,7 @@ SHELL = """<!doctype html>
     <nav aria-label="Main">
 {nav}
     </nav>
-    <a class="btn btn-dark" href="#">Donate</a>
+    <a class="btn btn-dark" href="{give}" target="_blank" rel="noopener">Give</a>
   </div>
 </header>
 <main>
@@ -66,37 +90,44 @@ SHELL = """<!doctype html>
         </ul>
       </div>
       <div>
+        <h4>Give</h4>
+        <ul>
+          <li><a href="{give}" target="_blank" rel="noopener">Give</a></li>
+        </ul>
         <h4>Follow</h4>
         <ul>
-          <li><a href="#">Instagram</a></li>
-          <li><a href="#">Facebook</a></li>
-          <li><a href="#">YouTube</a></li>
+          <li><span class="tbd">[TBD: Instagram]</span></li>
+          <li><span class="tbd">[TBD: Facebook]</span></li>
+          <li><span class="tbd">[TBD: X]</span></li>
         </ul>
       </div>
       <div>
         <h4>Stay in the loop</h4>
-        <form class="signup" action="#" onsubmit="return false">
-          <input type="email" placeholder="Your email" aria-label="Email address">
+        <form class="signup" data-preview-form>
+          <input type="email" placeholder="Your email" aria-label="Email address" required>
           <button class="btn btn-yellow" type="submit">Join</button>
+          <p class="form-note" hidden data-preview-note="{preview_note}"></p>
         </form>
       </div>
     </div>
-    <p class="legal">&copy; Spread Joy Collective &middot; <a href="#">Privacy Policy</a> &middot; <a href="mailto:hello@example.com">hello@example.com</a></p>
+    <p class="legal">&copy; Spread Joy Collective &middot; <span class="tbd">[TBD: contact email]</span></p>
   </div>
 </footer>
 {scripts}
+<script src="assets/give-pill.js" defer></script>
+<script src="assets/site.js" defer></script>
 </body>
 </html>
 """
 
-CTA = """
+CTA = f"""
 <section class="block alt">
   <div class="wrap">
     <h2>Ready to spread some joy?</h2>
     <p class="section-lead">Every gift, hour and share helps.</p>
     <div class="cta-row">
-      <a class="btn btn-yellow" href="#">Donate</a>
-      <a class="btn btn-outline" href="help.html">Get involved</a>
+      <a class="btn btn-yellow" href="{GIVE_URL}" target="_blank" rel="noopener">Give</a>
+      <a class="btn btn-outline" href="get-involved.html">Get involved</a>
     </div>
   </div>
 </section>
@@ -146,16 +177,25 @@ HOME_STORY = """<section class="story" id="story">
 HOME_TURN = f"""<section class="turn">
   <h2 class="reveal">Your turn.</h2>
   <div class="cards" id="cards">
-    <a class="card" href="help.html"><img src="assets/img/family.jpg" alt=""><span class="go" aria-hidden="true">&rarr;</span><h3>I have time</h3></a>
-    <a class="card" href="#"><img src="assets/img/sock-pile.jpg" alt=""><span class="go" aria-hidden="true">&rarr;</span><h3>I want to give</h3></a>
-    <a class="card" href="help.html"><img src="assets/img/socks-circle-2.jpg" alt=""><span class="go" aria-hidden="true">&rarr;</span><h3>I have something to share</h3></a>
-    <a class="card" href="contact.html"><img src="assets/img/xavier-portrait.jpg" alt=""><span class="go" aria-hidden="true">&rarr;</span><h3>My family could use support</h3></a>
+    <a class="card" href="get-involved.html#time"><img src="assets/img/family.jpg" alt="A family in Peace, Love and Inclusion shirts"><span class="go" aria-hidden="true">&rarr;</span><h3>I have time</h3></a>
+    <a class="card" href="{GIVE_URL}" target="_blank" rel="noopener"><img src="assets/img/sock-pile.jpg" alt="A pile of donated socks"><span class="go" aria-hidden="true">&rarr;</span><h3>I want to give</h3></a>
+    <a class="card" href="get-involved.html#share"><img src="assets/img/socks-circle-2.jpg" alt="People sitting in a circle holding socks"><span class="go" aria-hidden="true">&rarr;</span><h3>I have something to share</h3></a>
+    <a class="card" href="help.html"><img src="assets/img/xavier-portrait.jpg" alt="Xavier smiling with arms wide"><span class="go" aria-hidden="true">&rarr;</span><h3>My family could use support</h3></a>
     <div class="card surprise">
       <img class="beat" src="assets/img/heart.png" alt="">
       <p id="sj-idea" class="idea sj-needs-js" aria-live="polite"></p>
-      <button id="sj-surprise" class="pill outline sj-needs-js" type="button">Surprise me &#9829;</button>
+      <div class="joy-actions">
+        <button id="sj-surprise" class="pill sj-needs-js" type="button">Surprise me &#9829;</button>
+        <button id="sj-did-it" class="pill outline sj-needs-js" type="button">I did it!</button>
+      </div>
+      <p id="sj-done" class="done" hidden></p>
     </div>
   </div>
+</section>
+<section class="give" id="sj-give">
+  <h2 class="reveal">Help us keep it going.</h2>
+  <div class="goal">{GB_GOAL}</div>
+  <a id="sj-give-btn" class="pill" href="{GIVE_URL}" target="_blank" rel="noopener">Give &#9829;</a>
 </section>
 """
 
@@ -165,22 +205,19 @@ PAGES["index.html"] = dict(
     head_extra='<link rel="stylesheet" href="assets/home.css">',
     scripts="""<script src="assets/joy.js" defer></script>
 <script src="assets/home.js" defer></script>
-<script src="assets/scroll-story.js" defer></script>""",
+<script src="assets/scroll-story.js" defer></script>""" + GB_LIBRARY,
     body=HOME_HERO + "\n" + HOME_STORY + "\n" + WAVE_UP + "\n" + HOME_TURN,
 )
 
 PAGES["mission.html"] = dict(
     title="Our Mission",
-    description="Why Spread Joy Collective exists and who we serve.",
+    description="Spread Joy Collective supports individuals with disabilities and their families.",
     body="""
-<div class="wrap page-title"><h1>Our Mission</h1></div>
+<div class="wrap page-title" id="ourmission"><h1>Our Mission</h1></div>
 <section class="block">
   <div class="wrap prose">
-    <p>To strengthen and support families of individuals with disabilities by building community, creating opportunities, and providing meaningful assistance wherever it is needed most.</p>
-    <p><strong>Small acts. Big impact. Spread joy.</strong></p>
-    <p>Our pillars: <strong>Support</strong>, <strong>Connection</strong>, <strong>Joy</strong>.</p>
-    <p>The imperfect heart is our logo: it stands for care, connection and showing up for others. Its simplicity speaks to our belief that small acts of kindness create ripples of joy that spread far and wide.</p>
-    <p><a href="story.html">Read our story &rarr;</a> &nbsp; <a href="events.html">Meet us at an event &rarr;</a></p>
+    <p>Spread Joy Collective supports individuals with disabilities and their families by building community, creating opportunities, and providing meaningful assistance. Rooted in support, connection, and joy, we believe everyone deserves to feel seen, valued, included, and supported.</p>
+    <p><a href="story.html">Read our story &rarr;</a></p>
   </div>
 </section>
 """ + CTA,
@@ -188,18 +225,26 @@ PAGES["mission.html"] = dict(
 
 PAGES["story.html"] = dict(
     title="Our Story",
-    description="How Spread Joy Collective started and where it is going.",
-    body="""
-<div class="wrap page-title"><h1>Our Story</h1></div>
+    description="How Spread Joy Collective began with Xavier and the community around him.",
+    body=f"""
+<div class="wrap page-title" id="ourstory"><h1>Our Story</h1></div>
 <section class="block">
   <div class="wrap prose">
-    <p>Placeholder copy. Tell the origin story in three short paragraphs: how it began, what you learned, what is next.</p>
-    <p>Add a pull quote, and a link to a video or press piece if you have one.</p>
+    <p>Spread Joy Collective began with our son, Xavier.</p>
+    <p>When Xavier was born with Down syndrome, we knew we wanted him to grow up surrounded by people who would see him, celebrate him, include him, and believe in all that he could do. So we started building that community around him.</p>
+    <p>Over the years, that community grew into something pretty incredible — a whole lot of kind, accepting, inclusive humans who showed up for Xavier, for our family, and for one another. Through Team Xavier, we spent more than a decade bringing people together, giving back, spreading kindness, and creating opportunities for connection and inclusion.</p>
+    <p>As Xavier grew, so did our vision.</p>
+    <p>We know firsthand the difference it makes to have people in your corner — people who show up, create opportunities, offer support, and make sure you know you belong. Spread Joy Collective was created to help bring more of that to individuals with disabilities and their families right here in our local community.</p>
+    <p>Whether it’s providing meaningful assistance, creating opportunities, building connections, or simply finding ways to make life a little brighter, our goal is simple: to make a positive difference, one person, one family, and one act of joy at a time.</p>
+    <p>What started with one little boy has grown into something much bigger.</p>
+    <p>And we’re just getting started.</p>
+    <p>Before Spread Joy Collective officially began, KOMO News shared a glimpse into our family, our community, and something that has always been at the heart of who we are — spreading joy.</p>
+    <p><a href="{KOMO_URL}" target="_blank" rel="noopener">Watch our KOMO Amazing Washington story</a></p>
   </div>
   <div class="wrap gallery" style="margin-top:32px">
-    <img src="assets/img/family.jpg" alt="Xavier with family in Peace, Love &amp; Inclusion shirts">
+    <img src="assets/img/family.jpg" alt="Xavier with family in Peace, Love and Inclusion shirts">
     <img src="assets/img/xavier-portrait.jpg" alt="Xavier smiling with arms wide">
-    <img src="assets/img/sock-pile.jpg" alt="A huge pile of donated colorful socks">
+    <img src="assets/img/sock-pile.jpg" alt="A pile of donated colorful socks">
   </div>
 </section>
 """ + CTA,
@@ -207,33 +252,74 @@ PAGES["story.html"] = dict(
 
 PAGES["events.html"] = dict(
     title="Events",
-    description="Upcoming Spread Joy Collective events and how to register.",
-    body="""
+    description="Pints for a Purpose and other ways Spread Joy Collective brings people together.",
+    body=f"""
 <div class="wrap page-title"><h1>Events</h1></div>
-<section class="block">
-  <div class="wrap">
-    <div class="event"><div class="date">DEC<br>14</div><div class="info"><strong>Event one</strong><span>Location &middot; Time</span></div><a class="btn btn-outline" href="#">Register</a><a href="#">Add to calendar</a></div>
-    <div class="event"><div class="date">JAN<br>18</div><div class="info"><strong>Event two</strong><span>Location &middot; Time</span></div><a class="btn btn-outline" href="#">Register</a><a href="#">Add to calendar</a></div>
-    <div class="event"><div class="date">FEB<br>08</div><div class="info"><strong>Event three</strong><span>Location &middot; Time</span></div><a class="btn btn-outline" href="#">Register</a><a href="#">Add to calendar</a></div>
-    <p class="section-lead" style="margin-top:24px">Past events and photos: <a href="#">see the gallery</a>.</p>
+<section class="block" id="pints">
+  <div class="wrap" style="display:grid;gap:32px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));align-items:center">
+    <img src="assets/img/socks-circle.jpg" alt="A circle of people holding up socks they collected" style="width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:10px">
+    <div class="prose">
+      <h2>Pints for a Purpose</h2>
+      <p>What happens when you fill a brewery with generous hearts, good humans, and incredible raffle prizes? A whole lot of joy — and a community showing up for local families.</p>
+      <p>Pints for a Purpose is our annual fundraiser and one of our favorite ways to bring people together. Good, kind, accepting people coming together to make a difference is contagious. So is joy, and we love seeing it ripple beyond the event.</p>
+      <p>At the heart of it is raising funds to support local families of individuals with disabilities. Every gift earns raffle tickets, and you choose which prizes you want to try to win. Every person matters. Every gift matters.</p>
+      <p class="note"><span class="tbd">[TBD: event date, place, and how to join]</span></p>
+      <p><a class="btn btn-yellow" href="{GIVE_URL}" target="_blank" rel="noopener">Give</a></p>
+    </div>
+  </div>
+</section>
+<section class="block alt" id="socks">
+  <div class="wrap prose">
+    <h2>Socks</h2>
+    <p>Sock drives are one of the ways this community shows up. The story on the home page started with one of those piles.</p>
+    <p class="note"><span class="tbd">[TBD: next sock drive date, place, and what to bring]</span></p>
   </div>
 </section>
 """ + CTA,
 )
 
-PAGES["help.html"] = dict(
-    title="How Can We Help",
-    description="Volunteer, partner, or donate to Spread Joy Collective.",
-    body="""
-<div class="wrap page-title"><h1>How Can We Help</h1></div>
+PAGES["get-involved.html"] = dict(
+    title="Get Involved",
+    description="Find your way to spread joy: time, a gift, something to share, an idea, or support for your family.",
+    body=f"""
+<div class="wrap page-title"><h1>Find your way</h1></div>
 <section class="block">
   <div class="wrap">
+    <p class="section-lead">Everyone matters, and there are many ways to be part of this community.</p>
     <div class="cards">
-      <div class="card"><h3>Volunteer</h3><p>Give a few hours at an event.</p><a class="btn btn-yellow" href="#">Sign up</a></div>
-      <div class="card"><h3>Partner or sponsor</h3><p>Businesses and schools welcome.</p><a class="btn btn-outline" href="contact.html">Start a conversation</a></div>
-      <div class="card"><h3>Donate</h3><p>Every gift funds more joy.</p><a class="btn btn-yellow" href="#">Give now</a></div>
-      <div class="card"><h3>Spread the word</h3><p>Follow and share our posts.</p><a href="#">Instagram</a> &middot; <a href="#">Facebook</a></div>
+      <div class="card path" id="time"><h3>I have time</h3><p>Volunteer at an event or a sock drive.</p><a class="btn btn-outline" href="contact.html#time">Tell us you have time</a><p class="note"><span class="tbd">[TBD: volunteer signup]</span></p></div>
+      <div class="card path" id="share"><h3>I have something to share</h3><p>An item, a service, or an experience.</p><a class="btn btn-outline" href="contact.html#share">Share it with us</a></div>
+      <div class="card path" id="give"><h3>I want to give</h3><p>A gift through Givebutter supports local families.</p><a class="btn btn-yellow" href="{GIVE_URL}" target="_blank" rel="noopener">Give</a></div>
+      <div class="card path" id="idea"><h3>I have an idea</h3><p>A collaboration, a connection, or a skill.</p><a class="btn btn-outline" href="contact.html#idea">Send the idea</a></div>
+      <div class="card path" id="support"><h3>My family could use support</h3><p>Tell us what would make a difference.</p><a class="btn btn-yellow" href="help.html">How can we help</a></div>
     </div>
+  </div>
+</section>
+""",
+)
+
+PAGES["help.html"] = dict(
+    title="How Can We Help",
+    description="A place for local families of individuals with disabilities to tell us what support would mean.",
+    body=f"""
+<div class="wrap page-title"><h1>How can we help?</h1></div>
+<section class="block">
+  <div class="wrap" style="display:grid;gap:40px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));align-items:start">
+    <div class="prose">
+      <p><strong>Every family deserves support, connection, and joy.</strong></p>
+      <p>If your family includes someone with a disability, we’d love to learn more about you. Whether you’re seeking help accessing a program, participating in an activity, or meeting another need, tell us how we might support your family.</p>
+      <p>We’re a small nonprofit with a big heart. While support depends on available funding, every request will be considered with care.</p>
+      <p>Tell us how we can help using this form — we’re glad you’re here.</p>
+    </div>
+    <form class="stack" data-preview-form>
+      <div><label for="first">First name</label><input id="first" name="first" type="text" required autocomplete="given-name"></div>
+      <div><label for="last">Last name</label><input id="last" name="last" type="text" required autocomplete="family-name"></div>
+      <div><label for="email">Email</label><input id="email" name="email" type="email" required autocomplete="email"></div>
+      <div><label for="seeking">What support are you seeking?</label><input id="seeking" name="seeking" type="text" required></div>
+      <div><label for="more">Tell us more about your family and how we might help</label><textarea id="more" name="more" rows="5" required></textarea></div>
+      <button class="btn btn-yellow" type="submit">Submit</button>
+      <p class="form-note" hidden data-preview-note="{PREVIEW_NOTE}"></p>
+    </form>
   </div>
 </section>
 """,
@@ -241,22 +327,25 @@ PAGES["help.html"] = dict(
 
 PAGES["contact.html"] = dict(
     title="Contact",
-    description="Get in touch with Spread Joy Collective.",
-    body="""
+    description="Reach Spread Joy Collective.",
+    body=f"""
 <div class="wrap page-title"><h1>Contact</h1></div>
 <section class="block">
-  <div class="wrap" style="display:grid;gap:40px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">
-    <form class="stack" action="#" onsubmit="return false">
-      <div><label for="n">Name</label><input id="n" type="text"></div>
-      <div><label for="e">Email</label><input id="e" type="email"></div>
-      <div><label for="m">Message</label><textarea id="m" rows="5"></textarea></div>
+  <div class="wrap" style="display:grid;gap:40px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));align-items:start">
+    <form class="stack" data-preview-form>
+      <div><label for="cname">Name</label><input id="cname" name="name" type="text" required autocomplete="name"></div>
+      <div><label for="cemail">Email</label><input id="cemail" name="email" type="email" required autocomplete="email"></div>
+      <div><label for="cmsg">Message</label><textarea id="cmsg" name="message" rows="5" required></textarea></div>
       <button class="btn btn-yellow" type="submit">Send message</button>
+      <p class="form-note" hidden data-preview-note="{PREVIEW_NOTE}"></p>
     </form>
     <div class="prose">
-      <p><strong>Email</strong><br><a href="mailto:hello@example.com">hello@example.com</a></p>
-      <p><strong>Phone</strong><br><a href="tel:+10000000000">(000) 000-0000</a></p>
-      <p><strong>Find us</strong><br><a href="#">Open in Google Maps</a></p>
-      <p><strong>Follow</strong><br><a href="#">Instagram</a> &middot; <a href="#">Facebook</a></p>
+      <p id="time"><strong>I have time.</strong> Say how you’d like to help and when you’re free.</p>
+      <p id="share"><strong>I have something to share.</strong> Tell us about the item, service, or experience.</p>
+      <p id="idea"><strong>I have an idea.</strong> A collaboration, a connection, or a skill — we want to hear it.</p>
+      <p><strong>Email</strong><br><span class="tbd">[TBD: public contact email]</span></p>
+      <p><strong>Give</strong><br><a href="{GIVE_URL}" target="_blank" rel="noopener">Give through Givebutter</a></p>
+      <p class="note">The live Contact page on Squarespace is still empty. This form is the local version of what to put there. It does not send mail.</p>
     </div>
   </div>
 </section>
@@ -391,30 +480,32 @@ HOME_FOOTER_HTML = """<footer class="sj-footer">
         <h4>Explore</h4>
         <ul>
           <li><a href="/">Home</a></li>
-          <li><a href="/our-mission">Our Mission</a></li>
-          <li><a href="/our-story">Our Story</a></li>
-          <li><a href="/events">Events</a></li>
-          <li><a href="{{LINK_HELP}}">How Can We Help</a></li>
-          <li><a href="{{LINK_CONTACT}}">Contact</a></li>
+          <li><a href="mission.html">Our Mission</a></li>
+          <li><a href="story.html">Our Story</a></li>
+          <li><a href="events.html">Events</a></li>
+          <li><a href="get-involved.html">Get Involved</a></li>
+          <li><a href="help.html">How Can We Help</a></li>
+          <li><a href="contact.html">Contact</a></li>
         </ul>
       </div>
       <div>
+        <h4>Give</h4>
+        <ul>
+          <li><a href="https://givebutter.com/SpreadJoyCollective">Give</a></li>
+        </ul>
         <h4>Follow</h4>
         <ul>
-          <li><a href="#">Instagram</a></li>
-          <li><a href="#">Facebook</a></li>
-          <li><a href="#">YouTube</a></li>
+          <li>[TBD: Instagram]</li>
+          <li>[TBD: Facebook]</li>
+          <li>[TBD: X]</li>
         </ul>
       </div>
       <div>
         <h4>Stay in the loop</h4>
-        <form class="sj-signup" action="#" onsubmit="return false">
-          <input type="email" placeholder="Your email" aria-label="Email address">
-          <button type="submit">Join</button>
-        </form>
+        <p>Use Squarespace's newsletter block here. This preview does not collect email.</p>
       </div>
     </div>
-    <p class="sj-legal">&copy; Spread Joy Collective &middot; <a href="#">Privacy Policy</a> &middot; <a href="mailto:hello@example.com">hello@example.com</a></p>
+    <p class="sj-legal">&copy; Spread Joy Collective &middot; [TBD: contact email]</p>
   </div>
 </footer>
 """
@@ -494,6 +585,8 @@ __WAVE__
 
 /* --- Home page layout (assets/home.css) --- */
 __HOMECSS__
+
+__GIVEPILLCSS__
 </style>
 """
 
@@ -538,10 +631,23 @@ __HTML__
 """
 
 
+LINK_TOKENS = [
+    ("get-involved.html#time", "{{LINK_TIME}}"),
+    ("get-involved.html#share", "{{LINK_SHARE}}"),
+    ("get-involved.html", "{{LINK_INVOLVED}}"),
+    ("help.html", "{{LINK_HELP}}"),
+    ("contact.html", "{{LINK_CONTACT}}"),
+    ("mission.html", "{{LINK_MISSION}}"),
+    ("story.html", "{{LINK_STORY}}"),
+    ("events.html", "{{LINK_EVENTS}}"),
+]
+
+
 def to_placeholders(html):
     for key, name in HOME_IMAGES.items():
         html = html.replace("assets/img/" + name, "{{IMG_%s}}" % key)
-    html = html.replace('href="help.html"', 'href="{{LINK_HELP}}"').replace('href="contact.html"', 'href="{{LINK_CONTACT}}"')
+    for href, token in LINK_TOKENS:
+        html = html.replace('href="' + href + '"', 'href="' + token + '"')
     # home-page/image-urls.json holds the real Squarespace addresses; any key it lacks stays a placeholder
     urls_file = HOME_DIR / "image-urls.json"
     if urls_file.exists():
@@ -565,14 +671,16 @@ def build_home_page():
               .replace("__SURPRISE__", snippet_css("surprise"))
               .replace("__FOOTERCSS__", HOME_FOOTER_CSS)
               .replace("__WAVE__", ".sj-home .wave { display: block; width: 100%; height: 44px; margin: -1px 0; color: var(--yellow); fill: currentColor; }\n.sj-home .wave.flip { transform: scaleY(-1); }")
-              .replace("__HOMECSS__", (OUT / "assets" / "home.css").read_text().strip()))
+              .replace("__HOMECSS__", (OUT / "assets" / "home.css").read_text().strip())
+              .replace("__GIVEPILLCSS__", (OUT / "assets" / "give-pill.css").read_text().strip()))
     (HOME_DIR / "1-header-injection.html").write_text(header)
 
-    parts = [(OUT / "assets" / n).read_text() for n in ("joy.js", "home.js", "scroll-story.js")]
-    footer = (HOME_FOOTER + "<script>\n"
+    parts = [(OUT / "assets" / n).read_text() for n in ("joy.js", "home.js", "scroll-story.js", "give-pill.js")]
+    footer = (HOME_FOOTER + (GB_LIBRARY + "\n" if GB_LIBRARY else "") + "<script>\n"
               + "/* ===== PART 1: logic (assets/joy.js) ===== */\n" + parts[0] + "\n"
               + "/* ===== PART 2: taps on heart and Surprise me (assets/home.js) ===== */\n" + parts[1] + "\n"
-              + "/* ===== PART 3: scroll story, cards, header (assets/scroll-story.js) ===== */\n" + parts[2]
+              + "/* ===== PART 3: scroll story, cards, header (assets/scroll-story.js) ===== */\n" + parts[2] + "\n"
+              + "/* ===== PART 4: floating Give pill on every page (assets/give-pill.js) ===== */\n" + parts[3]
               + "</script>\n")
     (HOME_DIR / "2-footer-injection.html").write_text(footer)
 
@@ -588,12 +696,12 @@ def build_home_page():
         (5, "5-your-turn-block.html", "Yellow wave and the Your turn cards",
          "The wave, the yellow band, the Your turn headline and the swipeable photo cards, ending with Surprise me.",
          "A Code Block (mode HTML) in the THIRD (last) section.",
-         "{{IMG_FAMILY}}, {{IMG_SOCK_PILE}}, {{IMG_SOCKS_CIRCLE_2}}, {{IMG_XAVIER}}, {{IMG_HEART}}, {{LINK_HELP}}, {{LINK_CONTACT}}",
+         "{{IMG_FAMILY}}, {{IMG_SOCK_PILE}}, {{IMG_SOCKS_CIRCLE_2}}, {{IMG_XAVIER}}, {{IMG_HEART}}, {{LINK_TIME}}, {{LINK_SHARE}}, {{LINK_HELP}}",
          WAVE_UP + "\n" + HOME_TURN),
         (6, "6-footer-block.html", "Dark footer with links and sign-up",
          "The charcoal footer: logo, tagline, links, follow and the email sign-up box.",
          "A Code Block (mode HTML) in the LAST section, under block 5. Squarespace also has its own footer (Edit Site Footer): remove its content so the page does not show two.",
-         "{{IMG_HEART}}, {{LINK_HELP}}, {{LINK_CONTACT}}", HOME_FOOTER_HTML),
+         "{{IMG_HEART}}, {{LINK_MISSION}}, {{LINK_STORY}}, {{LINK_EVENTS}}, {{LINK_INVOLVED}}, {{LINK_HELP}}, {{LINK_CONTACT}}", HOME_FOOTER_HTML),
     ]
     urls_file = HOME_DIR / "image-urls.json"
     known = json.loads(urls_file.read_text()) if urls_file.exists() else {}
@@ -627,6 +735,8 @@ for filename, page in PAGES.items():
         head_extra=page.get("head_extra", ""),
         scripts=page.get("scripts", ""),
         footer_links=footer_links(),
+        give=GIVE_URL,
+        preview_note=PREVIEW_NOTE,
     )
     (OUT / filename).write_text(html)
     print("wrote", filename)

@@ -87,14 +87,31 @@
       while (rings.children.length > MAX_RINGS) rings.removeChild(rings.children[0]);
     }
 
+    function clearDone() {
+      var note = doc.getElementById('sj-done');
+      if (!note) return;
+      note.hidden = true;
+      note.textContent = '';
+    }
+
     function surprise() {
       var idea = doc.getElementById('sj-idea');
       if (idea) idea.textContent = shuffler.next();
+      clearDone();
+    }
+
+    // "I did it!" from the brainstorm. Nothing is stored; the line only confirms this tap.
+    function didIt() {
+      var note = doc.getElementById('sj-done');
+      if (!note) return;
+      note.hidden = false;
+      note.textContent = 'You just put more kindness into the world.';
     }
 
     doc.addEventListener('click', function (e) {
       if (closestWithId(e.target, 'sj-heart')) tap();
       else if (closestWithId(e.target, 'sj-surprise')) surprise();
+      else if (closestWithId(e.target, 'sj-did-it')) didIt();
     });
   }
 

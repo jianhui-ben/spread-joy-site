@@ -1,0 +1,10 @@
+/* floating Give pill: always in the corner, steps aside while the Give band is on screen */
+.sj-give-pill {
+  position: fixed; right: 20px; bottom: 20px; z-index: 50; padding: 12px 22px; border-radius: 999px;
+  background: var(--yellow); color: var(--ink) !important; font-weight: 700; text-decoration: none;
+  box-shadow: 0 8px 24px rgba(35, 31, 32, 0.25); opacity: 0; transform: translateY(24px); pointer-events: none;
+  transition: opacity 0.35s, transform 0.35s;
+}
+.sj-give-pill.on { opacity: 1; transform: none; pointer-events: auto; }
+
+@media (prefers-reduced-motion: reduce) { .sj-give-pill { transition: none; } }

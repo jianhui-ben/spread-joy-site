@@ -18,17 +18,24 @@
   // Replace with real data later; nothing is stored between visits.
   var PLACEHOLDER_START_COUNT = 1284;
 
+  // Kindness ideas from the owner's brainstorm doc. Edit this list; do not add facts.
   var IDEAS = [
-    "Give someone a sincere compliment.",
-    "Tell someone you're glad they're here.",
+    "Invite someone to join you who might otherwise be left out.",
+    "Tell someone, \"I'm so glad you're here.\"",
     "Send a \"thinking of you\" message.",
     "Notice someone's effort and let them know.",
-    "Ask someone how they're doing, then really listen.",
+    "Ask someone how they're doing, and make time to listen.",
     "Celebrate someone's accomplishment, big or small.",
     "Thank someone whose work often goes unnoticed.",
     "Introduce yourself to someone new.",
+    "Share a favorite memory with the person who made it special.",
     "Check in on someone you haven't heard from lately.",
-    "Offer a specific helping hand: \"I can bring dinner.\""
+    "Offer a specific helping hand: \"I can bring dinner.\"",
+    "Tell someone what you admire about them.",
+    "Make space for someone else's ideas.",
+    "Cheer someone on as they try something new.",
+    "Let someone know they make a difference in your life.",
+    "Give someone a sincere compliment."
   ];
 
   function formatCount(n) {
@@ -175,14 +182,31 @@
       while (rings.children.length > MAX_RINGS) rings.removeChild(rings.children[0]);
     }
 
+    function clearDone() {
+      var note = doc.getElementById('sj-done');
+      if (!note) return;
+      note.hidden = true;
+      note.textContent = '';
+    }
+
     function surprise() {
       var idea = doc.getElementById('sj-idea');
       if (idea) idea.textContent = shuffler.next();
+      clearDone();
+    }
+
+    // "I did it!" from the brainstorm. Nothing is stored; the line only confirms this tap.
+    function didIt() {
+      var note = doc.getElementById('sj-done');
+      if (!note) return;
+      note.hidden = false;
+      note.textContent = 'You just put more kindness into the world.';
     }
 
     doc.addEventListener('click', function (e) {
       if (closestWithId(e.target, 'sj-heart')) tap();
       else if (closestWithId(e.target, 'sj-surprise')) surprise();
+      else if (closestWithId(e.target, 'sj-did-it')) didIt();
     });
   }
 
@@ -348,6 +372,50 @@
     initStory(document, window);
     initCards(document);
     initHeader(document, window);
+  }
+})(typeof window !== 'undefined' ? window : globalThis);
+
+/* ===== PART 4: floating Give pill on every page (assets/give-pill.js) ===== */
+(function (root) {
+  // The one place the Give address is written for the floating pill (same as GIVE_URL in build.py).
+  var GIVE_URL = 'https://givebutter.com/SpreadJoyCollective';
+
+  // The pill is always in the corner, except while a Give band is already on screen.
+  function givePillVisible(band, vh) {
+    return !(band && band.top < vh && band.bottom > 0);
+  }
+
+  // Everything is looked up on each update: Squarespace re-draws blocks after load.
+  function initGive(doc, win) {
+    function update() {
+      var pill = doc.getElementById('sj-give-pill');
+      if (!pill) {
+        pill = doc.createElement('a');
+        pill.id = 'sj-give-pill';
+        pill.className = 'sj-give-pill';
+        pill.textContent = 'Give ♥';
+        pill.setAttribute('href', GIVE_URL);
+        pill.setAttribute('target', '_blank');
+        pill.setAttribute('rel', 'noopener');
+        doc.body.appendChild(pill);
+      }
+      var band = doc.getElementById('sj-give');
+      var r = band ? band.getBoundingClientRect() : null;
+      pill.classList.toggle('on', givePillVisible(r, win.innerHeight));
+    }
+    win.addEventListener('scroll', update, { passive: true });
+    win.addEventListener('resize', update);
+    update();
+    win.setTimeout && [100, 1000, 2500].forEach(function (ms) { win.setTimeout(update, ms); });
+  }
+
+  var api = { GIVE_URL: GIVE_URL, givePillVisible: givePillVisible, initGive: initGive };
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+  if (typeof document !== 'undefined' && typeof window !== 'undefined') {
+    root.GivePill = api;
+    // run once the page body exists; the footer injection already runs after it
+    if (document.body) initGive(document, window);
+    else document.addEventListener('DOMContentLoaded', function () { initGive(document, window); });
   }
 })(typeof window !== 'undefined' ? window : globalThis);
 </script>

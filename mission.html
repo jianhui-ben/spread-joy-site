@@ -4,10 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Our Mission | Spread Joy Collective</title>
-  <meta name="description" content="Why Spread Joy Collective exists and who we serve.">
+  <meta name="description" content="Spread Joy Collective supports individuals with disabilities and their families.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;500;600&family=Oooh+Baby&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/styles.css">
+  <link rel="stylesheet" href="assets/give-pill.css">
 
 </head>
 <body>
@@ -19,21 +20,19 @@
       <a href="mission.html" aria-current="page">Our Mission</a>
       <a href="story.html">Our Story</a>
       <a href="events.html">Events</a>
+      <a href="get-involved.html">Get Involved</a>
       <a href="help.html">How Can We Help</a>
       <a href="contact.html">Contact</a>
     </nav>
-    <a class="btn btn-dark" href="#">Donate</a>
+    <a class="btn btn-dark" href="https://givebutter.com/SpreadJoyCollective" target="_blank" rel="noopener">Give</a>
   </div>
 </header>
 <main>
-<div class="wrap page-title"><h1>Our Mission</h1></div>
+<div class="wrap page-title" id="ourmission"><h1>Our Mission</h1></div>
 <section class="block">
   <div class="wrap prose">
-    <p>To strengthen and support families of individuals with disabilities by building community, creating opportunities, and providing meaningful assistance wherever it is needed most.</p>
-    <p><strong>Small acts. Big impact. Spread joy.</strong></p>
-    <p>Our pillars: <strong>Support</strong>, <strong>Connection</strong>, <strong>Joy</strong>.</p>
-    <p>The imperfect heart is our logo: it stands for care, connection and showing up for others. Its simplicity speaks to our belief that small acts of kindness create ripples of joy that spread far and wide.</p>
-    <p><a href="story.html">Read our story &rarr;</a> &nbsp; <a href="events.html">Meet us at an event &rarr;</a></p>
+    <p>Spread Joy Collective supports individuals with disabilities and their families by building community, creating opportunities, and providing meaningful assistance. Rooted in support, connection, and joy, we believe everyone deserves to feel seen, valued, included, and supported.</p>
+    <p><a href="story.html">Read our story &rarr;</a></p>
   </div>
 </section>
 
@@ -42,8 +41,8 @@
     <h2>Ready to spread some joy?</h2>
     <p class="section-lead">Every gift, hour and share helps.</p>
     <div class="cta-row">
-      <a class="btn btn-yellow" href="#">Donate</a>
-      <a class="btn btn-outline" href="help.html">Get involved</a>
+      <a class="btn btn-yellow" href="https://givebutter.com/SpreadJoyCollective" target="_blank" rel="noopener">Give</a>
+      <a class="btn btn-outline" href="get-involved.html">Get involved</a>
     </div>
   </div>
 </section>
@@ -62,29 +61,37 @@
           <li><a href="mission.html">Our Mission</a></li>
           <li><a href="story.html">Our Story</a></li>
           <li><a href="events.html">Events</a></li>
+          <li><a href="get-involved.html">Get Involved</a></li>
           <li><a href="help.html">How Can We Help</a></li>
           <li><a href="contact.html">Contact</a></li>
         </ul>
       </div>
       <div>
+        <h4>Give</h4>
+        <ul>
+          <li><a href="https://givebutter.com/SpreadJoyCollective" target="_blank" rel="noopener">Give</a></li>
+        </ul>
         <h4>Follow</h4>
         <ul>
-          <li><a href="#">Instagram</a></li>
-          <li><a href="#">Facebook</a></li>
-          <li><a href="#">YouTube</a></li>
+          <li><span class="tbd">[TBD: Instagram]</span></li>
+          <li><span class="tbd">[TBD: Facebook]</span></li>
+          <li><span class="tbd">[TBD: X]</span></li>
         </ul>
       </div>
       <div>
         <h4>Stay in the loop</h4>
-        <form class="signup" action="#" onsubmit="return false">
-          <input type="email" placeholder="Your email" aria-label="Email address">
+        <form class="signup" data-preview-form>
+          <input type="email" placeholder="Your email" aria-label="Email address" required>
           <button class="btn btn-yellow" type="submit">Join</button>
+          <p class="form-note" hidden data-preview-note="This is a preview. On Squarespace this form is saved for the team to review. Nothing you type here is sent or stored."></p>
         </form>
       </div>
     </div>
-    <p class="legal">&copy; Spread Joy Collective &middot; <a href="#">Privacy Policy</a> &middot; <a href="mailto:hello@example.com">hello@example.com</a></p>
+    <p class="legal">&copy; Spread Joy Collective &middot; <span class="tbd">[TBD: contact email]</span></p>
   </div>
 </footer>
 
+<script src="assets/give-pill.js" defer></script>
+<script src="assets/site.js" defer></script>
 </body>
 </html>

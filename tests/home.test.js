@@ -115,6 +115,17 @@ test('taps still work after the editor re-draws the heart block', () => {
   assert.equal(doc.els['sj-count'].textContent, Joy.formatCount(Joy.PLACEHOLDER_START_COUNT + 1));
 });
 
+test('I did it confirms the tap and the next idea clears that line', () => {
+  const doc = makeDoc(ALL.concat(['sj-did-it', 'sj-done']));
+  initHome(doc, Joy);
+  doc.els['sj-did-it'].fire('click');
+  assert.equal(doc.els['sj-done'].hidden, false);
+  assert.match(doc.els['sj-done'].textContent, /kindness into the world/);
+  doc.els['sj-surprise'].fire('click');
+  assert.equal(doc.els['sj-done'].hidden, true);
+  assert.equal(doc.els['sj-done'].textContent, '');
+});
+
 test('surprise-me still works after the editor re-draws its block', () => {
   const doc = makeDoc(ALL);
   initHome(doc, Joy);

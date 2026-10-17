@@ -21,9 +21,9 @@ test('createCounter starts at the given value and each tap adds one', () => {
   assert.equal(c.value(), 1287);
 });
 
-test('there are exactly ten ideas and the glad-you-are-here idea is among them', () => {
-  assert.equal(Joy.IDEAS.length, 10);
-  assert.ok(Joy.IDEAS.includes("Tell someone you're glad they're here."));
+test('the brainstorm list is intact, including the glad-you-are-here idea', () => {
+  assert.equal(Joy.IDEAS.length, 16);
+  assert.ok(Joy.IDEAS.includes('Tell someone, "I\'m so glad you\'re here."'));
 });
 
 test('shuffler never repeats an idea back to back', () => {

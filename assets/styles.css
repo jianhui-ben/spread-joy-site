@@ -37,22 +37,27 @@ img { max-width: 100%; display: block; }
   display: flex; flex-wrap: wrap; align-items: center;
   gap: 12px 20px; padding-top: 16px; padding-bottom: 16px;
 }
-.brand { display: inline-flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none; text-transform: uppercase; letter-spacing: 0.22em; font-weight: 500; font-size: 0.95rem; }
+.brand { order: 1; display: inline-flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none; text-transform: uppercase; letter-spacing: 0.22em; font-weight: 500; font-size: 0.95rem; }
 .brand img { height: 40px; width: auto; margin: -6px 0; }
 .accent { font-family: "Oooh Baby", cursive; font-size: 1.4rem; }
-.site-header nav { margin-left: auto; display: flex; flex-wrap: wrap; gap: 6px 22px; }
+.site-header .btn { order: 2; margin-left: auto; }
+.site-header nav { order: 3; margin-left: 0; width: 100%; display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 6px 22px; }
 .site-header nav a {
   color: var(--ink); text-decoration: none; font-weight: 500;
   letter-spacing: 0.12em; text-transform: uppercase; font-size: 0.85rem;
-  padding-bottom: 2px; border-bottom: 2px solid transparent;
+  padding: 12px 0; border-bottom: 2px solid transparent;
 }
 .site-header nav a:hover,
 .site-header nav a[aria-current="page"] { border-bottom-color: var(--yellow); }
 
 .btn {
-  display: inline-block; padding: 12px 26px; border-radius: 999px;
+  display: inline-block; padding: 12px 26px; border-radius: 999px; min-height: 44px;
   font-weight: 600; text-decoration: none; border: 2px solid transparent;
 }
+a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible {
+  outline: 3px solid var(--ink); outline-offset: 3px;
+}
+[id] { scroll-margin-top: 150px; }
 .btn-dark { background: var(--yellow); color: var(--ink); }
 .btn-yellow { background: var(--yellow); color: var(--ink); }
 .btn-outline { border-color: var(--ink); color: var(--ink); }
@@ -155,13 +160,23 @@ label { font-size: 0.9rem; color: var(--muted); }
 .gallery img { width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: var(--radius); }
 .signup { display: flex; gap: 8px; }
 .signup input { flex: 1; }
+.note { color: var(--muted); font-size: 0.95rem; }
+.tbd { background: var(--yellow); color: var(--ink); padding: 0 0.25em; }
+.form-note { margin: 0; font-weight: 500; }
+.path { scroll-margin-top: 150px; }
+
+@media (min-width: 1280px) {
+  .brand, .site-header .btn, .site-header nav { order: 0; }
+  .site-header nav { width: auto; margin-left: auto; overflow: visible; }
+  .site-header .btn { margin-left: 22px; }
+}
 
 @media (max-width: 760px) {
   .site-header .wrap { gap: 6px 12px; padding-top: 10px; padding-bottom: 8px; }
-  .brand { order: 1; font-size: 0.8rem; letter-spacing: 0.14em; }
+  .brand { font-size: 0.8rem; letter-spacing: 0.14em; }
   .brand img { height: 32px; }
-  .site-header .btn { order: 2; margin-left: auto; padding: 6px 18px; }
-  .site-header nav { order: 3; margin-left: 0; width: 100%; flex-wrap: nowrap; overflow-x: auto; white-space: nowrap; gap: 18px; padding-bottom: 4px; }
+  .site-header .btn { padding: 6px 18px; }
+  .site-header nav { gap: 18px; padding-bottom: 4px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -102,8 +102,17 @@
 .card:hover > img.beat { transform: none; }
 .beat { animation: beat 2.4s ease-in-out infinite; }
 @keyframes beat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.12); } }
-.card.surprise .idea { margin: 0; color: #fff; min-height: 5em; max-width: none; font-size: 1.5rem; font-weight: 500; }
+.card.surprise .idea { margin: 0; color: #fff; min-height: 4.2em; max-width: none; font-size: 1.35rem; font-weight: 500; }
+.card.surprise .joy-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.card.surprise .pill { min-height: 44px; margin: 0; }
+.card.surprise .done { margin: 8px 0 0; color: #fff !important; font-size: 1.05rem; }
 .hint { width: min(1180px, 92vw); margin: 6px auto 0; font-size: 0.9rem; opacity: 0.7; }
+
+/* ---- give band: live Givebutter goal bar and the Give button ---- */
+.give { background: var(--yellow); padding: 8px 0 96px; text-align: center; }
+.give h2 { margin: 0 auto 24px; width: min(900px, 92vw); font-size: clamp(2.2rem, 6vw, 4.2rem); font-weight: 700; letter-spacing: -0.025em; line-height: 1.05; color: var(--ink) !important; }
+.give .goal { width: min(640px, 88vw); margin: 0 auto 28px; }
+.give .pill { padding: 14px 34px; font-size: 1.15rem; background: var(--ink); border-color: var(--ink); color: #fff; }
 
 @media (max-width: 760px) {
   .hero { padding-top: 36px; }

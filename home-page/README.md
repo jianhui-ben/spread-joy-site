@@ -42,7 +42,8 @@ Squarespace wraps every block in a padded grid that clips overflow, which would 
 - Tapping the heart adds 1 to the number and sends a ring out.
 - The story stays pinned while three photos and lines change.
 - The yellow band and wave appear full width; cards drag sideways with a mouse and swipe on a phone.
-- "Surprise me" shows a different line each tap.
+- "Surprise me" shows a different kindness idea each tap. "I did it!" shows "You just put more kindness into the world." The next idea clears that line. Nothing is saved.
+- "I have time" and "I have something to share" go to Get Involved. "I want to give" opens Givebutter. "My family could use support" goes to `/volunteer`.
 - The header slides away when scrolling down and returns when scrolling up.
 - Check a phone width and the private window (Safe Mode turns custom code off).
 

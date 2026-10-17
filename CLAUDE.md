@@ -34,9 +34,25 @@ Run both suites before committing. Develop test-first; bugs that only showed up 
 
 Never hand-edit generated files (`index.html` and other pages, `squarespace/*`, `home-page/1-6*`).
 
+## Pages (current)
+
+Local preview is the full nav from SPEC.md §3. Each page folder has the Squarespace status and the copy to paste. `python3 build.py` regenerates the HTML and `home-page/` blocks, not the page-folder READMEs.
+
+| Local file | Folder | Live Squarespace, 2026-10-17 |
+|---|---|---|
+| `index.html` | `home-page/` | Homepage. Scroll story is published. |
+| `mission.html` | `mission-page/` | Not a page. Nav link goes to `/home#ourmission`. |
+| `story.html` | `story-page/` | Not a page. Nav link goes to `/home#ourstory`. |
+| `events.html` | `events-page/` | `/events` exists and is empty. |
+| `get-involved.html` | `get-involved-page/` | Not created yet. Spec and the brainstorm doc ask for it. |
+| `help.html` | `help-page/` | Published at `/volunteer`. |
+| `contact.html` | `contact-page/` | `/contact` exists and the body is empty. |
+
+Give, everywhere, is `https://givebutter.com/SpreadJoyCollective`. Home cards: time and share → Get Involved, give → Givebutter, family support → How Can We Help. "Surprise me" uses the brainstorm kindness list; "I did it!" only confirms the tap.
+
 ## Home page (current)
 
-Scroll story: full-bleed hero with a tap-the-heart pill (counter, floating hearts, confetti) → pinned 3-photo story that slides over the hero → yellow "Your turn." card row ending in a "Surprise me" card → dark footer block. Header slides away on scroll (home page only).
+Scroll story: full-bleed hero with a tap-the-heart pill (counter, floating hearts, confetti) → pinned 3-photo story that slides over the hero → yellow "Your turn." card row ending in Surprise me and I did it. Header slides away on scroll (home page only). That tuck disagrees with SPEC.md §3 and with Michelle’s note in the brainstorm doc, which both want the nav to stay put. Left as the owner last asked, and flagged rather than changed.
 
 ## Squarespace facts
 
@@ -55,7 +71,7 @@ The home page was built **before** the spec and does not comply. Do not treat it
 | §2: `font-family: inherit`, no extra fonts | Loads League Spartan and Oooh Baby from Google Fonts |
 | §2/§3: native header, nav, footer | `1-header-injection.html` restyles the header site-wide; `6-footer-block.html` rebuilds the footer in code |
 | §2/§4: no site-wide CSS inside blocks, no Squarespace internals | Header paste holds site-wide overrides using `#header`, `.header-*`, `.page-section:has(...)`, `.fluid-engine` |
-| §3: one "Give" label to Givebutter | Mock and footer say "Donate" with `#` links |
+| §3: one "Give" label to Givebutter | Header, footer, and cards now say Give and use the Givebutter URL. Home card titles still use the brainstorm path names ("I want to give"). |
 | §4: `.sjc-` prefix; light and dark themes | Prefix is `.sj-home`/unprefixed; forced light-only |
 | §4: NGO-editable content | Lines, card titles, ideas live in `build.py` / `assets/joy.js` / block HTML |
 | §6: no invented numbers | "1,284 ripples" is a made-up placeholder (owner approved for now); "578 socks" is from the family's photo, unverified |

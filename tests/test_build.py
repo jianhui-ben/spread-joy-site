@@ -62,6 +62,34 @@ def home_rule(selector):
 
 
 class HomeTests(unittest.TestCase):
+    def test_give_band_links_to_givebutter_and_never_shows_a_made_up_total(self):
+        html = build_index()
+        band = html[html.index('id="sj-give"'):]
+        self.assertIn('id="sj-give-btn"', band)
+        self.assertIn("https://givebutter.com/SpreadJoyCollective", band)
+        self.assertIn(">Give", band)
+        # without Givebutter ids the band holds no goal-bar tag and no dollar figure
+        if "<givebutter-goal-bar" not in band:
+            self.assertNotRegex(band, r"\$\d")
+
+    def test_give_pill_address_matches_the_site_give_link(self):
+        js = (ROOT / "assets" / "give-pill.js").read_text()
+        self.assertIn("var GIVE_URL = 'https://givebutter.com/SpreadJoyCollective';", js)
+        self.assertIn("https://givebutter.com/SpreadJoyCollective", build_index())
+
+    def test_give_pill_is_on_every_page_and_in_the_squarespace_paste(self):
+        build_index()
+        for name in ("index", "mission", "contact", "get-involved"):
+            html = (ROOT / f"{name}.html").read_text()
+            self.assertIn("assets/give-pill.js", html)
+            self.assertIn("assets/give-pill.css", html)
+        self.assertIn("sj-give-pill", (ROOT / "home-page" / "1-header-injection.html").read_text())
+        self.assertIn("initGive", (ROOT / "home-page" / "2-footer-injection.html").read_text())
+
+    def test_give_pill_style_is_hidden_until_scrolled(self):
+        css = (ROOT / "assets" / "give-pill.css").read_text()
+        self.assertRegex(css, r"\.sj-give-pill\s*\{[^}]*opacity:\s*0")
+
     @classmethod
     def setUpClass(cls):
         cls.html = build_index()
@@ -93,10 +121,10 @@ class HomeTests(unittest.TestCase):
         cards = re.findall(r'<a class="card"[^>]*href="([^"]*)"[^>]*>(.*?)</a>', self.html, re.S)
         links = {text_of(re.search(r"<h3>(.*?)</h3>", body, re.S).group(1)): href for href, body in cards}
         self.assertEqual(links, {
-            "I have time": "help.html",
-            "I want to give": "#",
-            "I have something to share": "help.html",
-            "My family could use support": "contact.html",
+            "I have time": "get-involved.html#time",
+            "I want to give": "https://givebutter.com/SpreadJoyCollective",
+            "I have something to share": "get-involved.html#share",
+            "My family could use support": "help.html",
         })
 
     def test_every_link_card_has_a_photo_so_none_is_a_blank_white_block(self):
@@ -112,7 +140,7 @@ class HomeTests(unittest.TestCase):
         self.assertNotIn('cardsNext', self.html)
 
     def test_interaction_ids_exist_exactly_once(self):
-        for ident in ["sj-heart", "sj-rings", "sj-count", "sj-surprise", "sj-idea"]:
+        for ident in ["sj-heart", "sj-rings", "sj-count", "sj-surprise", "sj-idea", "sj-did-it", "sj-done"]:
             self.assertEqual(len(re.findall(r'id="%s"' % ident, self.html)), 1, ident)
 
     def test_heart_is_a_button_and_counter_announces_politely(self):
@@ -284,3 +312,33 @@ class HomePageFolderTests(unittest.TestCase):
 
     def test_story_position_does_not_use_offsettop(self):
         self.assertNotRegex((ROOT / "assets" / "scroll-story.js").read_text(), r"\.offsetTop")
+
+
+class SiteLinkTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        build_index()
+        cls.pages = {p.name: p.read_text() for p in ROOT.glob("*.html")}
+
+    def test_every_internal_page_link_resolves_and_nothing_is_a_dead_hash(self):
+        self.assertIn("get-involved.html", self.pages)
+        for name, html in self.pages.items():
+            self.assertNotIn('href="#"', html, name)
+            self.assertNotIn("hello@example.com", html, name)
+            self.assertNotRegex(html, r">\s*Donate\s*<", name)
+            for href in re.findall(r'href="([^"]+)"', html):
+                if href.startswith(("http://", "https://", "mailto:", "tel:")):
+                    continue
+                path = href.split("#", 1)[0]
+                if path.endswith(".html"):
+                    self.assertIn(path, self.pages, f"{name} links to missing {href}")
+
+    def test_live_squarespace_copy_is_on_the_local_pages(self):
+        self.assertIn("everyone deserves to feel seen, valued, included, and supported", self.pages["mission.html"])
+        self.assertIn("Spread Joy Collective began with our son, Xavier.", self.pages["story.html"])
+        self.assertIn("komonews.com", self.pages["story.html"])
+        self.assertIn("Pints for a Purpose", self.pages["events.html"])
+        self.assertNotIn("DEC", self.pages["events.html"])
+        self.assertIn("Every family deserves support, connection, and joy.", self.pages["help.html"])
+        self.assertIn("givebutter.com/SpreadJoyCollective", self.pages["index.html"])
+        self.assertIn("Get Involved", self.pages["index.html"])

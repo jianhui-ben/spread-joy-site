@@ -5,6 +5,12 @@
   "IMG_FAMILY": "https://images.squarespace-cdn.com/content/v1/6ad2ebbc79278455a0446dc4/00def73c-cf59-40e4-ac6f-87961e9a8ed2/family.jpg",
   "IMG_SOCKS_CIRCLE_2": "https://images.squarespace-cdn.com/content/v1/6ad2ebbc79278455a0446dc4/ad0e003e-bab1-4b8d-8e35-6b497061269f/socks-circle-2.jpg",
   "IMG_HEART": "https://images.squarespace-cdn.com/content/v1/6ad2ebbc79278455a0446dc4/9848640c-f765-4847-a5ea-7a44bf5b05ae/heart.png",
-  "LINK_HELP": "/how-can-we-help",
-  "LINK_CONTACT": "/contact"
+  "LINK_HELP": "/volunteer",
+  "LINK_CONTACT": "/contact",
+  "LINK_TIME": "/get-involved#time",
+  "LINK_SHARE": "/get-involved#share",
+  "LINK_INVOLVED": "/get-involved",
+  "LINK_MISSION": "/our-mission",
+  "LINK_STORY": "/our-story",
+  "LINK_EVENTS": "/events"
 }

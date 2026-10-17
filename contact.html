@@ -4,10 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Contact | Spread Joy Collective</title>
-  <meta name="description" content="Get in touch with Spread Joy Collective.">
+  <meta name="description" content="Reach Spread Joy Collective.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;500;600&family=Oooh+Baby&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/styles.css">
+  <link rel="stylesheet" href="assets/give-pill.css">
 
 </head>
 <body>
@@ -19,27 +20,31 @@
       <a href="mission.html">Our Mission</a>
       <a href="story.html">Our Story</a>
       <a href="events.html">Events</a>
+      <a href="get-involved.html">Get Involved</a>
       <a href="help.html">How Can We Help</a>
       <a href="contact.html" aria-current="page">Contact</a>
     </nav>
-    <a class="btn btn-dark" href="#">Donate</a>
+    <a class="btn btn-dark" href="https://givebutter.com/SpreadJoyCollective" target="_blank" rel="noopener">Give</a>
   </div>
 </header>
 <main>
 <div class="wrap page-title"><h1>Contact</h1></div>
 <section class="block">
-  <div class="wrap" style="display:grid;gap:40px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">
-    <form class="stack" action="#" onsubmit="return false">
-      <div><label for="n">Name</label><input id="n" type="text"></div>
-      <div><label for="e">Email</label><input id="e" type="email"></div>
-      <div><label for="m">Message</label><textarea id="m" rows="5"></textarea></div>
+  <div class="wrap" style="display:grid;gap:40px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));align-items:start">
+    <form class="stack" data-preview-form>
+      <div><label for="cname">Name</label><input id="cname" name="name" type="text" required autocomplete="name"></div>
+      <div><label for="cemail">Email</label><input id="cemail" name="email" type="email" required autocomplete="email"></div>
+      <div><label for="cmsg">Message</label><textarea id="cmsg" name="message" rows="5" required></textarea></div>
       <button class="btn btn-yellow" type="submit">Send message</button>
+      <p class="form-note" hidden data-preview-note="This is a preview. On Squarespace this form is saved for the team to review. Nothing you type here is sent or stored."></p>
     </form>
     <div class="prose">
-      <p><strong>Email</strong><br><a href="mailto:hello@example.com">hello@example.com</a></p>
-      <p><strong>Phone</strong><br><a href="tel:+10000000000">(000) 000-0000</a></p>
-      <p><strong>Find us</strong><br><a href="#">Open in Google Maps</a></p>
-      <p><strong>Follow</strong><br><a href="#">Instagram</a> &middot; <a href="#">Facebook</a></p>
+      <p id="time"><strong>I have time.</strong> Say how you’d like to help and when you’re free.</p>
+      <p id="share"><strong>I have something to share.</strong> Tell us about the item, service, or experience.</p>
+      <p id="idea"><strong>I have an idea.</strong> A collaboration, a connection, or a skill — we want to hear it.</p>
+      <p><strong>Email</strong><br><span class="tbd">[TBD: public contact email]</span></p>
+      <p><strong>Give</strong><br><a href="https://givebutter.com/SpreadJoyCollective" target="_blank" rel="noopener">Give through Givebutter</a></p>
+      <p class="note">The live Contact page on Squarespace is still empty. This form is the local version of what to put there. It does not send mail.</p>
     </div>
   </div>
 </section>
@@ -58,29 +63,37 @@
           <li><a href="mission.html">Our Mission</a></li>
           <li><a href="story.html">Our Story</a></li>
           <li><a href="events.html">Events</a></li>
+          <li><a href="get-involved.html">Get Involved</a></li>
           <li><a href="help.html">How Can We Help</a></li>
           <li><a href="contact.html">Contact</a></li>
         </ul>
       </div>
       <div>
+        <h4>Give</h4>
+        <ul>
+          <li><a href="https://givebutter.com/SpreadJoyCollective" target="_blank" rel="noopener">Give</a></li>
+        </ul>
         <h4>Follow</h4>
         <ul>
-          <li><a href="#">Instagram</a></li>
-          <li><a href="#">Facebook</a></li>
-          <li><a href="#">YouTube</a></li>
+          <li><span class="tbd">[TBD: Instagram]</span></li>
+          <li><span class="tbd">[TBD: Facebook]</span></li>
+          <li><span class="tbd">[TBD: X]</span></li>
         </ul>
       </div>
       <div>
         <h4>Stay in the loop</h4>
-        <form class="signup" action="#" onsubmit="return false">
-          <input type="email" placeholder="Your email" aria-label="Email address">
+        <form class="signup" data-preview-form>
+          <input type="email" placeholder="Your email" aria-label="Email address" required>
           <button class="btn btn-yellow" type="submit">Join</button>
+          <p class="form-note" hidden data-preview-note="This is a preview. On Squarespace this form is saved for the team to review. Nothing you type here is sent or stored."></p>
         </form>
       </div>
     </div>
-    <p class="legal">&copy; Spread Joy Collective &middot; <a href="#">Privacy Policy</a> &middot; <a href="mailto:hello@example.com">hello@example.com</a></p>
+    <p class="legal">&copy; Spread Joy Collective &middot; <span class="tbd">[TBD: contact email]</span></p>
   </div>
 </footer>
 
+<script src="assets/give-pill.js" defer></script>
+<script src="assets/site.js" defer></script>
 </body>
 </html>
