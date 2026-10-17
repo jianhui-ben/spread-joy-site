@@ -49,7 +49,10 @@
   font-size: clamp(2.2rem, 6.4vw, 5.6rem); font-weight: 700; letter-spacing: -0.025em; line-height: 1.05;
   opacity: 0; will-change: opacity, transform; text-shadow: 0 2px 24px rgba(0, 0, 0, 0.25);
 }
-.line .y { color: var(--yellow); }
+.line .y { color: var(--yellow) !important; }
+/* Squarespace colours headings itself, so the colours that must be white or ink are set with !important */
+.lines .line, .card h3, .card.surprise .idea { color: #fff !important; }
+.hero h1, .turn h2 { color: var(--ink) !important; }
 .dots { position: absolute; right: 24px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 10px; }
 .dots i { width: 8px; height: 8px; border-radius: 50%; background: rgba(255, 255, 255, 0.45); transition: background 0.3s, transform 0.3s; }
 .dots i.on { background: var(--yellow); transform: scale(1.5); }
