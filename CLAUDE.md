@@ -40,7 +40,7 @@ Scroll story: full-bleed hero with a tap-the-heart pill (counter, floating heart
 
 ## Squarespace facts
 
-- Trial site `minnow-begonia-3l5p.squarespace.com`, page **"Home (new)"** (Not Linked) holds the test build; the real Home page is untouched. The trial is viewable only inside the editor.
+- Trial site `minnow-begonia-3l5p.squarespace.com`: since 2026-10-17 the new page (slug `/home-new`, nav title "Home") **is the homepage**, first in Main Navigation. The previous Home is kept as "Home (old)" (`/home`) under Not Linked. The trial is viewable only inside the editor.
 - Code lessons (re-drawn blocks, `offsetTop`, forced dark mode, heading colors, sticky/overflow) are in SPEC.md §4.
 - The header sits on top of the first section, so the hero has extra top padding.
 - Code was pushed to the trial by setting editor contents from the generated files; the owner pastes the same files.
