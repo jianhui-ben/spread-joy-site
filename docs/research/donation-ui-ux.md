@@ -4,7 +4,7 @@ Researched 2026-10-17. Labels: **Fact** (source states it), **Inference** (my re
 
 ## Constraints (from the repo)
 
-- **Fact:** Static site pasted into Squarespace 7.1 blocks; custom JS only via Code Blocks and Code Injection, which needs a paid plan; Squarespace does not support custom code. The donate URL is still a placeholder (`href="#"`). (`README.md`, `docs/squarespace-setup.md`)
+- **Fact:** Static site pasted into Squarespace 7.1 blocks; custom JS only via Code Blocks and Code Injection, which needs a paid plan; Squarespace does not support custom code. The donate URL is still a placeholder (`href="#"`). (`README.md`)
 
 ## Prioritized recommendations
 

@@ -1,6 +1,6 @@
 # Squarespace snippets
 
-> The home page now has its own folder with a full rebuild guide: see `../home-page/README.md`. The files below are older, general snippets (tap-the-heart and "Surprise me" on their own).
+> **Legacy.** The home page now lives in `../home-page/` (start with its `README.md`). The files below are older standalone snippets (tap-the-heart and "Surprise me"), kept but not maintained.
 
 Paste-ready code for the Spread Joy Collective Squarespace site. Open a file, copy everything, paste it where the table says. Each file starts with a comment that says what it does, where to paste it and what it needs. That comment is safe to paste along with the code.
 
@@ -17,8 +17,6 @@ Paste-ready code for the Spread Joy Collective Squarespace site. Open a file, co
 1. Paste `footer-injection.html` into the site Footer and save (once).
 2. Paste the block snippets into Code Blocks on the pages that should have them.
 3. Check in the editor's **Preview** (play icon), not the editing view: while editing, a click selects the block instead of tapping it.
-
-Full setup steps for the home page are in `../docs/squarespace-setup.md`.
 
 ## Generated files
 
