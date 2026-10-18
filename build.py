@@ -515,7 +515,7 @@ HOME_FOOTER_HTML = """<footer class="sj-footer">
       <div>
         <h4>Give</h4>
         <ul>
-          <li><a href="https://givebutter.com/SpreadJoyCollective">Give</a></li>
+          <li><a href="https://givebutter.com/SpreadJoyCollective" target="_blank" rel="noopener">Give</a></li>
         </ul>
         <h4>Follow</h4>
         <ul>

@@ -92,6 +92,17 @@ class GivebutterLinkTests(unittest.TestCase):
                 found.add(slug)
         self.assertEqual(found, self.VERIFIED)
 
+    def test_every_givebutter_link_opens_in_a_new_tab(self):
+        files = [p for p in ROOT.rglob("*") if p.is_file() and p.suffix in {".html", ".js"}
+                 and not {".git", "node_modules", "docs"} & set(p.parts)]
+        seen = 0
+        for f in files:
+            for tag in re.findall(r"<a\b[^>]*givebutter\.com/[^>]*>", f.read_text(errors="ignore")):
+                seen += 1
+                self.assertIn('target="_blank"', tag, f"{f}: {tag}")
+                self.assertIn("noopener", tag, f"{f}: {tag}")
+        self.assertGreater(seen, 0)
+
 
 class HomeTests(unittest.TestCase):
     def test_give_band_links_to_givebutter_and_never_shows_a_made_up_total(self):
