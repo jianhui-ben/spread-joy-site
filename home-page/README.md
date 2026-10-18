@@ -6,7 +6,7 @@ Everything needed to rebuild the localhost home page (`index.html`) on Squarespa
 |---|------|------------|-------|
 | 1 | `1-header-injection.html` | Pages > Custom Code > Code Injection > **Header** | All the styles. Once for the whole site. |
 | 2 | `2-footer-injection.html` | Pages > Custom Code > Code Injection > **Footer** | The charcoal footer (same as localhost) and all the scripts. Replace the whole Footer field. This also hides Squarespace's own footer, so the white logo row does not sit on top. |
-| 3 | `3-hero-block.html` | Code Block 1 | Headline, growing photo, tap-the-heart |
+| 3 | `3-hero-block.html` | Code Block 1 | Headline, growing photo, tap-the-heart, page-open heart effect |
 | 4 | `4-story-block.html` | Code Block 2 | Pinned photo story |
 | 5 | `5-your-turn-block.html` | Code Block 3 | Yellow wave, "Your turn" cards, "Surprise me" |
 | 6 | `6-footer-block.html` | Do not paste | Same footer markup, kept for reference. Paste 2 already puts it on every page. Pasting this block as well shows two footers. |

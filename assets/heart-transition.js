@@ -1,7 +1,7 @@
 (function (root) {
   // Page-open effect on the landing page: a yellow heart-shaped cover shrinks away to reveal the page,
-  // and a heart stays behind the headline. Added by a teammate on the Squarespace master; the styles are
-  // in assets/heart-transition.css. Like the heart counter, the hero Code Block carries it on its own.
+  // and a heart stays behind the headline. Added by a teammate on the Squarespace master. Its styles are
+  // the <style> at the top of this Code Block; like the heart counter, the block carries it on its own.
   var DURATION = 750;
   var DURATION_REDUCED = 150;
 
