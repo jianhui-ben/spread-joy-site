@@ -324,7 +324,7 @@ CONTACT_SECTION = """<section id="sjc-contact" aria-label="Contact Spread Joy Co
   <section class="personal" aria-label="A note from Marisa">
     <div class="intro">
       <div class="tinyheart" aria-hidden="true">♥</div>
-      <h1>Good things start <br>with a hello.</h1>
+      <h1>Good things <br>start with a hello.</h1>
       <p>Have a question, an idea, or a little joy to share? I’d love to hear from you.</p>
       <p>Reach out by email, or find Spread Joy Collective on Instagram and Facebook.</p>
       <div class="signature">Marisa</div>
