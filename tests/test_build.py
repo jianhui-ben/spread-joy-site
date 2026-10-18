@@ -561,6 +561,10 @@ class XavierStoryTests(unittest.TestCase):
         self.assertNotIn("xavier-story", self.home)
         self.assertIn('class="hero"', self.home)
 
+    def test_landing_keeps_the_brand_mark_top_left(self):
+        self.assertRegex(self.landing, r'<div class="intro-brand">.*?SPREAD JOY COLLECTIVE')
+        self.assertIn(".xs .intro-brand", (ROOT / "assets" / "xavier-story.css").read_text())
+
     def test_scroll_hint_is_just_an_arrow(self):
         self.assertNotIn("Scroll with us", self.landing)
         hint = re.search(r'<a class="scroll-hint"[^>]*>(.*?)</a>', self.landing, re.S)
