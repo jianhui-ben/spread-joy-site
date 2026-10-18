@@ -46,8 +46,8 @@
 /* ---- 2. pinned story: the stage stays while photos and lines change with scroll ---- */
 .story { position: relative; z-index: 2; height: 420vh; margin-top: -9vh; }
 .stage-pin { box-shadow: 0 -24px 60px rgba(35, 31, 32, 0.28); }
-.stage-pin { position: sticky; top: 0; height: 100vh; overflow: hidden; }
-.frames { position: absolute; inset: 0; overflow: hidden; background: var(--ink); }
+.stage-pin { position: sticky; top: 0; height: 100vh; overflow: hidden; isolation: isolate; -webkit-mask-image: -webkit-radial-gradient(white, black); }
+.frames { position: absolute; inset: 0; overflow: hidden; background: var(--ink); border-radius: inherit; }
 .frame { position: absolute; inset: 0; will-change: opacity, transform; }
 .frame img { width: 100%; height: 100%; object-fit: cover; }
 .frame:nth-child(1) img { object-position: center 28%; }
