@@ -588,13 +588,16 @@ class XavierStoryTests(unittest.TestCase):
         self.assertNotIn("base64", self.story)
         self.assertLess(len(self.block), 60000)
 
-    def test_paste_block_is_self_contained_with_image_placeholders(self):
-        self.assertEqual(self.block.count("<style>"), 1)
-        self.assertIn('class="xs"', self.block)
-        self.assertIn("initXavierStory", self.block)
-        self.assertNotIn("assets/img/xavier-", self.block)  # swapped for the uploaded addresses or placeholders
+    def test_paste_block_is_self_contained_and_names_its_pictures_by_uploaded_address(self):
+        body = self.block.split("-->", 1)[1]
+        self.assertEqual(body.count("<style>"), 1)
+        self.assertIn('class="xs"', body)
+        self.assertIn("initXavierStory", body)
+        self.assertNotIn("assets/img/xavier-", body)  # never a repo path
+        urls = json.loads((ROOT / "home-page" / "image-urls.json").read_text())
         for key in ("XAVIER_SPRITE", "XAVIER_SOCKS", "XAVIER_COMMUNITY", "XAVIER_VISION"):
-            self.assertIn("{{IMG_%s}}" % key, self.block)
+            # either the uploaded address is in, or the placeholder is waiting for it
+            self.assertTrue(urls.get("IMG_" + key, "{{IMG_%s}}" % key) in body, key)
 
     def test_paste_block_keeps_the_site_header_and_footer(self):
         self.assertNotIn("body:has", self.block)  # nothing hides the site header or footer

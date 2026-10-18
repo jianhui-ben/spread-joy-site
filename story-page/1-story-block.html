@@ -3,8 +3,8 @@
   WHAT IT IS:     Six scroll-driven scenes about Xavier. The text of the page follows it.
   WHERE TO PASTE: A Code Block (mode HTML) in its own section on the Our Story page. The block carries its own
                   scoped styles and script and trims the padding of that section only; nothing site-wide is needed.
-  PLACEHOLDERS:   {{IMG_XAVIER_SPRITE}}, {{IMG_XAVIER_SOCKS}}, {{IMG_XAVIER_COMMUNITY}}, {{IMG_XAVIER_VISION}}
-                  (the four xavier-*.png pictures in the assets folder; upload them and add their addresses to home-page/image-urls.json)
+  PICTURES:       the four xavier-*.png pictures are named by their uploaded addresses (home-page/image-urls.json, keys
+                  IMG_XAVIER_*); a key missing there stays as a {{IMG_XAVIER_*}} placeholder to fill in.
   GENERATED:      by build.py from assets/xavier-story.*. Do not hand-edit.
 -->
 <style>
@@ -88,7 +88,7 @@
 .xs .stage[data-act="familiar"] .music{transform:translateX(120px) rotate(-12deg)}
 @media(max-width:650px){.xs .copy{top:62%;width:85%}.xs .copy p{font-size:18px;line-height:1.5}.xs .copy p+p{margin-top:8px}.xs .headline{top:13%}.xs .chapter-title{top:15%}.xs .theatre{top:24%;height:32%}}
 @media(max-height:700px) and (min-width:651px){.xs .copy{top:61%}.xs .copy p{font-size:17px}}
-.xs .scene-characters{position:absolute;left:50%;bottom:-12px;width:400px;height:400px;transform:translateX(-50%);background-image:url("{{IMG_XAVIER_SPRITE}}");background-size:300% 200%;background-repeat:no-repeat;z-index:5;transition:opacity .25s}
+.xs .scene-characters{position:absolute;left:50%;bottom:-12px;width:400px;height:400px;transform:translateX(-50%);background-image:url("https://images.squarespace-cdn.com/content/v1/6aab64d440806136e6ed3821/d3d91dc6-b639-451f-a30a-b812cc5d170e/xavier-sprite.png");background-size:300% 200%;background-repeat:no-repeat;z-index:5;transition:opacity .25s}
 .xs .stage[data-act="intro"] .scene-characters{background-position:0% 0%;transform:translateX(-50%) scale(.86);transform-origin:50% 97%}
 .xs .stage[data-act="different"] .scene-characters{background-position:50% 0%;transform:translateX(-50%) scale(.86);transform-origin:50% 97%}
 .xs .stage[data-act="familiar"] .scene-characters{background-position:100% 0%;transform:translateX(-50%) scale(.86);transform-origin:50% 97%}
@@ -125,9 +125,9 @@
 .xs .copy{top:var(--copy-top,70%)!important}
 .xs .headline, .xs .chapter-title{max-width:90%;margin:0 auto}
 @media(max-width:650px){.xs .theatre{width:640px!important}.xs .people{height:195px!important;width:85px!important}.xs .p5, .xs .p6{display:none!important}.xs .p1{--x:-290px!important}.xs .p2{--x:210px!important}.xs .p3{--x:-205px!important}.xs .p4{--x:150px!important}.xs .stage[data-act="vision"] .p1{--x:-290px!important}.xs .stage[data-act="vision"] .p2{--x:210px!important}.xs .copy p{font-size:16px}.xs .copy .second-title{font-size:23px}}
-.xs .stage[data-act="socks"] .scene-characters{background-image:url("{{IMG_XAVIER_SOCKS}}");background-size:contain;background-position:center bottom;background-repeat:no-repeat;}
-.xs .stage[data-act="community"] .scene-characters{background-image:url("{{IMG_XAVIER_COMMUNITY}}");background-size:contain;background-position:center bottom;background-repeat:no-repeat;}
-.xs .stage[data-act="vision"] .scene-characters{background-image:url("{{IMG_XAVIER_VISION}}");background-size:contain;background-position:center bottom;background-repeat:no-repeat;}
+.xs .stage[data-act="socks"] .scene-characters{background-image:url("https://images.squarespace-cdn.com/content/v1/6aab64d440806136e6ed3821/36aee5c8-a2f7-47eb-8736-6184d910b11c/xavier-socks.png");background-size:contain;background-position:center bottom;background-repeat:no-repeat;}
+.xs .stage[data-act="community"] .scene-characters{background-image:url("https://images.squarespace-cdn.com/content/v1/6aab64d440806136e6ed3821/a59afd3b-bc6e-4c98-8304-723a3184d6cf/xavier-community.png");background-size:contain;background-position:center bottom;background-repeat:no-repeat;}
+.xs .stage[data-act="vision"] .scene-characters{background-image:url("https://images.squarespace-cdn.com/content/v1/6aab64d440806136e6ed3821/229e5c0c-1900-4730-8370-09fb4dfad41b/xavier-vision.png");background-size:contain;background-position:center bottom;background-repeat:no-repeat;}
 .xs a:focus-visible{outline:3px solid #17758e;outline-offset:6px}
 .xs .scroll-hint{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);display:flex;align-items:center;color:var(--xs-ink);text-decoration:none;animation:xs-bob 1.6s ease-in-out infinite}
 @keyframes xs-bob{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}

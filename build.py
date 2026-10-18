@@ -873,8 +873,8 @@ def build_story_block():
             "  WHAT IT IS:     Six scroll-driven scenes about Xavier. The text of the page follows it.\n"
             "  WHERE TO PASTE: A Code Block (mode HTML) in its own section on the Our Story page. The block carries its own\n"
             "                  scoped styles and script and trims the padding of that section only; nothing site-wide is needed.\n"
-            "  PLACEHOLDERS:   {{IMG_XAVIER_SPRITE}}, {{IMG_XAVIER_SOCKS}}, {{IMG_XAVIER_COMMUNITY}}, {{IMG_XAVIER_VISION}}\n"
-            "                  (the four xavier-*.png pictures in the assets folder; upload them and add their addresses to home-page/image-urls.json)\n"
+            "  PICTURES:       the four xavier-*.png pictures are named by their uploaded addresses (home-page/image-urls.json, keys\n"
+            "                  IMG_XAVIER_*); a key missing there stays as a {{IMG_XAVIER_*}} placeholder to fill in.\n"
             "  GENERATED:      by build.py from assets/xavier-story.*. Do not hand-edit.\n-->\n"
             + to_placeholders("<style>\n" + XAVIER_SECTION_CSS + XAVIER_STYLE.split("<style>\n", 1)[1]
                               + HOME_XAVIER + XAVIER_SCRIPT))
