@@ -154,7 +154,7 @@ class HomeTests(unittest.TestCase):
         links = {text_of(re.search(r"<h3>(.*?)</h3>", body, re.S).group(1)): href for href, body in cards}
         self.assertEqual(links, {
             "I have time": "events.html",
-            "Socks that spread joy": "https://givebutter.com/socks-that-spread-joy",
+            "Socks That Spread Joy": "https://givebutter.com/socks-that-spread-joy",
             "I have something to share": "#share-a-hope",
             "I need support": "help.html",
         })

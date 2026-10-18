@@ -47,7 +47,7 @@ Local preview is the full nav from SPEC.md §3. Each page folder has the Squares
 | `help.html` | `help-page/` | Published at `/volunteer`. |
 | `contact.html` | `contact-page/` | `/contact` is the note from Marisa (email, Instagram, Facebook). Saved on the master 2026-10-17. |
 
-Give, everywhere, is `https://givebutter.com/SpreadJoyCollective`. There is no Get Involved page (owner dropped it; SPEC.md §3 still lists it, flagged to the owner). Home cards: time → Events, "Socks that spread joy" → its Givebutter page, share → hope jar, support → How Can We Help. "Surprise me" uses the brainstorm kindness list; "I did it!" only confirms the tap.
+Give, everywhere, is `https://givebutter.com/SpreadJoyCollective`. There is no Get Involved page (owner dropped it; SPEC.md §3 still lists it, flagged to the owner). Home cards: time → Events, "Socks That Spread Joy" → its Givebutter page, share → hope jar, support → How Can We Help. "Surprise me" uses the brainstorm kindness list; "I did it!" only confirms the tap.
 
 ## Home page (current)
 

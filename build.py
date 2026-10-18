@@ -186,7 +186,7 @@ HOME_TURN = f"""<section class="turn">
   <h2 class="reveal">Your turn.</h2>
   <div class="cards" id="cards">
     <a class="card" href="events.html"><img src="assets/img/family.jpg" alt="A family in Peace, Love and Inclusion shirts"><span class="go" aria-hidden="true">&rarr;</span><h3>I have time</h3></a>
-    <a class="card" href="{SOCKS_URL}" target="_blank" rel="noopener"><img src="assets/img/sock-pile.jpg" alt="A pile of donated socks"><span class="go" aria-hidden="true">&rarr;</span><h3>Socks that spread joy</h3></a>
+    <a class="card" href="{SOCKS_URL}" target="_blank" rel="noopener"><img src="assets/img/card-socks.jpg" alt="A circle of children's feet in colorful, mismatched socks"><span class="go" aria-hidden="true">&rarr;</span><h3>Socks That Spread Joy</h3></a>
     <a class="card" href="#share-a-hope"><img src="assets/img/card-share.jpg" alt="Xavier smiling beside a teammate in green aprons"><span class="go" aria-hidden="true">&rarr;</span><h3>I have something to share</h3></a>
     <a class="card" href="help.html"><img src="assets/img/card-support.jpg" alt="Xavier and a friend with their arms around each other on a sports field"><span class="go" aria-hidden="true">&rarr;</span><h3>I need support</h3></a>
     <div class="card surprise">
@@ -486,6 +486,7 @@ HOME_IMAGES = {
     "XAVIER": "xavier-portrait.jpg",
     "SOCK_PILE": "sock-pile.jpg",
     "FAMILY": "family.jpg",
+    "CARD_SOCKS": "card-socks.jpg",
     "CARD_SHARE": "card-share.jpg",
     "CARD_SUPPORT": "card-support.jpg",
     "HEART": "heart.png",
@@ -765,7 +766,7 @@ def build_home_page():
         (5, "5-your-turn-block.html", "Yellow wave and the Your turn cards",
          "The wave, the yellow band, the Your turn headline and the swipeable photo cards, ending with Surprise me.",
          "A Code Block (mode HTML) in the THIRD (last) section.",
-         "{{IMG_FAMILY}}, {{IMG_SOCK_PILE}}, {{IMG_CARD_SHARE}}, {{IMG_CARD_SUPPORT}}, {{IMG_HEART}}, {{LINK_EVENTS}}, {{LINK_HELP}}",
+         "{{IMG_FAMILY}}, {{IMG_CARD_SOCKS}}, {{IMG_CARD_SHARE}}, {{IMG_CARD_SUPPORT}}, {{IMG_HEART}}, {{LINK_EVENTS}}, {{LINK_HELP}}",
          WAVE_UP + "\n" + HOME_TURN),
         (6, "6-footer-block.html", "Dark footer with links and sign-up",
          "The charcoal footer: logo, tagline, links, follow and the email sign-up box.",
