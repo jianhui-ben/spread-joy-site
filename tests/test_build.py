@@ -105,6 +105,16 @@ class GivebutterLinkTests(unittest.TestCase):
 
 
 class HomeTests(unittest.TestCase):
+    def test_local_preview_has_the_heart_page_transition(self):
+        html = build_index()
+        self.assertIn('href="assets/heart-transition.css"', html)
+        self.assertIn('src="assets/heart-transition.js"', html)
+        # the effect attaches to .sj-home, which on Squarespace is the Code Block wrapper
+        self.assertRegex(html, r'<div class="sj-home">\s*<section class="hero">')
+        css = (ROOT / "assets" / "heart-transition.css").read_text()
+        self.assertIn("url(\"img/heart.png\")", css)
+        self.assertTrue((ROOT / "assets" / "img" / "heart.png").exists())
+
     def test_give_band_links_to_givebutter_and_never_shows_a_made_up_total(self):
         html = build_index()
         band = html[html.index('id="sj-give"'):]
@@ -371,6 +381,9 @@ class HomePageFolderTests(unittest.TestCase):
             if n == "3-hero-block.html":
                 # the hero block carries the ripples heart and counter script by itself
                 text = re.sub(r"<script>\n\(function \(root\) \{\n  // The \"ripples of joy\".*?</script>", "", text, flags=re.S)
+                # ...and the page-open heart effect: one style (every rule scoped to .sj-home) and one script
+                text = re.sub(r"<style>\n/\* Landing-page open effect.*?</style>", "", text, flags=re.S)
+                text = re.sub(r"<script>\n\(function \(root\) \{\n  // Page-open effect.*?</script>", "", text, flags=re.S)
             self.assertNotIn("<style", text, n)
             self.assertNotIn("<script", text, n)
             self.assertNotIn("assets/img", text, n)
@@ -404,12 +417,27 @@ class HomePageFolderTests(unittest.TestCase):
 
     def test_ripples_counter_lives_only_in_the_hero_block_not_in_the_site_script(self):
         hero = self.read("3-hero-block.html")
-        self.assertEqual(hero.count("<script>"), 1)
+        self.assertEqual(hero.count("<script>"), 2)  # heart counter, then the page-open heart transition
         self.assertIn("initRipples", hero)
         self.assertIn("sj-ripples", hero)
         for n in ("2-footer-injection.html", "7-page-script-block.html"):
             self.assertNotIn("initRipples", self.read(n), n)
             self.assertNotIn("sj-ripples", self.read(n), n)
+
+    def test_heart_page_transition_lives_only_in_the_hero_block(self):
+        hero = self.read("3-hero-block.html")
+        self.assertEqual(hero.count("<style>"), 1)
+        self.assertEqual(hero.count("function initHeartTransition"), 1)
+        style = re.search(r"<style>(.*?)</style>", hero, re.S).group(1)
+        for selector in re.findall(r"^\s*([.#][^{}/]+?)\s*\{", re.sub(r"/\*.*?\*/|@media[^{]*\{", "", style, flags=re.S), re.M):
+            self.assertTrue(selector.startswith(".sj-home"), "unscoped rule: " + selector)
+        self.assertIn("#heart-transition", hero)
+        self.assertNotIn("{{HEART_IMG}}", hero)
+        self.assertNotIn("assets/img", hero)
+        # the effect's own heart picture is the uploaded heart, not a repo path
+        self.assertIn("images.squarespace-cdn.com", hero[hero.index("#heart-transition::after"):][:600])
+        for n in ("2-footer-injection.html", "7-page-script-block.html", "1-header-injection.html"):
+            self.assertNotIn("heart-transition", self.read(n), n)
 
     def test_footer_has_every_script_part(self):
         js = self.read("2-footer-injection.html")

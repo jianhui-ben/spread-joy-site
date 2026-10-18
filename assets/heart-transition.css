@@ -1,0 +1,62 @@
+/* Landing-page open effect (heart cover + heart behind the headline). Scoped to .sj-home.
+   The hero Code Block carries this; local preview links it. */
+.sj-home {
+  position: relative;
+  isolation: isolate;
+}
+
+.sj-home #heart-transition {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  visibility: hidden;
+  transform: none !important;
+  background: transparent !important;
+  --heart-duration: 750ms;
+}
+
+.sj-home #heart-transition::before {
+  content: "";
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  left: 50%;
+  top: 28%;
+  background: #FFD700;
+  clip-path: path("M 50 90 C 40 80 0 55 0 30 C 0 0 35 -5 50 20 C 65 -5 100 0 100 30 C 100 55 60 80 50 90 Z");
+  transform: translate(-50%, -50%) scale(0);
+  transform-origin: center;
+  transition: transform var(--heart-duration) cubic-bezier(.65, 0, .35, 1);
+}
+
+.sj-home #heart-transition::after {
+  content: "";
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  left: 50%;
+  top: 28%;
+  background-image: url("img/heart.png");
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  transform: translate(-50%, -50%) scale(0);
+  transform-origin: center;
+  transition: transform var(--heart-duration) cubic-bezier(.65, 0, .35, 1);
+}
+
+.sj-home #heart-transition.visible { visibility: visible; }
+.sj-home #heart-transition.cover::before { transform: translate(-50%, -50%) scale(50); }
+.sj-home #heart-transition.cover::after { transform: translate(-50%, -50%) scale(0); }
+.sj-home #heart-transition.persistent::after { transform: translate(-50%, -50%) scale(4); }
+
+.sj-home .hero h1,
+.sj-home .hero .sub {
+  position: relative;
+  z-index: 2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sj-home #heart-transition { --heart-duration: 150ms; }
+}

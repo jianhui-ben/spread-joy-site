@@ -1,12 +1,76 @@
 <!--
   PASTE 3 OF 6:   Hero: headline and growing photo with the heart
   WHAT IT IS:     Giant headline, the photo that grows as you scroll, and the tap-the-heart pill on top of it.
-  WHERE TO PASTE: A Code Block (mode HTML) in the FIRST section of the Home page. It carries its own heart and counter script, so nothing in the Footer injection is needed for the counter.
+  WHERE TO PASTE: A Code Block (mode HTML) in the FIRST section of the Home page. It carries its own heart and counter script and the page-open heart effect, so nothing in the Footer injection is needed for either.
   NEEDS:          Pastes 1 and 2 installed once (Code Injection Header and Footer).
   PLACEHOLDERS:   none (addresses come from home-page/image-urls.json)
   GENERATED:      by build.py. Change build.py (HOME_* sections) and run `python3 build.py`.
 -->
 <div class="sj-home">
+<style>
+/* Landing-page open effect (heart cover + heart behind the headline). Scoped to .sj-home.
+   The hero Code Block carries this; local preview links it. */
+.sj-home {
+  position: relative;
+  isolation: isolate;
+}
+
+.sj-home #heart-transition {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  visibility: hidden;
+  transform: none !important;
+  background: transparent !important;
+  --heart-duration: 750ms;
+}
+
+.sj-home #heart-transition::before {
+  content: "";
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  left: 50%;
+  top: 28%;
+  background: #FFD700;
+  clip-path: path("M 50 90 C 40 80 0 55 0 30 C 0 0 35 -5 50 20 C 65 -5 100 0 100 30 C 100 55 60 80 50 90 Z");
+  transform: translate(-50%, -50%) scale(0);
+  transform-origin: center;
+  transition: transform var(--heart-duration) cubic-bezier(.65, 0, .35, 1);
+}
+
+.sj-home #heart-transition::after {
+  content: "";
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  left: 50%;
+  top: 28%;
+  background-image: url("https://images.squarespace-cdn.com/content/v1/6aab64d440806136e6ed3821/cbb418f5-0516-48e5-b071-4673e3ad00b2/heart.png");
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  transform: translate(-50%, -50%) scale(0);
+  transform-origin: center;
+  transition: transform var(--heart-duration) cubic-bezier(.65, 0, .35, 1);
+}
+
+.sj-home #heart-transition.visible { visibility: visible; }
+.sj-home #heart-transition.cover::before { transform: translate(-50%, -50%) scale(50); }
+.sj-home #heart-transition.cover::after { transform: translate(-50%, -50%) scale(0); }
+.sj-home #heart-transition.persistent::after { transform: translate(-50%, -50%) scale(4); }
+
+.sj-home .hero h1,
+.sj-home .hero .sub {
+  position: relative;
+  z-index: 2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sj-home #heart-transition { --heart-duration: 150ms; }
+}
+</style>
 <section class="hero">
   <h1 class="reveal">Small acts. <br>Big impact.</h1>
   <p class="sub reveal d1">Spread joy.</p>
@@ -176,6 +240,59 @@
       document.addEventListener('DOMContentLoaded', function () { initRipples(document, browserStorage()); });
     } else {
       initRipples(document, browserStorage());
+    }
+  }
+})(typeof window !== 'undefined' ? window : globalThis);
+</script>
+
+<script>
+(function (root) {
+  // Page-open effect on the landing page: a yellow heart-shaped cover shrinks away to reveal the page,
+  // and a heart stays behind the headline. Added by a teammate on the Squarespace master; the styles are
+  // in assets/heart-transition.css. Like the heart counter, the hero Code Block carries it on its own.
+  var DURATION = 750;
+  var DURATION_REDUCED = 150;
+
+  // The landing page is "/" or "/home" on Squarespace, and "/index.html" in the local preview.
+  function isHomePath(path) {
+    var p = path.replace(/\/$/, '');
+    return p === '' || p === '/home' || p === '/index.html';
+  }
+
+  function initHeartTransition(doc, win) {
+    if (win.self !== win.top) return; // not inside the editor's preview frame
+
+    var container = doc.querySelector('.sj-home');
+    if (!container || container.querySelector('#heart-transition')) return;
+    if (!isHomePath(win.location.pathname)) return;
+
+    var duration = win.matchMedia('(prefers-reduced-motion: reduce)').matches ? DURATION_REDUCED : DURATION;
+
+    var heart = doc.createElement('div');
+    heart.id = 'heart-transition';
+    heart.setAttribute('aria-hidden', 'true');
+    container.insertBefore(heart, container.firstChild);
+
+    // start fully covered with no animation, then let it shrink on the next painted frame
+    heart.style.setProperty('--heart-duration', '0ms');
+    heart.classList.add('visible', 'cover');
+    win.requestAnimationFrame(function () {
+      win.requestAnimationFrame(function () {
+        heart.style.setProperty('--heart-duration', duration + 'ms');
+        heart.classList.remove('cover');
+        heart.classList.add('persistent');
+      });
+    });
+  }
+
+  var api = { initHeartTransition: initHeartTransition, isHomePath: isHomePath };
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+
+  if (typeof document !== 'undefined' && typeof window !== 'undefined') {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function () { initHeartTransition(document, window); }, { once: true });
+    } else {
+      initHeartTransition(document, window);
     }
   }
 })(typeof window !== 'undefined' ? window : globalThis);

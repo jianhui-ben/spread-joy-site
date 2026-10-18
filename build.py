@@ -159,6 +159,13 @@ HOME_HERO = f"""<section class="hero">
 # The heart and counter script travels inside the hero block, so nothing site-wide is needed for it.
 RIPPLES_SCRIPT = "\n<script>\n" + (OUT / "assets" / "ripples.js").read_text().strip() + "\n</script>\n"
 
+# The landing-page open effect (heart cover) travels inside the hero block too: its styles and script.
+# The CSS names the heart picture by its repo path; to_placeholders swaps in the uploaded address.
+HEART_TRANSITION_STYLE = ("<style>\n"
+    + (OUT / "assets" / "heart-transition.css").read_text().strip().replace('url("img/heart.png")', 'url("assets/img/heart.png")')
+    + "\n</style>\n")
+HEART_TRANSITION_SCRIPT = "\n<script>\n" + (OUT / "assets" / "heart-transition.js").read_text().strip() + "\n</script>\n"
+
 HOME_STORY = """<section class="story" id="story">
   <div class="stage-pin">
     <div class="frames">
@@ -211,12 +218,13 @@ HOME_TURN = f"""<section class="turn">
 PAGES["index.html"] = dict(
     title="Home",
     description="Spread Joy Collective supports families of individuals with disabilities. Small acts. Big impact. Spread joy.",
-    head_extra='<link rel="stylesheet" href="assets/home.css">',
+    head_extra='<link rel="stylesheet" href="assets/home.css">\n<link rel="stylesheet" href="assets/heart-transition.css">',
     scripts="""<script src="assets/ripples.js" defer></script>
+<script src="assets/heart-transition.js" defer></script>
 <script src="assets/joy.js" defer></script>
 <script src="assets/home.js" defer></script>
 <script src="assets/scroll-story.js" defer></script>""" + GB_LIBRARY,
-    body=HOME_HERO + "\n" + HOME_STORY + "\n" + WAVE_UP + "\n" + HOME_TURN,
+    body='<div class="sj-home">\n' + HOME_HERO + "</div>\n" + HOME_STORY + "\n" + WAVE_UP + "\n" + HOME_TURN,
 )
 
 PAGES["mission.html"] = dict(
@@ -758,8 +766,8 @@ def build_home_page():
     blocks = [
         (3, "3-hero-block.html", "Hero: headline and growing photo with the heart",
          "Giant headline, the photo that grows as you scroll, and the tap-the-heart pill on top of it.",
-         "A Code Block (mode HTML) in the FIRST section of the Home page. It carries its own heart and counter script, so nothing in the Footer injection is needed for the counter.",
-         "{{IMG_SOCKS_CIRCLE}}, {{IMG_HEART}}", HOME_HERO + RIPPLES_SCRIPT),
+         "A Code Block (mode HTML) in the FIRST section of the Home page. It carries its own heart and counter script and the page-open heart effect, so nothing in the Footer injection is needed for either.",
+         "{{IMG_SOCKS_CIRCLE}}, {{IMG_HEART}}", HEART_TRANSITION_STYLE + HOME_HERO + RIPPLES_SCRIPT + HEART_TRANSITION_SCRIPT),
         (4, "4-story-block.html", "Pinned photo story",
          "Three photos and three short lines that change as you scroll while the stage stays pinned.",
          "A Code Block (mode HTML) in the SECOND section.",
