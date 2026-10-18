@@ -544,65 +544,60 @@ class SiteLinkTests(unittest.TestCase):
 
 
 class XavierStoryTests(unittest.TestCase):
-    """The animated storyline is its own page; its closing button leads to the Our Story page (text and article)."""
+    """The animated story is a block on the Our Story page (not a landing page of its own)."""
 
     def setUp(self):
         subprocess.run([sys.executable, str(ROOT / "build.py")], check=True, capture_output=True)
-        self.page = (ROOT / "storyline.html").read_text()
         self.story = (ROOT / "story.html").read_text()
-        self.block = (ROOT / "storyline-page" / "1-storyline-block.html").read_text()
+        self.block = (ROOT / "story-page" / "1-story-block.html").read_text()
         self.css = (ROOT / "assets" / "xavier-story.css").read_text()
 
-    def test_storyline_is_its_own_page_inside_the_normal_site(self):
-        self.assertIn('id="xs-story"', self.page)
-        self.assertIn('<header class="site-header">', self.page)
-        self.assertIn('<footer class="site-footer">', self.page)
-        self.assertIn("assets/xavier-story.js", self.page)
-
-    def test_our_story_page_is_the_text_and_article_page_again(self):
-        self.assertNotIn("xs-story", self.story)
-        self.assertNotIn("xavier-story", self.story)
-        self.assertIn("Spread Joy Collective began with our son, Xavier.", self.story)
-        self.assertIn("komonews.com", self.story)
-
-    def test_closing_button_leads_to_the_our_story_page(self):
-        self.assertIn("Small acts.", self.page)
-        self.assertRegex(self.page, r'<a class="button story-link" href="story\.html">The story behind Spread Joy</a>')
-
-    def test_paste_block_button_leads_to_the_live_our_story_page(self):
-        self.assertRegex(self.block, r'<a class="button story-link" href="/our-story">The story behind Spread Joy</a>')
-        self.assertNotIn('href="#"', self.block)
-
-    def test_old_story_block_and_landing_are_gone(self):
-        self.assertFalse((ROOT / "story-page" / "1-story-block.html").exists())
+    def test_there_is_no_separate_landing_page_any_more(self):
         self.assertFalse((ROOT / "landing.html").exists())
+        self.assertFalse((ROOT / "landing-page").exists())
+        self.assertNotIn("landing.html", (ROOT / "index.html").read_text())
+
+    def test_our_story_page_has_the_story_block_inside_the_normal_site(self):
+        self.assertIn('id="xs-story"', self.story)
+        self.assertIn('<header class="site-header">', self.story)
+        self.assertIn('<footer class="site-footer">', self.story)
+        self.assertIn("assets/xavier-story.js", self.story)
+        self.assertLess(self.story.index('id="xs-story"'), self.story.index("Spread Joy Collective began with our son"))
+
+    def test_story_has_the_yellow_ending_whose_button_leads_on_to_the_text(self):
+        self.assertIn('class="ending"', self.story)
+        self.assertIn("Small acts.", self.story)
+        self.assertIn("The story behind Spread Joy", self.story)
+        self.assertIn('class="button story-link" href="#the-story"', self.story)
+        self.assertIn('id="the-story"', self.story)
+        self.assertLess(self.story.index('class="ending"'), self.story.index('id="the-story"'))
 
     def test_story_does_not_repeat_the_site_brand_or_send_you_anywhere(self):
-        self.assertNotIn("intro-brand", self.page)
-        self.assertNotIn("data-home", self.page)
-        self.assertNotIn("Visit our home page", self.page)
+        self.assertNotIn("intro-brand", self.story)
+        self.assertNotIn("data-home", self.story)
+        self.assertNotIn("Visit our home page", self.story)
 
     def test_all_four_pictures_are_files_not_inlined(self):
         for n in ("xavier-sprite", "xavier-socks", "xavier-community", "xavier-vision"):
             self.assertTrue((ROOT / "assets" / "img" / (n + ".png")).exists(), n)
-        self.assertNotIn("base64", self.page)
+        self.assertNotIn("base64", self.story)
         self.assertLess(len(self.block), 60000)
 
     def test_paste_block_is_self_contained_with_image_placeholders(self):
         self.assertEqual(self.block.count("<style>"), 1)
         self.assertIn('class="xs"', self.block)
         self.assertIn("initXavierStory", self.block)
-        self.assertNotIn("assets/img/xavier-", self.block)
+        self.assertNotIn("assets/img/xavier-", self.block)  # swapped for the uploaded addresses or placeholders
         for key in ("XAVIER_SPRITE", "XAVIER_SOCKS", "XAVIER_COMMUNITY", "XAVIER_VISION"):
             self.assertIn("{{IMG_%s}}" % key, self.block)
 
     def test_paste_block_keeps_the_site_header_and_footer(self):
-        self.assertNotIn("body:has", self.block)
+        self.assertNotIn("body:has", self.block)  # nothing hides the site header or footer
         self.assertNotIn("display: none", self.block)
 
     def test_scroll_hint_is_just_an_arrow(self):
-        self.assertNotIn("Scroll with us", self.page)
-        hint = re.search(r'<a class="scroll-hint"[^>]*>(.*?)</a>', self.page, re.S)
+        self.assertNotIn("Scroll with us", self.story)
+        hint = re.search(r'<a class="scroll-hint"[^>]*>(.*?)</a>', self.story, re.S)
         self.assertIn('aria-label="Scroll down"', hint.group(0))
         self.assertEqual(re.sub(r"<[^>]+>", "", hint.group(1)).strip(), "")
 
@@ -614,24 +609,7 @@ class XavierStoryTests(unittest.TestCase):
                 self.assertTrue(sel.strip().startswith(".xs"), sel.strip())
 
     def test_ids_do_not_clash_with_the_home_story(self):
-        self.assertNotIn('id="story"', self.page)
-        self.assertNotIn('id="joy"', self.page)
+        self.assertNotIn('id="story"', self.story)
+        self.assertNotIn('id="joy"', self.story)
 
 
-class HomeTabTests(unittest.TestCase):
-    """The Home tab (and the logo) open the storyline; the storyline's button leads on to the Our Story page."""
-
-    def setUp(self):
-        subprocess.run([sys.executable, str(ROOT / "build.py")], check=True, capture_output=True)
-
-    def test_home_tab_logo_and_footer_link_open_the_storyline_on_every_page(self):
-        for name in ("index.html", "story.html", "events.html", "help.html", "contact.html", "mission.html", "storyline.html"):
-            html = (ROOT / name).read_text()
-            self.assertRegex(html, r'<a href="storyline\.html"[^>]*>Home</a>', name)
-            self.assertNotRegex(html, r'<a href="index\.html"[^>]*>Home</a>', name)
-            self.assertNotIn('class="brand" href="index.html"', html, name)
-            self.assertIn('class="brand" href="storyline.html"', html, name)
-
-    def test_the_storyline_is_the_current_page_for_the_home_tab(self):
-        html = (ROOT / "storyline.html").read_text()
-        self.assertRegex(html, r'<a href="storyline\.html" aria-current="page">Home</a>')

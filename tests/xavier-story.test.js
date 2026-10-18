@@ -79,6 +79,30 @@ test('the arrow on the last scene scrolls on past the story to the ending', () =
   assert.equal(jumps[0], -600 + 700, 'the very bottom of the track, where the ending begins');
 });
 
+test('the closing button scrolls on to the story text below the block', () => {
+  const s = setup(0);
+  const text = { scrolled: null, scrollIntoView(o) { this.scrolled = o; } };
+  const link = { addEventListener(type, fn) { this.fn = fn; } };
+  const xs = { closest: () => ({ nextElementSibling: text }) };
+  s.doc.getElementById = () => null;
+  s.doc.querySelector = ((orig) => (sel) => (sel === '.xs .story-link' ? link : sel === '.xs' ? xs : orig(sel)))(s.doc.querySelector);
+  initXavierStory(s.doc, s.win);
+  let prevented = false; link.fn({ preventDefault() { prevented = true; } });
+  assert.ok(prevented);
+  assert.equal(text.scrolled.block, 'start');
+});
+
+test('an element with id the-story wins as the target of the button', () => {
+  const s = setup(0);
+  const named = { scrollIntoView() { this.hit = true; } };
+  const link = { addEventListener(type, fn) { this.fn = fn; } };
+  s.doc.getElementById = (id) => (id === 'the-story' ? named : null);
+  s.doc.querySelector = ((orig) => (sel) => (sel === '.xs .story-link' ? link : orig(sel)))(s.doc.querySelector);
+  initXavierStory(s.doc, s.win);
+  link.fn({ preventDefault() {} });
+  assert.ok(named.hit);
+});
+
 test('the reading bar grows with scroll progress', () => {
   const s = setup(300); // halfway through 600
   initXavierStory(s.doc, s.win);
