@@ -469,9 +469,10 @@ class ContactPageTests(unittest.TestCase):
 
     def test_contact_page_is_the_hello_note_with_real_channels(self):
         self.assertEqual(len(re.findall(r"<h1[\s>]", self.html)), 1)
-        h1 = text_of(re.search(r"<h1[^>]*>(.*?)</h1>", self.html, re.S).group(1))
+        h1 = text_of(re.sub(r"<br\s*/?>", " ", re.search(r"<h1[^>]*>(.*?)</h1>", self.html, re.S).group(1)))
         self.assertEqual(h1, "Good things start with a hello.")
-        self.assertIn("Good things <br>start with a hello.", self.html)  # line break comes before "start"
+        # three lines on every screen width ("start with" together on line two); each line cannot break itself
+        self.assertIn('<span style="white-space:nowrap">Good things</span><br><span style="white-space:nowrap">start with</span><br><span style="white-space:nowrap">a hello.</span>', self.html)
         self.assertIn("I’d love to hear from you.", self.html)
         self.assertIn("marisa@spreadjoycollective.org", self.html)
         self.assertIn('href="mailto:marisa@spreadjoycollective.org"', self.html)
@@ -486,7 +487,7 @@ class ContactPageTests(unittest.TestCase):
         self.assertNotIn("The live Contact page on Squarespace is still empty", self.html)
         self.assertNotIn("[TBD: public contact email]", self.html)
         paste = (ROOT / "contact-page" / "1-contact-block.html").read_text()
-        self.assertIn("Good things <br>start with a hello.", paste)
+        self.assertIn('<span style="white-space:nowrap">start with</span>', paste)
         self.assertIn("mailto:marisa@spreadjoycollective.org", paste)
         self.assertIn("<style>", paste)
         self.assertNotIn("assets/img", paste)
