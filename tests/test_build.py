@@ -561,6 +561,12 @@ class XavierStoryTests(unittest.TestCase):
         self.assertNotIn("xavier-story", self.home)
         self.assertIn('class="hero"', self.home)
 
+    def test_scroll_hint_is_just_an_arrow(self):
+        self.assertNotIn("Scroll with us", self.landing)
+        hint = re.search(r'<a class="scroll-hint"[^>]*>(.*?)</a>', self.landing, re.S)
+        self.assertIn('aria-label="Scroll down"', hint.group(0))
+        self.assertEqual(re.sub(r"<[^>]+>", "", hint.group(1)).strip(), "")
+
     def test_landing_leads_to_home(self):
         self.assertIn('data-home="index.html"', self.landing)
         self.assertIn('href="index.html"', self.landing)  # the visible button at the end
@@ -588,4 +594,6 @@ class XavierStoryTests(unittest.TestCase):
         css = (ROOT / "assets" / "xavier-story.css").read_text()
         for m in re.finditer(r"(?:^|\})\s*([^{}@]+)\{", css, flags=re.M):
             for sel in m.group(1).split(","):
+                if sel.strip().endswith("%"):  # keyframe steps
+                    continue
                 self.assertTrue(sel.strip().startswith(".xs"), sel.strip())
