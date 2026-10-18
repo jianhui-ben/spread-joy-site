@@ -439,6 +439,12 @@ class HomePageFolderTests(unittest.TestCase):
         for n in ("2-footer-injection.html", "7-page-script-block.html", "1-header-injection.html"):
             self.assertNotIn("heart-transition", self.read(n), n)
 
+    def test_help_links_go_to_the_live_let_us_help_page_not_the_missing_volunteer_page(self):
+        for n in ("2-footer-injection.html", "5-your-turn-block.html", "6-footer-block.html"):
+            text = self.read(n)
+            self.assertNotIn("/volunteer", text, n)
+            self.assertIn('href="/let-us-help"', text, n)
+
     def test_footer_has_every_script_part(self):
         js = self.read("2-footer-injection.html")
         # one inline script, plus at most one external script and only from Givebutter's widget host
@@ -452,7 +458,7 @@ class HomePageFolderTests(unittest.TestCase):
             self.assertIn(needle, js)
         self.assertIn('class="sj-footer"', js)
         self.assertIn("#footer-sections, .sjc-footer { display: none", js)
-        self.assertIn('href="/volunteer"', js)
+        self.assertIn('href="/let-us-help"', js)
         self.assertIn("Stay in the loop", js)
         self.assertNotIn("hello@yourdomain.org", js)
         self.assertNotIn(">Donate<", js)

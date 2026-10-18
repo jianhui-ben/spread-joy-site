@@ -57,7 +57,7 @@ test('isHomePath accepts the landing page paths only', () => {
   assert.equal(isHomePath('/home/'), true);
   assert.equal(isHomePath('/index.html'), true); // the local preview
   assert.equal(isHomePath('/contact'), false);
-  assert.equal(isHomePath('/volunteer'), false);
+  assert.equal(isHomePath('/let-us-help'), false);
 });
 
 test('opening the landing page adds the heart cover as the first thing in the container', () => {

@@ -43,7 +43,7 @@ Squarespace wraps every block in a padded grid that clips overflow, which would 
 - The story stays pinned while three photos and lines change.
 - The yellow band and wave appear full width; cards drag sideways with a mouse and swipe on a phone.
 - "Surprise me" shows a different kindness idea each tap. "I did it!" shows "You just put more joy into the world." The next idea clears that line. Nothing is saved.
-- "I have time" goes to `/events`. "Socks That Spread Joy" opens its Givebutter page. "I have something to share" opens the hope jar. "I need support" goes to `/volunteer`.
+- "I have time" goes to `/events`. "Socks That Spread Joy" opens its Givebutter page. "I have something to share" opens the hope jar. "I need support" goes to `/let-us-help`.
 - The header slides away when scrolling down and returns when scrolling up.
 - Check a phone width and the private window (Safe Mode turns custom code off).
 
