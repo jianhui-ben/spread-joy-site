@@ -79,15 +79,6 @@ test('the arrow on the last scene scrolls on past the story to the ending', () =
   assert.equal(jumps[0], -600 + 700, 'the very bottom of the track, where the ending begins');
 });
 
-test('the story button stays put until it has a real address', () => {
-  const s = setup(0);
-  const link = { getAttribute: () => '#', addEventListener(type, fn) { this.fn = fn; } };
-  s.doc.querySelector = ((orig) => (sel) => (sel === '.xs .story-link' ? link : orig(sel)))(s.doc.querySelector);
-  initXavierStory(s.doc, s.win);
-  let prevented = false; link.fn({ preventDefault() { prevented = true; } });
-  assert.ok(prevented);
-});
-
 test('the reading bar grows with scroll progress', () => {
   const s = setup(300); // halfway through 600
   initXavierStory(s.doc, s.win);

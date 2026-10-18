@@ -166,7 +166,7 @@ HEART_TRANSITION_STYLE = ("<style>\n"
     + "\n</style>\n")
 HEART_TRANSITION_SCRIPT = "\n<script>\n" + (OUT / "assets" / "heart-transition.js").read_text().strip() + "\n</script>\n"
 
-# Xavier's animated story, a block on the Our Story page. Its styles are all scoped under .xs; its four pictures
+# Xavier's animated storyline, a page of its own (its closing button leads to the Our Story page). Its styles are all scoped under .xs; its four pictures
 # (assets/img/xavier-*.png) are named in the CSS by repo path, so to_placeholders swaps in the uploaded addresses.
 XAVIER_HTML = (OUT / "assets" / "xavier-story.html").read_text().strip()
 XAVIER_STYLE = ("<style>\n" + re.sub(r"url\('img/([^']+)'\)", r'url("assets/img/\1")',
@@ -241,6 +241,14 @@ PAGES["index.html"] = dict(
     body='<div class="sj-home">\n' + HOME_HERO + "</div>\n" + HOME_STORY + "\n" + WAVE_UP + "\n" + HOME_TURN,
 )
 
+PAGES["storyline.html"] = dict(
+    title="A little story about the joy of life",
+    description="A little story about Xavier, and a whole lot of joy.",
+    head_extra='<link rel="stylesheet" href="assets/xavier-story.css">',
+    scripts='<script src="assets/xavier-story.js" defer></script>',
+    body=HOME_XAVIER,
+)
+
 PAGES["mission.html"] = dict(
     title="Our Mission",
     description="Spread Joy Collective supports individuals with disabilities and their families.",
@@ -258,11 +266,8 @@ PAGES["mission.html"] = dict(
 PAGES["story.html"] = dict(
     title="Our Story",
     description="How Spread Joy Collective began with Xavier and the community around him.",
-    head_extra='<link rel="stylesheet" href="assets/xavier-story.css">',
-    scripts='<script src="assets/xavier-story.js" defer></script>',
     body=f"""
 <div class="wrap page-title" id="ourstory"><h1>Our Story</h1></div>
-{HOME_XAVIER}
 <section class="block">
   <div class="wrap prose">
     <p>Spread Joy Collective began with our son, Xavier.</p>
@@ -868,25 +873,29 @@ def build_contact_block():
     print("wrote contact-page/1-contact-block.html")
 
 
-def build_story_block():
-    """Paste-ready Code Block for the Our Story page: Xavier's animated story, all inside one block."""
-    text = ("<!--\n  OUR STORY:      Xavier's animated story\n"
-            "  WHAT IT IS:     Six scroll-driven scenes about Xavier, then a yellow closing section.\n"
-            "  WHERE TO PASTE: A Code Block (mode HTML) in its own section on the Our Story page. The block carries its own\n"
-            "                  scoped styles and script and trims the padding of that section only; nothing site-wide is needed.\n"
+# The live Our Story page (the text and the article). The closing button of the storyline leads there.
+OUR_STORY_URL = "/our-story"
+
+
+def build_storyline_block():
+    """Paste-ready Code Block for the storyline page: the animated story and its yellow ending, all in one block."""
+    text = ("<!--\n  STORYLINE PAGE: Xavier's animated story\n"
+            "  WHAT IT IS:     Six scroll-driven scenes about Xavier, then a yellow closing section whose button\n"
+            "                  ('The story behind Spread Joy') leads to the Our Story page (" + OUR_STORY_URL + ").\n"
+            "  WHERE TO PASTE: The only Code Block (mode HTML) on a NEW page for the storyline, in its own section. The block\n"
+            "                  carries its own scoped styles and script and trims the padding of that section only.\n"
             "  PLACEHOLDERS:   {{IMG_XAVIER_SPRITE}}, {{IMG_XAVIER_SOCKS}}, {{IMG_XAVIER_COMMUNITY}}, {{IMG_XAVIER_VISION}}\n"
             "                  (the four xavier-*.png pictures in the assets folder; upload them and add their addresses to home-page/image-urls.json)\n"
-            "  BUTTON:         The yellow section's 'The story behind Spread Joy' button has no address yet (href=\"#\" does nothing).\n"
             "  GENERATED:      by build.py from assets/xavier-story.*. Do not hand-edit.\n-->\n"
             + to_placeholders("<style>\n" + XAVIER_SECTION_CSS + XAVIER_STYLE.split("<style>\n", 1)[1]
-                              + HOME_XAVIER + XAVIER_SCRIPT))
-    folder = OUT / "story-page"
+                              + HOME_XAVIER.replace('href="story.html"', 'href="%s"' % OUR_STORY_URL) + XAVIER_SCRIPT))
+    folder = OUT / "storyline-page"
     folder.mkdir(exist_ok=True)
-    (folder / "1-story-block.html").write_text(text)
-    print("wrote story-page/1-story-block.html")
+    (folder / "1-storyline-block.html").write_text(text)
+    print("wrote storyline-page/1-storyline-block.html")
 
 
 build_snippets()
 build_home_page()
-build_story_block()
+build_storyline_block()
 build_contact_block()

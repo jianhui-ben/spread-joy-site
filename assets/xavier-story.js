@@ -151,9 +151,6 @@
       var next = current === SCENES.length - 1 ? track.offsetHeight : (track.offsetHeight - win.innerHeight) * Math.min(1, (current + 1.1) / SCENES.length);
       win.scrollTo({ top: top + next, behavior: reduce ? 'auto' : 'smooth' });
     });
-    // the closing button has no address yet: until it does, it does nothing
-    var link = doc.querySelector('.xs .story-link');
-    if (link && link.getAttribute('href') === '#') link.addEventListener('click', function (e) { e.preventDefault(); });
     render();
     if (doc.fonts && doc.fonts.ready) doc.fonts.ready.then(function () { render(); });
   }
