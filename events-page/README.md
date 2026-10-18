@@ -11,7 +11,7 @@ The Events page exists at `/events` and is in Main Navigation. In the editor on 
 Use native Squarespace sections, not a Code Block. The copy below is from the owner’s brainstorm doc (`assets/Website Brainstorm Ideas.docx`), not from a published event listing.
 
 1. Open the existing Events page (`/events`).
-2. Section 1: image (`assets/img/socks-circle.jpg`, already uploaded) beside the Pints copy. Button label **Give**, linking to `https://givebutter.com/SpreadJoyCollective`.
+2. Section 1: image (`assets/img/socks-circle-hero.jpg`, already uploaded) beside the Pints copy. Button label **Give**, linking to `https://givebutter.com/SpreadJoyCollective`.
 3. Leave the yellow line `[TBD: event date, place, and how to join]` until the founder supplies it. Do not invent a date.
 4. Section 2, different background: the Socks note, with `[TBD: next sock drive date, place, and what to bring]`.
 5. `LINK_EVENTS` in `home-page/image-urls.json` is `/events`.

@@ -3,7 +3,7 @@
   WHAT IT IS:     The wave, the yellow band, the Your turn headline and the swipeable photo cards, ending with Surprise me.
   WHERE TO PASTE: A Code Block (mode HTML) in the THIRD (last) section.
   NEEDS:          Pastes 1 and 2 installed once (Code Injection Header and Footer).
-  PLACEHOLDERS:   none (addresses come from home-page/image-urls.json)
+  PLACEHOLDERS:   {{IMG_CARD_SHARE}}, {{IMG_CARD_SUPPORT}}
   GENERATED:      by build.py. Change build.py (HOME_* sections) and run `python3 build.py`.
 -->
 <div class="sj-home">
@@ -13,8 +13,8 @@
   <div class="cards" id="cards">
     <a class="card" href="/events"><img src="https://images.squarespace-cdn.com/content/v1/6aab64d440806136e6ed3821/49f6812e-784e-4f16-80b8-234f33c10d6e/family.jpg" alt="A family in Peace, Love and Inclusion shirts"><span class="go" aria-hidden="true">&rarr;</span><h3>I have time</h3></a>
     <a class="card" href="https://givebutter.com/socks-that-spread-joy" target="_blank" rel="noopener"><img src="https://images.squarespace-cdn.com/content/v1/6aab64d440806136e6ed3821/7348efae-84db-4457-8255-81cf329de51d/sock-pile.jpg" alt="A pile of donated socks"><span class="go" aria-hidden="true">&rarr;</span><h3>Socks that spread joy</h3></a>
-    <a class="card" href="#share-a-hope"><img src="https://images.squarespace-cdn.com/content/v1/6aab64d440806136e6ed3821/9d583fbc-3e36-4052-9a6d-51ce7460c868/socks-circle-2.jpg" alt="People sitting in a circle holding socks"><span class="go" aria-hidden="true">&rarr;</span><h3>I have something to share</h3></a>
-    <a class="card" href="/volunteer"><img src="https://images.squarespace-cdn.com/content/v1/6aab64d440806136e6ed3821/43193f97-074b-4d3b-8b52-0c037c2f86ec/xavier-portrait.jpg" alt="Xavier smiling with arms wide"><span class="go" aria-hidden="true">&rarr;</span><h3>I need support</h3></a>
+    <a class="card" href="#share-a-hope"><img src="{{IMG_CARD_SHARE}}" alt="Xavier smiling beside a teammate in green aprons"><span class="go" aria-hidden="true">&rarr;</span><h3>I have something to share</h3></a>
+    <a class="card" href="/volunteer"><img src="{{IMG_CARD_SUPPORT}}" alt="Xavier and a friend with their arms around each other on a sports field"><span class="go" aria-hidden="true">&rarr;</span><h3>I need support</h3></a>
     <div class="card surprise">
       <img class="beat" src="https://images.squarespace-cdn.com/content/v1/6aab64d440806136e6ed3821/cbb418f5-0516-48e5-b071-4673e3ad00b2/heart.png" alt="">
       <p id="sj-idea" class="idea sj-needs-js" aria-live="polite"></p>

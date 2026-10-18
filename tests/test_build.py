@@ -142,7 +142,7 @@ class HomeTests(unittest.TestCase):
     def test_story_photos_exist_and_have_alt_text(self):
         frames = re.findall(r'<div class="frame">(.*?)</div>', self.html, re.S)
         self.assertEqual(len(frames), 3)
-        for frame, name in zip(frames, ["xavier-portrait.jpg", "socks-circle.jpg", "sock-pile.jpg"]):
+        for frame, name in zip(frames, ["xavier-portrait.jpg", "socks-circle-hero.jpg", "sock-pile.jpg"]):
             self.assertIn(f'src="assets/img/{name}"', frame)
             self.assertTrue((ROOT / "assets" / "img" / name).exists(), name)
             alt = re.search(r'alt="([^"]*)"', frame)

@@ -143,7 +143,7 @@ HOME_HERO = f"""<section class="hero">
   <h1 class="reveal">Small acts. <br>Big impact.</h1>
   <p class="sub reveal d1">Spread joy.</p>
   <div class="hero-card" id="heroCard">
-    <img src="assets/img/socks-circle.jpg" alt="A circle of volunteers holding up socks they collected">
+    <img src="assets/img/socks-circle-hero.jpg" alt="A circle of volunteers holding up socks they collected">
     <div id="sj-fx" class="fx" aria-hidden="true"></div>
     <div class="tap">
       <div class="tap-stage-mini">
@@ -163,7 +163,7 @@ HOME_STORY = """<section class="story" id="story">
   <div class="stage-pin">
     <div class="frames">
       <div class="frame"><img src="assets/img/xavier-portrait.jpg" alt="Xavier, the kid whose story started it all"></div>
-      <div class="frame"><img src="assets/img/socks-circle.jpg" alt="A circle of people holding socks together"></div>
+      <div class="frame"><img src="assets/img/socks-circle-hero.jpg" alt="A circle of people holding socks together"></div>
       <div class="frame"><img src="assets/img/sock-pile.jpg" alt="A big pile of donated socks"></div>
       <div class="shade"></div>
       <div class="dots" aria-hidden="true"><i></i><i></i><i></i></div>
@@ -187,8 +187,8 @@ HOME_TURN = f"""<section class="turn">
   <div class="cards" id="cards">
     <a class="card" href="events.html"><img src="assets/img/family.jpg" alt="A family in Peace, Love and Inclusion shirts"><span class="go" aria-hidden="true">&rarr;</span><h3>I have time</h3></a>
     <a class="card" href="{SOCKS_URL}" target="_blank" rel="noopener"><img src="assets/img/sock-pile.jpg" alt="A pile of donated socks"><span class="go" aria-hidden="true">&rarr;</span><h3>Socks that spread joy</h3></a>
-    <a class="card" href="#share-a-hope"><img src="assets/img/socks-circle-2.jpg" alt="People sitting in a circle holding socks"><span class="go" aria-hidden="true">&rarr;</span><h3>I have something to share</h3></a>
-    <a class="card" href="help.html"><img src="assets/img/xavier-portrait.jpg" alt="Xavier smiling with arms wide"><span class="go" aria-hidden="true">&rarr;</span><h3>I need support</h3></a>
+    <a class="card" href="#share-a-hope"><img src="assets/img/card-share.jpg" alt="Xavier smiling beside a teammate in green aprons"><span class="go" aria-hidden="true">&rarr;</span><h3>I have something to share</h3></a>
+    <a class="card" href="help.html"><img src="assets/img/card-support.jpg" alt="Xavier and a friend with their arms around each other on a sports field"><span class="go" aria-hidden="true">&rarr;</span><h3>I need support</h3></a>
     <div class="card surprise">
       <img class="beat" src="assets/img/heart.png" alt="">
       <p id="sj-idea" class="idea sj-needs-js" aria-live="polite"></p>
@@ -267,7 +267,7 @@ PAGES["events.html"] = dict(
 <div class="wrap page-title"><h1>Events</h1></div>
 <section class="block" id="pints">
   <div class="wrap" style="display:grid;gap:32px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));align-items:center">
-    <img src="assets/img/socks-circle.jpg" alt="A circle of people holding up socks they collected" style="width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:10px">
+    <img src="assets/img/socks-circle-hero.jpg" alt="A circle of people holding up socks they collected" style="width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:10px">
     <div class="prose">
       <h2>Pints for a Purpose</h2>
       <p>What happens when you fill a brewery with generous hearts, good humans, and incredible raffle prizes? A whole lot of joy — and a community showing up for local families.</p>
@@ -482,11 +482,12 @@ HOME_DIR = OUT / "home-page"
 
 # Images used on the home page: placeholder name -> local file (uploaded to Squarespace by hand)
 HOME_IMAGES = {
-    "SOCKS_CIRCLE": "socks-circle.jpg",
+    "SOCKS_CIRCLE": "socks-circle-hero.jpg",
     "XAVIER": "xavier-portrait.jpg",
     "SOCK_PILE": "sock-pile.jpg",
     "FAMILY": "family.jpg",
-    "SOCKS_CIRCLE_2": "socks-circle-2.jpg",
+    "CARD_SHARE": "card-share.jpg",
+    "CARD_SUPPORT": "card-support.jpg",
     "HEART": "heart.png",
 }
 
@@ -764,7 +765,7 @@ def build_home_page():
         (5, "5-your-turn-block.html", "Yellow wave and the Your turn cards",
          "The wave, the yellow band, the Your turn headline and the swipeable photo cards, ending with Surprise me.",
          "A Code Block (mode HTML) in the THIRD (last) section.",
-         "{{IMG_FAMILY}}, {{IMG_SOCK_PILE}}, {{IMG_SOCKS_CIRCLE_2}}, {{IMG_XAVIER}}, {{IMG_HEART}}, {{LINK_EVENTS}}, {{LINK_HELP}}",
+         "{{IMG_FAMILY}}, {{IMG_SOCK_PILE}}, {{IMG_CARD_SHARE}}, {{IMG_CARD_SUPPORT}}, {{IMG_HEART}}, {{LINK_EVENTS}}, {{LINK_HELP}}",
          WAVE_UP + "\n" + HOME_TURN),
         (6, "6-footer-block.html", "Dark footer with links and sign-up",
          "The charcoal footer: logo, tagline, links, follow and the email sign-up box.",
