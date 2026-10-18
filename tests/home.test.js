@@ -30,7 +30,7 @@ test('I did it confirms the tap and the next idea clears that line', () => {
   initHome(doc, Joy);
   doc.els['sj-did-it'].fire('click');
   assert.equal(doc.els['sj-done'].hidden, false);
-  assert.match(doc.els['sj-done'].textContent, /kindness into the world/);
+  assert.match(doc.els['sj-done'].textContent, /more joy into the world/);
   doc.els['sj-surprise'].fire('click');
   assert.equal(doc.els['sj-done'].hidden, true);
   assert.equal(doc.els['sj-done'].textContent, '');
