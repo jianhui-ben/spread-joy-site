@@ -616,3 +616,22 @@ class XavierStoryTests(unittest.TestCase):
     def test_ids_do_not_clash_with_the_home_story(self):
         self.assertNotIn('id="story"', self.page)
         self.assertNotIn('id="joy"', self.page)
+
+
+class HomeTabTests(unittest.TestCase):
+    """The Home tab (and the logo) open the storyline; the storyline's button leads on to the Our Story page."""
+
+    def setUp(self):
+        subprocess.run([sys.executable, str(ROOT / "build.py")], check=True, capture_output=True)
+
+    def test_home_tab_logo_and_footer_link_open_the_storyline_on_every_page(self):
+        for name in ("index.html", "story.html", "events.html", "help.html", "contact.html", "mission.html", "storyline.html"):
+            html = (ROOT / name).read_text()
+            self.assertRegex(html, r'<a href="storyline\.html"[^>]*>Home</a>', name)
+            self.assertNotRegex(html, r'<a href="index\.html"[^>]*>Home</a>', name)
+            self.assertNotIn('class="brand" href="index.html"', html, name)
+            self.assertIn('class="brand" href="storyline.html"', html, name)
+
+    def test_the_storyline_is_the_current_page_for_the_home_tab(self):
+        html = (ROOT / "storyline.html").read_text()
+        self.assertRegex(html, r'<a href="storyline\.html" aria-current="page">Home</a>')

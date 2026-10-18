@@ -43,7 +43,7 @@ PREVIEW_NOTE = (
 )
 
 NAV = [
-    ("index.html", "Home"),
+    ("storyline.html", "Home"),
     ("mission.html", "Our Mission"),
     ("story.html", "Our Story"),
     ("events.html", "Events"),
@@ -67,7 +67,7 @@ SHELL = """<!doctype html>
 <body>
 <header class="site-header">
   <div class="wrap">
-    <a class="brand" href="index.html"><img src="assets/img/heart.png" alt="">Spread Joy Collective</a>
+    <a class="brand" href="storyline.html"><img src="assets/img/heart.png" alt="">Spread Joy Collective</a>
     <nav aria-label="Main">
 {nav}
     </nav>
@@ -81,7 +81,7 @@ SHELL = """<!doctype html>
   <div class="wrap">
     <div class="cols">
       <div>
-        <a class="brand" href="index.html"><img src="assets/img/heart.png" alt="">Spread Joy Collective</a>
+        <a class="brand" href="storyline.html"><img src="assets/img/heart.png" alt="">Spread Joy Collective</a>
         <p class="accent">Small acts. Big impact. Spread joy.</p>
       </div>
       <div>
