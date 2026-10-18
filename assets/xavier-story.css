@@ -41,14 +41,7 @@
 .xs .stage[data-scene="5"] .people{transform:translateX(calc(var(--x)*.85)) scale(var(--s))}
 .xs .chapter-title{position:absolute;top:17%;left:5%;right:5%;text-align:center;font-size:clamp(37px,4.9vw,66px);letter-spacing:-1.3px;line-height:1.03;font-weight:900;opacity:0;transition:opacity .6s}
 .xs .stage:not([data-scene="0"]) .chapter-title{opacity:1}
-.xs .ending{position:relative;min-height:95svh;background:var(--xs-yellow);text-align:center;padding:120px 7% 90px;display:flex;align-items:center;justify-content:center;flex-direction:column}
-.xs .ending:before{content:'';position:absolute;top:-25px;left:0;right:0;height:50px;border-radius:50% 50% 0 0;background:var(--xs-yellow)}
-.xs .ending h2{font-size:clamp(66px,10vw,140px);line-height:1;letter-spacing:-5px;margin:0 0 20px;font-weight:900}
-.xs .ending p{font-size:21px;line-height:1.5;max-width:590px}
-.xs .button{display:inline-block;border-radius:40px;padding:17px 28px;background:var(--xs-ink);color:white;text-decoration:none;font-weight:600;margin:15px 0}
-.xs .signature{font-family:'Brush Script MT','Segoe Script',cursive;font-size:36px;font-style:italic;margin-top:25px}
 @media(min-width:651px) and (max-width:1000px){.xs .theatre{--spread:.82}.xs .people{width:90px;height:215px}.xs .p5, .xs .p6{opacity:0!important}}
-@media(max-width:650px){.xs .headline{top:15%}.xs .headline h1{font-size:48px;letter-spacing:-2px}.xs .headline p{font-size:16px}.xs .theatre{top:31%;height:32%;width:900px;transform:translateX(-50%) scale(.46);transform-origin:50% 100%}.xs .person{height:330px;width:330px}.xs .copy{top:71%;width:86%}.xs .copy h2{font-size:22px;margin-bottom:12px}.xs .copy p{font-size:16px;line-height:1.5}.xs .chapter-title{top:18%;font-size:37px;letter-spacing:-1.5px;left:7%;right:7%}.xs .ground-note{font-size:24px}.xs .ending h2{font-size:66px;letter-spacing:-3px}.xs .ending p{font-size:19px}.xs .ending{padding:90px 7%}}
 .xs .headline{top:14%}
 .xs .headline h1{font-size:clamp(40px,5.7vw,76px);max-width:850px;margin:auto}
 .xs .headline p{display:none}
@@ -120,13 +113,6 @@
 .xs .stage[data-act="socks"] .scene-characters{background-image:url('img/xavier-socks.png');background-size:contain;background-position:center bottom;background-repeat:no-repeat;}
 .xs .stage[data-act="community"] .scene-characters{background-image:url('img/xavier-community.png');background-size:contain;background-position:center bottom;background-repeat:no-repeat;}
 .xs .stage[data-act="vision"] .scene-characters{background-image:url('img/xavier-vision.png');background-size:contain;background-position:center bottom;background-repeat:no-repeat;}
-.xs .ending{position:relative;z-index:15;background:#ffd112;min-height:100svh;padding:100px 7% 85px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
-.xs .ending h2{font-size:clamp(64px,9vw,128px);font-weight:900;line-height:1;letter-spacing:-4px;margin:0 0 44px}
-.xs .ending p{max-width:920px;font-size:clamp(19px,2.2vw,29px);line-height:1.55;margin:0 0 28px}
-.xs .ending .closing-line{margin:18px 0 32px}
-.xs .ending .button{margin:14px 0 20px;background:#231f20;color:white;border-radius:60px;padding:23px 38px;text-decoration:none;font-size:21px;font-weight:800}
-.xs .ending .signature{font-size:44px;margin-top:30px}
-@media(max-width:650px){.xs .ending{padding:80px 7% 65px}.xs .ending h2{font-size:64px;letter-spacing:-2px;margin-bottom:30px}.xs .ending p{font-size:20px}.xs .ending .button{font-size:17px;padding:20px 25px}.xs .ending .signature{font-size:37px}}
 .xs a:focus-visible{outline:3px solid #17758e;outline-offset:6px}
 .xs .scroll-hint{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);display:flex;align-items:center;color:var(--xs-ink);text-decoration:none;animation:xs-bob 1.6s ease-in-out infinite}
 @keyframes xs-bob{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}

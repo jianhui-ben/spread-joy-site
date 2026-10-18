@@ -147,21 +147,9 @@
       var track = doc.querySelector('.xs-track');
       var reduce = win.matchMedia && win.matchMedia('(prefers-reduced-motion: reduce)').matches;
       var top = track.getBoundingClientRect().top + (win.scrollY || 0);
-      // on the last scene the arrow leads on to the yellow ending that follows the story
+      // on the last scene the arrow leads on to the text that follows the story
       var next = current === SCENES.length - 1 ? track.offsetHeight : (track.offsetHeight - win.innerHeight) * Math.min(1, (current + 1.1) / SCENES.length);
       win.scrollTo({ top: top + next, behavior: reduce ? 'auto' : 'smooth' });
-    });
-    // the closing button leads on to the story text below the block: the element with id the-story, or else
-    // whatever follows the block's section (on Squarespace the next section of the page)
-    var link = doc.querySelector('.xs .story-link');
-    if (link) link.addEventListener('click', function (e) {
-      var xs = doc.querySelector('.xs');
-      var host = xs && xs.closest && xs.closest('.page-section');
-      var target = (doc.getElementById && doc.getElementById('the-story')) || (host && host.nextElementSibling) || (xs && xs.nextElementSibling);
-      if (!target || !target.scrollIntoView) return;
-      e.preventDefault();
-      var reduce = win.matchMedia && win.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
     });
     render();
     if (doc.fonts && doc.fonts.ready) doc.fonts.ready.then(function () { render(); });

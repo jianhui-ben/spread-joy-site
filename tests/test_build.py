@@ -564,13 +564,18 @@ class XavierStoryTests(unittest.TestCase):
         self.assertIn("assets/xavier-story.js", self.story)
         self.assertLess(self.story.index('id="xs-story"'), self.story.index("Spread Joy Collective began with our son"))
 
-    def test_story_has_the_yellow_ending_whose_button_leads_on_to_the_text(self):
-        self.assertIn('class="ending"', self.story)
-        self.assertIn("Small acts.", self.story)
-        self.assertIn("The story behind Spread Joy", self.story)
-        self.assertIn('class="button story-link" href="#the-story"', self.story)
-        self.assertIn('id="the-story"', self.story)
-        self.assertLess(self.story.index('class="ending"'), self.story.index('id="the-story"'))
+    def test_story_page_has_no_title_heading_and_no_yellow_ending(self):
+        self.assertNotIn('class="wrap page-title"', self.story)
+        self.assertNotIn("<h1>Our Story</h1>", self.story)
+        for gone in ('class="ending"', "<h2>Small acts.", "The story behind Spread Joy", "story-link", "the-story"):
+            self.assertNotIn(gone, self.story, gone)
+            self.assertNotIn(gone, self.block, gone)
+        self.assertNotIn(".ending", self.css)
+
+    def test_story_text_follows_the_animation_and_keeps_the_ourstory_anchor(self):
+        self.assertIn('id="ourstory"', self.story)
+        self.assertLess(self.story.index('id="xs-story"'), self.story.index('id="ourstory"'))
+        self.assertLess(self.story.index('id="ourstory"'), self.story.index("Spread Joy Collective began with our son"))
 
     def test_story_does_not_repeat_the_site_brand_or_send_you_anywhere(self):
         self.assertNotIn("intro-brand", self.story)

@@ -261,9 +261,8 @@ PAGES["story.html"] = dict(
     head_extra='<link rel="stylesheet" href="assets/xavier-story.css">',
     scripts='<script src="assets/xavier-story.js" defer></script>',
     body=f"""
-<div class="wrap page-title" id="ourstory"><h1>Our Story</h1></div>
 {HOME_XAVIER}
-<section class="block" id="the-story">
+<section class="block" id="ourstory">
   <div class="wrap prose">
     <p>Spread Joy Collective began with our son, Xavier.</p>
     <p>When Xavier was born with Down syndrome, we knew we wanted him to grow up surrounded by people who would see him, celebrate him, include him, and believe in all that he could do. So we started building that community around him.</p>
@@ -871,13 +870,11 @@ def build_contact_block():
 def build_story_block():
     """Paste-ready Code Block for the Our Story page: Xavier's animated story, all inside one block."""
     text = ("<!--\n  OUR STORY:      Xavier's animated story\n"
-            "  WHAT IT IS:     Six scroll-driven scenes about Xavier, then a yellow closing section.\n"
+            "  WHAT IT IS:     Six scroll-driven scenes about Xavier. The text of the page follows it.\n"
             "  WHERE TO PASTE: A Code Block (mode HTML) in its own section on the Our Story page. The block carries its own\n"
             "                  scoped styles and script and trims the padding of that section only; nothing site-wide is needed.\n"
             "  PLACEHOLDERS:   {{IMG_XAVIER_SPRITE}}, {{IMG_XAVIER_SOCKS}}, {{IMG_XAVIER_COMMUNITY}}, {{IMG_XAVIER_VISION}}\n"
             "                  (the four xavier-*.png pictures in the assets folder; upload them and add their addresses to home-page/image-urls.json)\n"
-            "  BUTTON:         The yellow section's 'The story behind Spread Joy' button scrolls on to the next section of the page,\n"
-            "                  or to any element on the page with id the-story (add that id to a section's anchor if you prefer).\n"
             "  GENERATED:      by build.py from assets/xavier-story.*. Do not hand-edit.\n-->\n"
             + to_placeholders("<style>\n" + XAVIER_SECTION_CSS + XAVIER_STYLE.split("<style>\n", 1)[1]
                               + HOME_XAVIER + XAVIER_SCRIPT))

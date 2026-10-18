@@ -41,7 +41,7 @@ test('at the top it shows the opening scene and the scroll hint', () => {
   assert.equal(s.hint.tabIndex, 0);
 });
 
-test('scrolled to the end it shows the last scene and keeps the arrow, which now leads on to the yellow ending', () => {
+test('scrolled to the end it shows the last scene and keeps the arrow, which leads on to the text below', () => {
   const s = setup(600); // track 700 - viewport 100
   initXavierStory(s.doc, s.win);
   assert.equal(s.stage.dataset.act, 'vision');
@@ -70,37 +70,13 @@ test('the story never navigates away by itself', () => {
   assert.deepEqual(calls, []);
 });
 
-test('the arrow on the last scene scrolls on past the story to the ending', () => {
+test('the arrow on the last scene scrolls on past the story to the text below', () => {
   const s = setup(600);
   let click; s.hint.addEventListener = (type, fn) => { if (type === 'click') click = fn; };
   const jumps = []; s.win.scrollTo = (o) => jumps.push(o.top);
   initXavierStory(s.doc, s.win);
   click({ preventDefault() {} });
-  assert.equal(jumps[0], -600 + 700, 'the very bottom of the track, where the ending begins');
-});
-
-test('the closing button scrolls on to the story text below the block', () => {
-  const s = setup(0);
-  const text = { scrolled: null, scrollIntoView(o) { this.scrolled = o; } };
-  const link = { addEventListener(type, fn) { this.fn = fn; } };
-  const xs = { closest: () => ({ nextElementSibling: text }) };
-  s.doc.getElementById = () => null;
-  s.doc.querySelector = ((orig) => (sel) => (sel === '.xs .story-link' ? link : sel === '.xs' ? xs : orig(sel)))(s.doc.querySelector);
-  initXavierStory(s.doc, s.win);
-  let prevented = false; link.fn({ preventDefault() { prevented = true; } });
-  assert.ok(prevented);
-  assert.equal(text.scrolled.block, 'start');
-});
-
-test('an element with id the-story wins as the target of the button', () => {
-  const s = setup(0);
-  const named = { scrollIntoView() { this.hit = true; } };
-  const link = { addEventListener(type, fn) { this.fn = fn; } };
-  s.doc.getElementById = (id) => (id === 'the-story' ? named : null);
-  s.doc.querySelector = ((orig) => (sel) => (sel === '.xs .story-link' ? link : orig(sel)))(s.doc.querySelector);
-  initXavierStory(s.doc, s.win);
-  link.fn({ preventDefault() {} });
-  assert.ok(named.hit);
+  assert.equal(jumps[0], -600 + 700, 'the very bottom of the track, where the text below begins');
 });
 
 test('the reading bar grows with scroll progress', () => {
