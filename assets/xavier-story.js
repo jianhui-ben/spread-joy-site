@@ -35,8 +35,10 @@
       {
           "title": "Sharing the joy.",
           "lines": [
-              "So we started with fun socks for his school to celebrate World Down Syndrome Day.",
-              "Friends, family, and our community joined in - spreading awareness, one part at a time."
+              "So we started with fun socks for his school to celebrate",
+              "World Down Syndrome Day.",
+              "Friends, family, and our community joined in -",
+              "spreading awareness, one part at a time."
           ],
           "scene": 3,
           "act": "socks",
@@ -45,7 +47,8 @@
       {
           "title": "Growing together.",
           "lines": [
-              "What started with socks grew into something bigger, bringing our community together.",
+              "What started with socks grew into something bigger,",
+              "bringing our community together.",
               "As Xavier grew, so did our dream of helping more families."
           ],
           "scene": 2,

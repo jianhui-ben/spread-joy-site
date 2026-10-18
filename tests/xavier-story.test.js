@@ -148,11 +148,14 @@ test('the storyline text is the owner’s latest wording', () => {
     'And he brings so much joy to our lives.',
   ]);
   assert.deepEqual(lines[3], [
-    'So we started with fun socks for his school to celebrate World Down Syndrome Day.',
-    'Friends, family, and our community joined in - spreading awareness, one part at a time.',
+    'So we started with fun socks for his school to celebrate',
+    'World Down Syndrome Day.',
+    'Friends, family, and our community joined in -',
+    'spreading awareness, one part at a time.',
   ]);
   assert.deepEqual(lines[4], [
-    'What started with socks grew into something bigger, bringing our community together.',
+    'What started with socks grew into something bigger,',
+    'bringing our community together.',
     'As Xavier grew, so did our dream of helping more families.',
   ]);
   assert.deepEqual(lines[5], [
