@@ -33,10 +33,11 @@
 .sj-home #heart-transition::after {
   content: "";
   position: absolute;
-  width: 100px;
-  height: 100px;
+  /* the heart ends up --heart-size tall (set by the script); it is drawn small and scaled up 4x */
+  width: calc(var(--heart-size, 400px) / 4);
+  height: calc(var(--heart-size, 400px) / 4);
   left: 50%;
-  top: 28%;
+  top: var(--heart-y, 28%);
   background-image: url("img/heart.png");
   background-size: contain;
   background-position: center;

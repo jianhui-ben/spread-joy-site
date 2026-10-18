@@ -3,7 +3,10 @@ const assert = require('node:assert/strict');
 const { initHeartTransition, isHomePath } = require('../assets/heart-transition.js');
 
 // A tiny fake page: one .sj-home container, a window with a path, frames and queued animation frames.
-function setup({ path = '/', framed = false, reduceMotion = false, hasContainer = true } = {}) {
+const rect = (top, bottom) => ({ top, bottom, height: bottom - top });
+const LAYOUT = { container: rect(0, 900), h1: rect(56, 150), sub: rect(168, 220), card: rect(260, 900) };
+
+function setup({ path = '/', framed = false, reduceMotion = false, hasContainer = true, layout = LAYOUT } = {}) {
   const frames = [];
   const makeEl = () => ({
     id: '',
@@ -13,7 +16,12 @@ function setup({ path = '/', framed = false, reduceMotion = false, hasContainer 
     classList: null,
     children: [],
     setAttribute(k, v) { this.attrs[k] = v; },
-    querySelector(sel) { return sel === '#heart-transition' ? this.children.find((c) => c.id === 'heart-transition') || null : null; },
+    querySelector(sel) {
+      if (sel === '#heart-transition') return this.children.find((c) => c.id === 'heart-transition') || null;
+      const r = layout && { '.hero h1': layout.h1, '.hero .sub': layout.sub, '.hero-card': layout.card }[sel];
+      return r ? { getBoundingClientRect: () => r } : null;
+    },
+    getBoundingClientRect() { return layout ? layout.container : rect(0, 0); },
     insertBefore(child) { this.children.unshift(child); },
     get firstChild() { return this.children[0] || null; },
   });
@@ -29,7 +37,10 @@ function setup({ path = '/', framed = false, reduceMotion = false, hasContainer 
     createElement: () => mk(),
     readyState: 'complete',
   };
+  const winListeners = {};
   const win = {
+    addEventListener: (type, fn) => { (winListeners[type] = winListeners[type] || []).push(fn); },
+    fire: (type) => (winListeners[type] || []).forEach((fn) => fn()),
     location: { pathname: path },
     matchMedia: () => ({ matches: reduceMotion }),
     requestAnimationFrame: (fn) => frames.push(fn),
@@ -37,7 +48,7 @@ function setup({ path = '/', framed = false, reduceMotion = false, hasContainer 
   win.self = win;
   win.top = framed ? {} : win;
   const runFrames = () => { while (frames.length) frames.shift()(); };
-  return { doc, win, container, runFrames };
+  return { doc, win, container, runFrames, LAYOUT };
 }
 
 test('isHomePath accepts the landing page paths only', () => {
@@ -89,4 +100,44 @@ test('other pages, editor frames and pages without the container are left alone'
     initHeartTransition(s.doc, s.win);
     assert.equal(s.container.children.length, 0, JSON.stringify(opts));
   }
+});
+
+// --- where the staying heart sits: centred on the headline, never reaching down into the photo ---
+test('the heart is centred on the headline and sized to end where the photo begins', () => {
+  const s = setup();
+  initHeartTransition(s.doc, s.win);
+  const heart = s.container.children[0];
+  // headline block runs 56..220, so its middle is 138; the photo starts at 260, which leaves 122 below
+  assert.equal(heart.style['--heart-y'], '138px');
+  assert.equal(heart.style['--heart-size'], '244px');
+});
+
+test('a tall headline area is limited by the top of the section instead', () => {
+  const s = setup({ layout: { container: rect(0, 900), h1: rect(20, 100), sub: rect(110, 140), card: rect(500, 900) } });
+  initHeartTransition(s.doc, s.win);
+  const heart = s.container.children[0];
+  assert.equal(heart.style['--heart-y'], '80px');
+  assert.equal(heart.style['--heart-size'], '160px'); // 2 * min(80 above, 420 below)
+});
+
+test('the heart is placed again when the window is resized or finishes loading', () => {
+  const s = setup();
+  initHeartTransition(s.doc, s.win);
+  const heart = s.container.children[0];
+  s.LAYOUT.h1 = rect(36, 110); s.LAYOUT.sub = rect(120, 160); s.LAYOUT.card = rect(200, 700);
+  s.win.fire('resize');
+  assert.equal(heart.style['--heart-y'], '98px');
+  assert.equal(heart.style['--heart-size'], '196px');
+  s.LAYOUT.card = rect(170, 700);
+  s.win.fire('load');
+  assert.equal(heart.style['--heart-size'], '144px'); // 2 * min(98 above, 72 below)
+});
+
+test('without a headline the heart keeps the stylesheet defaults', () => {
+  const s = setup({ layout: null });
+  s.container.querySelector = (sel) => (sel === '#heart-transition' ? s.container.children[0] || null : null);
+  initHeartTransition(s.doc, s.win);
+  const heart = s.container.children[0];
+  assert.equal(heart.style['--heart-y'], undefined);
+  assert.equal(heart.style['--heart-size'], undefined);
 });

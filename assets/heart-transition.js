@@ -25,6 +25,27 @@
     heart.setAttribute('aria-hidden', 'true');
     container.insertBefore(heart, container.firstChild);
 
+    // The staying heart sits in the middle of the headline and is as tall as the room between the top of
+    // the section and the photo, so it never reaches down onto the photo. Measured, because the headline's
+    // size depends on the screen; measured again when the window changes or the page has finished loading.
+    function placeHeart() {
+      var h1 = container.querySelector('.hero h1');
+      if (!h1) return;
+      var sub = container.querySelector('.hero .sub') || h1;
+      var card = container.querySelector('.hero-card');
+      var top = container.getBoundingClientRect().top;
+      var from = h1.getBoundingClientRect().top - top;
+      var to = sub.getBoundingClientRect().bottom - top;
+      var middle = (from + to) / 2;
+      var below = card ? card.getBoundingClientRect().top - top - middle : middle;
+      var half = Math.max(0, Math.min(middle, below));
+      heart.style.setProperty('--heart-y', Math.round(middle) + 'px');
+      heart.style.setProperty('--heart-size', Math.round(half * 2) + 'px');
+    }
+    placeHeart();
+    win.addEventListener('resize', placeHeart);
+    win.addEventListener('load', placeHeart);
+
     // start fully covered with no animation, then let it shrink on the next painted frame
     heart.style.setProperty('--heart-duration', '0ms');
     heart.classList.add('visible', 'cover');
