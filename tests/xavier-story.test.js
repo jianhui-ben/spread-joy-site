@@ -135,3 +135,28 @@ test('the stage is told how far down to sit', () => {
   initXavierStory(s.doc, s.win);
   assert.equal(root.style['--xs-top'], '120px');
 });
+
+test('the storyline text is the owner’s latest wording', () => {
+  const lines = SCENES.map((s) => s.lines);
+  assert.deepEqual(lines[1], [
+    'Xavier was born with Down syndrome.',
+    'He speaks a little differently, takes a little more time to learn things and often needs a little extra help along the way.',
+  ]);
+  assert.deepEqual(lines[2], [
+    'He loves his family, loves his friends and loves to dance.',
+    'And just like you and me, he wants to feel like he belongs.',
+    'And he brings so much joy to our lives.',
+  ]);
+  assert.deepEqual(lines[3], [
+    'So we started with fun socks for his school to celebrate World Down Syndrome Day.',
+    'Friends, family, and our community joined in - spreading awareness, one part at a time.',
+  ]);
+  assert.deepEqual(lines[4], [
+    'What started with socks grew into something bigger, bringing our community together.',
+    'As Xavier grew, so did our dream of helping more families.',
+  ]);
+  assert.deepEqual(lines[5], [
+    'When we take the time to understand one another, kindness grows — and so does our community.',
+    'When we know better, we do better.',
+  ]);
+});
