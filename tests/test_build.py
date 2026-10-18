@@ -543,33 +543,49 @@ class SiteLinkTests(unittest.TestCase):
 
 
 class XavierStoryTests(unittest.TestCase):
-    """The animated story is the landing scene; the current home page follows it."""
+    """The animated story is its own landing page (no header, no footer); it leads to the home page."""
 
     def setUp(self):
+        subprocess.run([sys.executable, str(ROOT / "build.py")], check=True, capture_output=True)
         self.home = (ROOT / "index.html").read_text()
-        self.block = (ROOT / "home-page" / "0-xavier-story-block.html").read_text()
+        self.landing = (ROOT / "landing.html").read_text()
+        self.block = (ROOT / "landing-page" / "1-landing-block.html").read_text()
 
-    def test_local_home_starts_with_the_story_then_the_hero(self):
-        self.assertIn('id="xs-story"', self.home)
-        self.assertLess(self.home.index('id="xs-story"'), self.home.index('class="hero"'))
-        self.assertIn('assets/xavier-story.js', self.home)
+    def test_landing_is_its_own_page_without_header_footer_or_give_pill(self):
+        self.assertIn('id="xs-story"', self.landing)
+        for bad in ("<header", "<footer", "site-header", "give-pill", 'class="hero"'):
+            self.assertNotIn(bad, self.landing, bad)
+
+    def test_home_page_is_back_to_just_the_home_page(self):
+        self.assertNotIn("xs-story", self.home)
+        self.assertNotIn("xavier-story", self.home)
+        self.assertIn('class="hero"', self.home)
+
+    def test_landing_leads_to_home(self):
+        self.assertIn('data-home="index.html"', self.landing)
+        self.assertIn('href="index.html"', self.landing)  # the visible button at the end
+
+    def test_paste_block_leads_to_the_master_home(self):
+        self.assertIn('data-home="/home"', self.block)
+        self.assertNotIn("index.html", self.block)
+
+    def test_paste_block_hides_the_site_header_and_footer(self):
+        self.assertIn("body:has(.xs)", self.block)
+        self.assertIn("#header", self.block)
 
     def test_the_sprite_is_a_file_not_inlined(self):
         self.assertTrue((ROOT / "assets" / "img" / "xavier-sprite.png").exists())
-        self.assertNotIn("base64", self.home)
+        self.assertNotIn("base64", self.landing)
         self.assertLess(len(self.block), 60000)
 
-    def test_paste_block_carries_style_markup_and_script_and_an_image_placeholder_or_url(self):
+    def test_paste_block_carries_style_markup_and_script_and_an_image_placeholder(self):
         self.assertEqual(self.block.count("<style>"), 1)
         self.assertIn('class="xs"', self.block)
         self.assertIn("initXavierStory", self.block)
-        self.assertNotIn("assets/img/xavier-sprite.png", self.block)  # swapped for the uploaded address
+        self.assertNotIn("assets/img/xavier-sprite.png", self.block)
 
     def test_story_css_is_scoped_to_xs(self):
         css = (ROOT / "assets" / "xavier-story.css").read_text()
         for m in re.finditer(r"(?:^|\})\s*([^{}@]+)\{", css, flags=re.M):
             for sel in m.group(1).split(","):
                 self.assertTrue(sel.strip().startswith(".xs"), sel.strip())
-
-    def test_ids_do_not_clash_with_the_home_story(self):
-        self.assertEqual(self.home.count('id="story"'), 1)

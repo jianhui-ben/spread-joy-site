@@ -51,7 +51,7 @@ Give, everywhere, is `https://givebutter.com/SpreadJoyCollective`. There is no G
 
 ## Home page (current)
 
-Landing: Xavier's animated six-scene story (`.xs`, paste `home-page/0-xavier-story-block.html`, own section above the hero; sprite picture `assets/img/xavier-sprite.png` must be uploaded and added to `image-urls.json` as `XAVIER_SPRITE`; not yet on the master). After it, the scroll story: full-bleed hero with a tap-the-heart pill (counter, floating hearts, confetti) → pinned 3-photo story that slides over the hero → yellow "Your turn." card row ending in Surprise me and I did it. Header slides away on scroll (home page only). That tuck disagrees with SPEC.md §3 and with Michelle’s note in the brainstorm doc, which both want the nav to stay put. Left as the owner last asked, and flagged rather than changed.
+Landing page (separate from Home, no header/footer): Xavier's animated six-scene story, `landing.html` locally (`.xs`, paste `landing-page/1-landing-block.html` on its own new page; at the end it leads to the home page; sprite picture `assets/img/xavier-sprite.png` must be uploaded and added to `image-urls.json` as `XAVIER_SPRITE`; not yet on the master). Home page, the scroll story: full-bleed hero with a tap-the-heart pill (counter, floating hearts, confetti) → pinned 3-photo story that slides over the hero → yellow "Your turn." card row ending in Surprise me and I did it. Header slides away on scroll (home page only). That tuck disagrees with SPEC.md §3 and with Michelle’s note in the brainstorm doc, which both want the nav to stay put. Left as the owner last asked, and flagged rather than changed.
 
 ## Squarespace facts
 

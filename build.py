@@ -172,7 +172,16 @@ XAVIER_HTML = (OUT / "assets" / "xavier-story.html").read_text().strip()
 XAVIER_STYLE = ("<style>\n" + (OUT / "assets" / "xavier-story.css").read_text().strip()
                 .replace("url('img/xavier-sprite.png')", 'url("assets/img/xavier-sprite.png")') + "\n</style>\n")
 XAVIER_SCRIPT = "\n<script>\n" + (OUT / "assets" / "xavier-story.js").read_text().strip() + "\n</script>\n"
-HOME_XAVIER = '<div class="xs">\n' + XAVIER_HTML + "\n</div>\n"
+def xavier_markup(home, link):
+    return '<div class="xs" data-home="%s">\n' % home + XAVIER_HTML.replace('href="index.html"', 'href="%s"' % link) + "\n</div>\n"
+
+
+# Squarespace: the landing page hides the site header and footer (the page is the story alone)
+XAVIER_BARE_CSS = ("body:has(.xs) #header, body:has(.xs) footer, body:has(.xs) .sjc-footer, body:has(.xs) .sj-footer, body:has(.xs) #sj-give-pill"
+                   " { display: none !important; }\n.page-section:has(.xs) { padding: 0 !important; min-height: 0 !important; }\n"
+                   ".page-section:has(.xs) .content-wrapper, .page-section:has(.xs) .content { padding: 0 !important; max-width: none !important; width: 100% !important; }\n"
+                   ".page-section:has(.xs) .fluid-engine { display: block !important; }\n.page-section:has(.xs) .fe-block { grid-area: auto !important; }\n"
+                   ".page-section:has(.xs) .sqs-block-code, .page-section:has(.xs) .sqs-block-content { padding: 0 !important; margin: 0 !important; overflow: visible !important; }\n")
 
 HOME_STORY = """<section class="story" id="story">
   <div class="stage-pin">
@@ -226,14 +235,22 @@ HOME_TURN = f"""<section class="turn">
 PAGES["index.html"] = dict(
     title="Home",
     description="Spread Joy Collective supports families of individuals with disabilities. Small acts. Big impact. Spread joy.",
-    head_extra='<link rel="stylesheet" href="assets/home.css">\n<link rel="stylesheet" href="assets/heart-transition.css">\n<link rel="stylesheet" href="assets/xavier-story.css">',
-    scripts="""<script src="assets/xavier-story.js" defer></script>
-<script src="assets/ripples.js" defer></script>
+    head_extra='<link rel="stylesheet" href="assets/home.css">\n<link rel="stylesheet" href="assets/heart-transition.css">',
+    scripts="""<script src="assets/ripples.js" defer></script>
 <script src="assets/heart-transition.js" defer></script>
 <script src="assets/joy.js" defer></script>
 <script src="assets/home.js" defer></script>
 <script src="assets/scroll-story.js" defer></script>""" + GB_LIBRARY,
-    body=HOME_XAVIER + '<div class="sj-home">\n' + HOME_HERO + "</div>\n" + HOME_STORY + "\n" + WAVE_UP + "\n" + HOME_TURN,
+    body='<div class="sj-home">\n' + HOME_HERO + "</div>\n" + HOME_STORY + "\n" + WAVE_UP + "\n" + HOME_TURN,
+)
+
+PAGES["landing.html"] = dict(
+    title="A little story about the joy of life",
+    description="A little story about Xavier, and a whole lot of joy.",
+    bare=True,
+    head_extra='<link rel="stylesheet" href="assets/xavier-story.css">',
+    scripts='<script src="assets/xavier-story.js" defer></script>',
+    body=xavier_markup("index.html", "index.html"),
 )
 
 PAGES["mission.html"] = dict(
@@ -655,7 +672,7 @@ __GIVEPILLCSS__
 </script>
 """
 
-SQS_OVERRIDES = """.page-section:has(.sj-home), .page-section:has(.xs) { padding: 0 !important; min-height: 0 !important; }
+SQS_OVERRIDES = """.page-section:has(.sj-home) { padding: 0 !important; min-height: 0 !important; }
 .page-section:has(.sj-home) .content-wrapper,
 .page-section:has(.sj-home) .content { padding: 0 !important; max-width: none !important; width: 100% !important; }
 .page-section:has(.sj-home) .fluid-engine { display: block !important; }
@@ -773,15 +790,6 @@ def build_home_page():
                    + "\n}\n</script>\n")
     (HOME_DIR / "7-page-script-block.html").write_text(page_script)
 
-    xavier = ("<!--\n  PASTE 0:        Xavier's animated story (the landing scene)\n"
-              "  WHAT IT IS:     Six scroll-driven scenes about Xavier. When it ends, the hero (paste 3) follows.\n"
-              "  WHERE TO PASTE: A Code Block (mode HTML) in a NEW first section of the Home page, ABOVE the hero section.\n"
-              "                  Its styles are scoped to .xs and its script is inside, so nothing site-wide is needed.\n"
-              "  PLACEHOLDERS:   {{IMG_XAVIER_SPRITE}} (the Xavier and mom sprite picture; upload it and add its address to image-urls.json)\n"
-              "  GENERATED:      by build.py from assets/xavier-story.*. Do not hand-edit.\n-->\n"
-              + to_placeholders(XAVIER_STYLE + HOME_XAVIER + XAVIER_SCRIPT))
-    (HOME_DIR / "0-xavier-story-block.html").write_text(xavier)
-
     blocks = [
         (3, "3-hero-block.html", "Hero: headline and growing photo with the heart",
          "Giant headline, the photo that grows as you scroll, and the tap-the-heart pill on top of it.",
@@ -809,7 +817,7 @@ def build_home_page():
                 .replace("__WHERE__", where).replace("__PLACEHOLDERS__", ph)
                 .replace("__HTML__", to_placeholders(html.strip("\n"))))
         (HOME_DIR / fname).write_text(text)
-    print("wrote home-page/ (7 files + 0-xavier-story-block)")
+    print("wrote home-page/ (6 files)")
 
 
 def nav_html(current):
@@ -836,6 +844,12 @@ for filename, page in PAGES.items():
         give=GIVE_URL,
         preview_note=PREVIEW_NOTE,
     )
+    if page.get("bare"):  # a page that is only its own content: no site header, footer or floating Give pill
+        html = re.sub(r"<header.*?</header>\s*", "", html, flags=re.S)
+        html = re.sub(r"<footer.*?</footer>\s*", "", html, flags=re.S)
+        html = re.sub(r'<link rel="stylesheet" href="assets/(styles|give-pill)\.css">\s*', "", html)
+        html = html.replace('<script src="assets/give-pill.js" defer></script>\n', "").replace('<script src="assets/site.js" defer></script>\n', "")
+        html = html.replace("<body>", '<body style="margin:0;font-family:\'League Spartan\',system-ui,sans-serif">')
     (OUT / filename).write_text(html)
     print("wrote", filename)
 
@@ -866,6 +880,24 @@ def build_contact_block():
     print("wrote contact-page/1-contact-block.html")
 
 
+def build_landing_block():
+    """Paste-ready Code Block for the landing page: the story alone, with the site header and footer hidden."""
+    text = ("<!--\n  LANDING PAGE:   Xavier's animated story\n"
+            "  WHAT IT IS:     Six scroll-driven scenes. At the end it leads to the home page (data-home below).\n"
+            "  WHERE TO PASTE: The only Code Block (mode HTML) on a NEW page (for example /landing) with one empty section.\n"
+            "                  Everything is inside: scoped styles, markup, script. The block also hides the site header,\n"
+            "                  footer and floating Give pill on this page only.\n"
+            "  PLACEHOLDERS:   {{IMG_XAVIER_SPRITE}} (the Xavier and mom sprite picture; upload it and add its address to image-urls.json)\n"
+            "  GENERATED:      by build.py from assets/xavier-story.*. Do not hand-edit.\n-->\n"
+            + to_placeholders("<style>\n" + XAVIER_BARE_CSS + XAVIER_STYLE.split("<style>\n", 1)[1]
+                              + xavier_markup("/home", "/home") + XAVIER_SCRIPT))
+    folder = OUT / "landing-page"
+    folder.mkdir(exist_ok=True)
+    (folder / "1-landing-block.html").write_text(text)
+    print("wrote landing-page/1-landing-block.html")
+
+
 build_snippets()
 build_home_page()
+build_landing_block()
 build_contact_block()

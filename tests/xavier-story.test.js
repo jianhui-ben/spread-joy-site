@@ -50,3 +50,17 @@ test('scrolled to the end it shows the last scene and hides the hint', () => {
 test('a page without the story is left alone', () => {
   initXavierStory({ querySelector: () => null }, { innerHeight: 100, addEventListener() {} });
 });
+
+test('scrolling into the end of the story goes to the home page once', () => {
+  const s = setup(600);
+  const calls = [];
+  s.win.location = { assign: (u) => calls.push(u) };
+  const scrollFns = [];
+  s.win.addEventListener = (type, fn) => { if (type === 'scroll') scrollFns.push(fn); };
+  s.win.requestAnimationFrame = (f) => f();
+  s.doc.querySelector = ((orig) => (sel) => (sel === '.xs' ? { dataset: { home: 'index.html' } } : orig(sel)))(s.doc.querySelector);
+  initXavierStory(s.doc, s.win);
+  assert.deepEqual(calls, [], 'not on load');
+  scrollFns.forEach((f) => f()); scrollFns.forEach((f) => f());
+  assert.deepEqual(calls, ['index.html']);
+});

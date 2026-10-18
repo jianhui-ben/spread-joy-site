@@ -80,3 +80,5 @@
 .xs .stage[data-act="familiar"] .music{transform:translateX(120px) rotate(-12deg)}
 @media(max-width:650px){.xs .intro-brand{top:24px;font-size:9px;letter-spacing:2px}.xs .copy{top:62%;width:85%}.xs .copy p{font-size:18px;line-height:1.5}.xs .copy p+p{margin-top:8px}.xs .headline{top:13%}.xs .chapter-title{top:15%}.xs .theatre{top:24%;height:32%}}
 @media(max-height:700px) and (min-width:651px){.xs .copy{top:61%}.xs .copy p{font-size:17px}.xs .intro-brand{top:15px}}
+.xs .enter{position:absolute;bottom:34px;left:50%;transform:translateX(-50%);background:var(--xs-yellow);color:var(--xs-ink);border-radius:999px;padding:12px 24px;font-weight:600;text-decoration:none;opacity:0;pointer-events:none;transition:opacity .5s;z-index:9}
+.xs .stage[data-act="vision"] .enter{opacity:1;pointer-events:auto}

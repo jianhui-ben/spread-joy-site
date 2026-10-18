@@ -18,13 +18,22 @@
   // Elements are looked up on every update, never kept: Squarespace can re-draw a Code Block's HTML.
   function initXavierStory(doc, win) {
     var current = -1;
-    function render() {
+    var navigated = false;
+    // go to the home page only when a scroll (not the page loading) reaches the very end of the story
+    function maybeLeave(progress) {
+      var root = doc.querySelector('.xs');
+      var home = root && root.dataset && root.dataset.home;
+      if (home && !navigated && progress >= 0.999) { navigated = true; win.location.assign(home); }
+    }
+    function render(fromScroll) {
       var track = doc.querySelector('.xs-track');
       var stage = doc.querySelector('.xs .stage');
       if (!track || !stage) return;
       var total = track.offsetHeight - win.innerHeight;
       var scrolled = -track.getBoundingClientRect().top;
-      var index = sceneIndex(total > 0 ? scrolled / total : 0, SCENES.length);
+      var progress = total > 0 ? scrolled / total : 0;
+      if (fromScroll === true) maybeLeave(progress);
+      var index = sceneIndex(progress, SCENES.length);
       if (index === current && stage.dataset.act) return;
       current = index;
       var scene = SCENES[index];
@@ -47,7 +56,7 @@
     function later() {
       if (queued) return;
       queued = true;
-      (win.requestAnimationFrame || function (f) { f(); })(function () { queued = false; render(); });
+      (win.requestAnimationFrame || function (f) { f(); })(function () { queued = false; render(true); });
     }
     win.addEventListener('scroll', later, { passive: true });
     win.addEventListener('resize', render);
