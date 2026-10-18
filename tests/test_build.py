@@ -445,6 +445,13 @@ class HomePageFolderTests(unittest.TestCase):
             self.assertNotIn("/volunteer", text, n)
             self.assertIn('href="/let-us-help"', text, n)
 
+    def test_story_overlap_beats_squarespace_own_margin_rules(self):
+        # On Squarespace something in its own CSS resets the story's negative top margin to 0 (a white gap and white
+        # corners between the hero photo and the story sheet), so the overlap rule has to be !important.
+        css = self.read("1-header-injection.html")
+        rule = re.search(r"\.story \{[^}]*\}", css).group(0)
+        self.assertRegex(rule, r"margin-top:\s*-9vh\s*!important")
+
     def test_footer_has_every_script_part(self):
         js = self.read("2-footer-injection.html")
         # one inline script, plus at most one external script and only from Givebutter's widget host
