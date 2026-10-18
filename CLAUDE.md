@@ -74,7 +74,7 @@ The home page was built **before** the spec and does not comply. Do not treat it
 | §3: one "Give" label to Givebutter | Header, footer, and cards now say Give and use the Givebutter URL. Home card titles still use the brainstorm path names ("I want to give"). |
 | §4: `.sjc-` prefix; light and dark themes | Prefix is `.sj-home`/unprefixed; forced light-only |
 | §4: NGO-editable content | Lines, card titles, ideas live in `build.py` / `assets/joy.js` / block HTML |
-| §6: no invented numbers | "1,284 ripples" is a made-up placeholder (owner approved for now); "578 socks" is from the family's photo, unverified |
+| §6: no invented numbers | the "ripples of joy" number is made up (owner chose a self-ticking placeholder: starts at 1,284 on 2026-10-17, +1 every 10 s for everyone, back to 0 at 10,000,000; constants at the top of `assets/ripples.js`), not a real count; "578 socks" is from the family's photo, unverified |
 | §5: contrast, 44px targets, 360px | Not audited |
 | §6: recorded photo consent | Photos include a child; consent not recorded in the repo |
 

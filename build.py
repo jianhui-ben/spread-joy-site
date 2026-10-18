@@ -150,7 +150,7 @@ HOME_HERO = f"""<section class="hero">
         <div id="sj-rings" class="rings" aria-hidden="true"></div>
         <button id="sj-heart" type="button" aria-label="Tap to send a ripple of joy"><img src="assets/img/heart.png" alt=""></button>
       </div>
-      <p aria-live="polite"><b id="sj-count">{START_COUNT}</b> ripples of joy</p>
+      <p><b id="sj-count">{START_COUNT}</b> ripples of joy</p>
     </div>
   </div>
 </section>

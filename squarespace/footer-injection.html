@@ -135,10 +135,14 @@
   // The "ripples of joy" heart and counter. This file is self-contained: the hero Code Block carries it
   // on its own (see home-page/3-hero-block.html), so no site-wide or footer script is needed for it.
   //
-  // PLACEHOLDER: made-up starting number. Replace with real data later. There is no server, so the count
-  // is not shared between visitors: each browser adds only its own taps to this number and remembers
-  // them (localStorage, key below).
+  // PLACEHOLDER: this number is made up, not a real count. There is no server, so it is worked out from the
+  // clock: it starts at PLACEHOLDER_START_COUNT on EPOCH_MS, goes up by one every TICK_MS for everyone, and
+  // goes back to 0 at WRAP_AT (ten million). A visitor's own taps are added on top and remembered in this
+  // browser (localStorage, key below). Replace all of it with real data later.
   var PLACEHOLDER_START_COUNT = 1284;
+  var EPOCH_MS = Date.UTC(2026, 9, 17); // 17 October 2026, the day the placeholder was made up
+  var TICK_MS = 10000;                  // one more ripple every 10 seconds
+  var WRAP_AT = 10000000;               // ten million, then back to 0
   var STORAGE_KEY = 'sj-ripples';
   var MAX_RINGS = 6;
   var MAX_FLOATS = 12;
@@ -149,20 +153,25 @@
     return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   }
 
-  // With a storage object (localStorage) the visitor's own taps are remembered between visits.
+  // With a clock (a function returning milliseconds, normally Date.now) the number rises on its own from
+  // EPOCH_MS. With a storage object (localStorage) the visitor's own taps are remembered between visits.
   // Storage can be missing or blocked (private windows); the counter then just works for this visit.
-  function createCounter(start, storage) {
+  function createCounter(start, storage, now) {
     var own = 0;
     try {
       var saved = parseInt(storage && storage.getItem(STORAGE_KEY), 10);
       if (saved > 0) own = saved;
     } catch (e) {}
+    function total() {
+      var ticks = now ? Math.floor((now() - EPOCH_MS) / TICK_MS) : 0;
+      return (start + (ticks > 0 ? ticks : 0) + own) % WRAP_AT;
+    }
     return {
-      value: function () { return start + own; },
+      value: total,
       tap: function () {
         own += 1;
         try { if (storage) storage.setItem(STORAGE_KEY, String(own)); } catch (e) {}
-        return start + own;
+        return total();
       }
     };
   }
@@ -183,14 +192,15 @@
   // The click listener is on the whole document and elements are looked up at click time, because
   // Squarespace re-draws a Code Block's HTML after load. Running this again (the block was re-drawn and
   // its script ran twice) only refreshes the number; it never adds a second listener.
-  function initRipples(doc, storage) {
+  function initRipples(doc, storage, now) {
     var html = doc.documentElement;
-    var counter = createCounter(PLACEHOLDER_START_COUNT, storage);
+    var counter = createCounter(PLACEHOLDER_START_COUNT, storage, now);
     var taps = 0;
 
     function show() {
       var number = doc.getElementById('sj-count');
-      if (number) number.textContent = formatCount(counter.value());
+      var text = formatCount(counter.value());
+      if (number && number.textContent !== text) number.textContent = text;
     }
     show();
 
@@ -200,6 +210,8 @@
     // Other scripts on the page may write their own number later; put ours back once the page has loaded.
     var view = doc.defaultView;
     if (view && view.addEventListener) view.addEventListener('load', show);
+    // the number rises on its own, so look again every second (it only changes every TICK_MS)
+    if (now && view && view.setInterval) view.setInterval(show, 1000);
 
     // a heart that floats up from the button, and a burst of confetti on every tenth tap
     function playful(fx) {
@@ -270,6 +282,9 @@
 
   var Ripples = {
     PLACEHOLDER_START_COUNT: PLACEHOLDER_START_COUNT,
+    EPOCH_MS: EPOCH_MS,
+    TICK_MS: TICK_MS,
+    WRAP_AT: WRAP_AT,
     formatCount: formatCount,
     createCounter: createCounter,
     initRipples: initRipples
@@ -280,9 +295,9 @@
 
   if (typeof document !== 'undefined') {
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', function () { initRipples(document, browserStorage()); });
+      document.addEventListener('DOMContentLoaded', function () { initRipples(document, browserStorage(), Date.now); });
     } else {
-      initRipples(document, browserStorage());
+      initRipples(document, browserStorage(), Date.now);
     }
   }
 })(typeof window !== 'undefined' ? window : globalThis);

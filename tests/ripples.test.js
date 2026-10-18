@@ -50,6 +50,87 @@ test('counter ignores junk in storage and survives storage that throws', () => {
   assert.equal(c.tap(), 101);
 });
 
+// --- the number ticks up on its own (no server: it is worked out from the clock), then wraps at 10,000,000 ---
+const { EPOCH_MS, TICK_MS, WRAP_AT } = Ripples;
+const clockAt = (ticks) => () => EPOCH_MS + ticks * TICK_MS;
+
+test('the wrap-around point is ten million and the clock constants are numbers', () => {
+  assert.equal(WRAP_AT, 10000000);
+  assert.ok(EPOCH_MS > 0 && TICK_MS > 0);
+});
+
+test('on the start date the counter shows the start number, and every tick adds one', () => {
+  assert.equal(Ripples.createCounter(1284, null, clockAt(0)).value(), 1284);
+  assert.equal(Ripples.createCounter(1284, null, clockAt(3)).value(), 1287);
+  assert.equal(Ripples.createCounter(1284, null, clockAt(3.9)).value(), 1287, 'a part tick does not count');
+});
+
+test('a clock before the start date never takes the number below the start', () => {
+  assert.equal(Ripples.createCounter(1284, null, () => EPOCH_MS - 5 * TICK_MS).value(), 1284);
+});
+
+test('with no clock the number does not tick (tests and storage-only use)', () => {
+  assert.equal(Ripples.createCounter(1284, null).value(), 1284);
+});
+
+test('a visitor\'s own taps are added on top of the ticking number', () => {
+  const s = fakeStorage();
+  const c = Ripples.createCounter(1284, s, clockAt(10));
+  assert.equal(c.tap(), 1295);
+  assert.equal(Ripples.createCounter(1284, s, clockAt(20)).value(), 1305);
+});
+
+test('the number wraps back to 0 at ten million and counts up again', () => {
+  const start = 1284;
+  assert.equal(Ripples.createCounter(start, null, clockAt(WRAP_AT - start - 1)).value(), WRAP_AT - 1);
+  assert.equal(Ripples.createCounter(start, null, clockAt(WRAP_AT - start)).value(), 0);
+  assert.equal(Ripples.createCounter(start, null, clockAt(WRAP_AT - start + 7)).value(), 7);
+});
+
+test('a tap that crosses ten million also wraps to 0', () => {
+  const start = 1284;
+  const c = Ripples.createCounter(start, null, clockAt(WRAP_AT - start - 1));
+  assert.equal(c.tap(), 0);
+});
+
+test('the page shows the ticking number and refreshes it as time passes', () => {
+  let ticks = 4;
+  const doc = makeDoc(ALL);
+  initRipples(doc, null, () => EPOCH_MS + ticks * TICK_MS);
+  assert.equal(doc.els['sj-count'].textContent, Ripples.formatCount(START + 4));
+  ticks = 9;
+  doc.fireIntervals();
+  assert.equal(doc.els['sj-count'].textContent, Ripples.formatCount(START + 9));
+});
+
+test('running the script again (block re-drawn) starts only one timer', () => {
+  const doc = makeDoc(ALL);
+  initRipples(doc, null, clockAt(0));
+  doc.rerender();
+  initRipples(doc, null, clockAt(0));
+  assert.equal(doc.intervals.length, 1);
+});
+
+test('a tap shows the ticking number plus the tap, and the next tick keeps it', () => {
+  let ticks = 2;
+  const doc = makeDoc(ALL);
+  initRipples(doc, fakeStorage(), () => EPOCH_MS + ticks * TICK_MS);
+  doc.els['sj-heart'].fire('click');
+  assert.equal(doc.els['sj-count'].textContent, Ripples.formatCount(START + 3));
+  ticks = 5;
+  doc.fireIntervals();
+  assert.equal(doc.els['sj-count'].textContent, Ripples.formatCount(START + 6));
+});
+
+test('no timer and no error when the window cannot set one or no clock is given', () => {
+  const doc = makeDoc(ALL);
+  doc.defaultView.setInterval = undefined;
+  assert.doesNotThrow(() => initRipples(doc, null, clockAt(1)));
+  const plain = makeDoc(ALL);
+  initRipples(plain);
+  assert.equal(plain.intervals.length, 0);
+});
+
 // --- the heart ---
 test('tapping the heart adds one ring and bumps the counter to 1,285', () => {
   const doc = makeDoc(ALL);

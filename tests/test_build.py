@@ -231,9 +231,11 @@ class HomeTests(unittest.TestCase):
         for ident in ["sj-heart", "sj-rings", "sj-count", "sj-surprise", "sj-idea", "sj-did-it", "sj-done"]:
             self.assertEqual(len(re.findall(r'id="%s"' % ident, self.html)), 1, ident)
 
-    def test_heart_is_a_button_and_counter_announces_politely(self):
+    def test_heart_is_a_button_and_the_ticking_counter_is_not_a_live_region(self):
         self.assertRegex(self.html, r'<button[^>]*id="sj-heart"')
-        self.assertRegex(self.html, r'<p[^>]*aria-live="polite"[^>]*>[^<]*(?:<[^>]*>[^<]*)*id="sj-count"|id="sj-count"[^>]*>[^<]*</[^>]+>[^<]*</p>')
+        # the number rises on its own every few seconds, so it must not be a live region (a screen reader would read it out each time)
+        counter_p = re.search(r"<p[^>]*>\s*<b id=\"sj-count\"", self.html).group(0)
+        self.assertNotIn("aria-live", counter_p)
         self.assertIn("1,284", re.search(r'id="sj-count"[^>]*>([^<]*)<', self.html).group(1))
 
     def test_script_only_elements_are_hidden_without_javascript(self):
@@ -420,6 +422,9 @@ class HomePageFolderTests(unittest.TestCase):
         self.assertEqual(hero.count("<script>"), 2)  # heart counter, then the page-open heart transition
         self.assertIn("initRipples", hero)
         self.assertIn("sj-ripples", hero)
+        # the page gives the counter the real clock, so the number rises and wraps at ten million on its own
+        self.assertIn("initRipples(document, browserStorage(), Date.now)", hero)
+        self.assertIn("WRAP_AT = 10000000", hero)
         for n in ("2-footer-injection.html", "7-page-script-block.html"):
             self.assertNotIn("initRipples", self.read(n), n)
             self.assertNotIn("sj-ripples", self.read(n), n)

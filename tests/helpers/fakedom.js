@@ -9,7 +9,10 @@ function makeDoc(ids, { reduceMotion = false } = {}) {
     dispatch(type, target, extra) { (docListeners[type] || []).forEach((fn) => fn(Object.assign({ type, target }, extra))); },
     getElementById(id) { return doc.els[id] || null; },
     createElement() { return makeEl('', doc); },
-    defaultView: { matchMedia: () => ({ matches: reduceMotion }) },
+    intervals: [],
+    // a page timer a test can fire by hand: doc.fireIntervals()
+    fireIntervals() { doc.intervals.forEach((fn) => fn()); },
+    defaultView: { matchMedia: () => ({ matches: reduceMotion }), setInterval(fn) { doc.intervals.push(fn); return doc.intervals.length; } },
     build() { ids.forEach((id) => { doc.els[id] = makeEl(id, doc, docListeners); }); },
     // Squarespace re-draws a block's HTML: same ids, brand new elements, no listeners.
     rerender() { ids.forEach((id) => { doc.els[id] = makeEl(id, doc, docListeners); }); },
