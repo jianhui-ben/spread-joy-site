@@ -9,7 +9,7 @@ Paste-ready code for the Spread Joy Collective Squarespace site. Open a file, co
 | File | What it is | Where to paste | Needs |
 |---|---|---|---|
 | `footer-injection.html` | The site script: counter, kindness ideas, click handling | Pages > Custom Code > Code Injection > **Footer** (once for the whole site) | Core, Plus or Advanced plan |
-| `heart-block.html` | Tap-the-heart: heart button, rings, "ripples of joy so far" counter | A **Code Block** (mode HTML) where the heart goes | `footer-injection.html`; replace `{{HEART_IMAGE_URL}}` |
+| `heart-block.html` | Tap-the-heart: heart button, rings, "ripples of joy" counter | A **Code Block** (mode HTML) where the heart goes | `footer-injection.html`; replace `{{HEART_IMAGE_URL}}` |
 | `surprise-block.html` | "Surprise me" button and idea line | A **Code Block** (mode HTML) in the "Your turn" section | `footer-injection.html` |
 
 ## Install order

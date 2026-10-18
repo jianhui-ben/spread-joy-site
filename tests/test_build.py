@@ -187,6 +187,13 @@ class HomeTests(unittest.TestCase):
         # starter hopes live in one editable list, each with a text and a name (name may stay empty)
         self.assertRegex(src, r"const messages=\[\{text:'[^']+',name:'[^']*'\}")
 
+    def test_jar_copy_says_joy_not_hope(self):
+        src = (ROOT / "assets" / "hope-jar.html").read_text()
+        self.assertIn("Share your joyful moment!", src)
+        # ids, selectors and comments may keep "hope"; nothing a visitor sees or hears may
+        visible = re.sub(r"<script>|//[^\n]*|data-sjc-hope-widget|#share-a-hope|[#'\"]hope(-form)?['\"\]]|id=\"hope(-form)?\"|for=\"hope\"", "", src)
+        self.assertNotRegex(visible, r"(?i)hope")
+
     def test_every_link_card_has_a_photo_so_none_is_a_blank_white_block(self):
         cards = re.findall(r'<a class="card"[^>]*>(.*?)</a>', self.html, re.S)
         self.assertEqual(len(cards), 4)

@@ -150,7 +150,7 @@ HOME_HERO = f"""<section class="hero">
         <div id="sj-rings" class="rings" aria-hidden="true"></div>
         <button id="sj-heart" type="button" aria-label="Tap to send a ripple of joy"><img src="assets/img/heart.png" alt=""></button>
       </div>
-      <p aria-live="polite"><b id="sj-count">{START_COUNT}</b> ripples of joy so far</p>
+      <p aria-live="polite"><b id="sj-count">{START_COUNT}</b> ripples of joy</p>
     </div>
   </div>
 </section>
@@ -390,7 +390,7 @@ GENERATED_NOTE = (
 HEART_BLOCK = """<!--
   SNIPPET:        Tap-the-heart (heart button, rings, counter)
   WHAT IT DOES:   Shows a yellow heart. Each tap sends a ring across the screen and adds 1 to
-                  the "ripples of joy so far" number. The number is made up (see footer-injection.html).
+                  the "ripples of joy" number. The number is made up (see footer-injection.html).
   WHERE TO PASTE: A Code Block in the section where the heart should appear. Set the block's mode to HTML.
   NEEDS:          footer-injection.html installed once (Pages > Custom Code > Code Injection > Footer).
                   Without it the heart still shows but does nothing.
@@ -414,7 +414,7 @@ __CSS__
 
 <!-- The counter line. aria-live lets screen readers announce the new number -->
 <p class="counter" aria-live="polite" style="text-align:center">
-  <span id="sj-count">__COUNT__</span> ripples of joy so far
+  <span id="sj-count">__COUNT__</span> ripples of joy
 </p>
 """
 
