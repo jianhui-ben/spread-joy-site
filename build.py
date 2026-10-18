@@ -166,6 +166,14 @@ HEART_TRANSITION_STYLE = ("<style>\n"
     + "\n</style>\n")
 HEART_TRANSITION_SCRIPT = "\n<script>\n" + (OUT / "assets" / "heart-transition.js").read_text().strip() + "\n</script>\n"
 
+# The animated landing scene (Xavier's story). Its styles are all scoped under .xs; the sprite sheet is one picture
+# (assets/img/xavier-sprite.png) that the CSS names by its repo path, so to_placeholders swaps in the uploaded address.
+XAVIER_HTML = (OUT / "assets" / "xavier-story.html").read_text().strip()
+XAVIER_STYLE = ("<style>\n" + (OUT / "assets" / "xavier-story.css").read_text().strip()
+                .replace("url('img/xavier-sprite.png')", 'url("assets/img/xavier-sprite.png")') + "\n</style>\n")
+XAVIER_SCRIPT = "\n<script>\n" + (OUT / "assets" / "xavier-story.js").read_text().strip() + "\n</script>\n"
+HOME_XAVIER = '<div class="xs">\n' + XAVIER_HTML + "\n</div>\n"
+
 HOME_STORY = """<section class="story" id="story">
   <div class="stage-pin">
     <div class="frames">
@@ -218,13 +226,14 @@ HOME_TURN = f"""<section class="turn">
 PAGES["index.html"] = dict(
     title="Home",
     description="Spread Joy Collective supports families of individuals with disabilities. Small acts. Big impact. Spread joy.",
-    head_extra='<link rel="stylesheet" href="assets/home.css">\n<link rel="stylesheet" href="assets/heart-transition.css">',
-    scripts="""<script src="assets/ripples.js" defer></script>
+    head_extra='<link rel="stylesheet" href="assets/home.css">\n<link rel="stylesheet" href="assets/heart-transition.css">\n<link rel="stylesheet" href="assets/xavier-story.css">',
+    scripts="""<script src="assets/xavier-story.js" defer></script>
+<script src="assets/ripples.js" defer></script>
 <script src="assets/heart-transition.js" defer></script>
 <script src="assets/joy.js" defer></script>
 <script src="assets/home.js" defer></script>
 <script src="assets/scroll-story.js" defer></script>""" + GB_LIBRARY,
-    body='<div class="sj-home">\n' + HOME_HERO + "</div>\n" + HOME_STORY + "\n" + WAVE_UP + "\n" + HOME_TURN,
+    body=HOME_XAVIER + '<div class="sj-home">\n' + HOME_HERO + "</div>\n" + HOME_STORY + "\n" + WAVE_UP + "\n" + HOME_TURN,
 )
 
 PAGES["mission.html"] = dict(
@@ -499,6 +508,7 @@ HOME_IMAGES = {
     "CARD_SHARE": "card-share.jpg",
     "CARD_SUPPORT": "card-support.jpg",
     "HEART": "heart.png",
+    "XAVIER_SPRITE": "xavier-sprite.png",
 }
 
 
@@ -645,7 +655,7 @@ __GIVEPILLCSS__
 </script>
 """
 
-SQS_OVERRIDES = """.page-section:has(.sj-home) { padding: 0 !important; min-height: 0 !important; }
+SQS_OVERRIDES = """.page-section:has(.sj-home), .page-section:has(.xs) { padding: 0 !important; min-height: 0 !important; }
 .page-section:has(.sj-home) .content-wrapper,
 .page-section:has(.sj-home) .content { padding: 0 !important; max-width: none !important; width: 100% !important; }
 .page-section:has(.sj-home) .fluid-engine { display: block !important; }
@@ -763,6 +773,15 @@ def build_home_page():
                    + "\n}\n</script>\n")
     (HOME_DIR / "7-page-script-block.html").write_text(page_script)
 
+    xavier = ("<!--\n  PASTE 0:        Xavier's animated story (the landing scene)\n"
+              "  WHAT IT IS:     Six scroll-driven scenes about Xavier. When it ends, the hero (paste 3) follows.\n"
+              "  WHERE TO PASTE: A Code Block (mode HTML) in a NEW first section of the Home page, ABOVE the hero section.\n"
+              "                  Its styles are scoped to .xs and its script is inside, so nothing site-wide is needed.\n"
+              "  PLACEHOLDERS:   {{IMG_XAVIER_SPRITE}} (the Xavier and mom sprite picture; upload it and add its address to image-urls.json)\n"
+              "  GENERATED:      by build.py from assets/xavier-story.*. Do not hand-edit.\n-->\n"
+              + to_placeholders(XAVIER_STYLE + HOME_XAVIER + XAVIER_SCRIPT))
+    (HOME_DIR / "0-xavier-story-block.html").write_text(xavier)
+
     blocks = [
         (3, "3-hero-block.html", "Hero: headline and growing photo with the heart",
          "Giant headline, the photo that grows as you scroll, and the tap-the-heart pill on top of it.",
@@ -790,7 +809,7 @@ def build_home_page():
                 .replace("__WHERE__", where).replace("__PLACEHOLDERS__", ph)
                 .replace("__HTML__", to_placeholders(html.strip("\n"))))
         (HOME_DIR / fname).write_text(text)
-    print("wrote home-page/ (6 files)")
+    print("wrote home-page/ (7 files + 0-xavier-story-block)")
 
 
 def nav_html(current):

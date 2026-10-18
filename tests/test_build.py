@@ -148,7 +148,7 @@ class HomeTests(unittest.TestCase):
         cls.html = build_index()
 
     def test_hero_headline_and_subline(self):
-        h1 = re.search(r"<h1[^>]*>(.*?)</h1>", self.html, re.S).group(1)
+        h1 = re.search(r'<section class="hero">\s*<h1[^>]*>(.*?)</h1>', self.html, re.S).group(1)
         self.assertEqual(text_of(h1), "Small acts. Big impact.")
         self.assertIn("Spread joy.", text_of(re.search(r'<p class="sub[^"]*"[^>]*>(.*?)</p>', self.html, re.S).group(1)))
 
@@ -540,3 +540,36 @@ class SiteLinkTests(unittest.TestCase):
         self.assertIn("Every family deserves support, connection, and joy.", self.pages["help.html"])
         self.assertIn("givebutter.com/SpreadJoyCollective", self.pages["index.html"])
         self.assertNotIn("Get Involved", self.pages["index.html"])
+
+
+class XavierStoryTests(unittest.TestCase):
+    """The animated story is the landing scene; the current home page follows it."""
+
+    def setUp(self):
+        self.home = (ROOT / "index.html").read_text()
+        self.block = (ROOT / "home-page" / "0-xavier-story-block.html").read_text()
+
+    def test_local_home_starts_with_the_story_then_the_hero(self):
+        self.assertIn('id="xs-story"', self.home)
+        self.assertLess(self.home.index('id="xs-story"'), self.home.index('class="hero"'))
+        self.assertIn('assets/xavier-story.js', self.home)
+
+    def test_the_sprite_is_a_file_not_inlined(self):
+        self.assertTrue((ROOT / "assets" / "img" / "xavier-sprite.png").exists())
+        self.assertNotIn("base64", self.home)
+        self.assertLess(len(self.block), 60000)
+
+    def test_paste_block_carries_style_markup_and_script_and_an_image_placeholder_or_url(self):
+        self.assertEqual(self.block.count("<style>"), 1)
+        self.assertIn('class="xs"', self.block)
+        self.assertIn("initXavierStory", self.block)
+        self.assertNotIn("assets/img/xavier-sprite.png", self.block)  # swapped for the uploaded address
+
+    def test_story_css_is_scoped_to_xs(self):
+        css = (ROOT / "assets" / "xavier-story.css").read_text()
+        for m in re.finditer(r"(?:^|\})\s*([^{}@]+)\{", css, flags=re.M):
+            for sel in m.group(1).split(","):
+                self.assertTrue(sel.strip().startswith(".xs"), sel.strip())
+
+    def test_ids_do_not_clash_with_the_home_story(self):
+        self.assertEqual(self.home.count('id="story"'), 1)

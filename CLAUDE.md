@@ -26,7 +26,7 @@ Run both suites before committing. Develop test-first; bugs that only showed up 
 | Path | What it is |
 |---|---|
 | `build.py` | Generator: page bodies, `HOME_*` sections, Squarespace paste files. **Edit this, not generated files.** |
-| `assets/` | `styles.css` (mock site), `home.css`, `ripples.js` (heart + counter, carried by the hero block), `heart-transition.js` + `.css` (page-open heart effect from a teammate, also carried by the hero block), `joy.js`, `home.js`, `scroll-story.js`, `img/` |
+| `assets/` | `styles.css` (mock site), `home.css`, `ripples.js` (heart + counter, carried by the hero block), `heart-transition.js` + `.css` (page-open heart effect from a teammate, also carried by the hero block), `xavier-story.html/.css/.js` (the animated landing story, all scoped under `.xs`; source was `xavier-story-b.html`, which stays untracked), `joy.js`, `home.js`, `scroll-story.js`, `img/` |
 | `home-page/` | **Generated** paste files 1-6, `README.md` (how to rebuild the home page in Squarespace), `image-urls.json` (uploaded image addresses) |
 | `squarespace/` | Legacy standalone snippets from before the home page; kept, not maintained |
 | `tests/` | `test_build.py`, `*.test.js` |
@@ -51,7 +51,7 @@ Give, everywhere, is `https://givebutter.com/SpreadJoyCollective`. There is no G
 
 ## Home page (current)
 
-Scroll story: full-bleed hero with a tap-the-heart pill (counter, floating hearts, confetti) → pinned 3-photo story that slides over the hero → yellow "Your turn." card row ending in Surprise me and I did it. Header slides away on scroll (home page only). That tuck disagrees with SPEC.md §3 and with Michelle’s note in the brainstorm doc, which both want the nav to stay put. Left as the owner last asked, and flagged rather than changed.
+Landing: Xavier's animated six-scene story (`.xs`, paste `home-page/0-xavier-story-block.html`, own section above the hero; sprite picture `assets/img/xavier-sprite.png` must be uploaded and added to `image-urls.json` as `XAVIER_SPRITE`; not yet on the master). After it, the scroll story: full-bleed hero with a tap-the-heart pill (counter, floating hearts, confetti) → pinned 3-photo story that slides over the hero → yellow "Your turn." card row ending in Surprise me and I did it. Header slides away on scroll (home page only). That tuck disagrees with SPEC.md §3 and with Michelle’s note in the brainstorm doc, which both want the nav to stay put. Left as the owner last asked, and flagged rather than changed.
 
 ## Squarespace facts
 
