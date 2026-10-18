@@ -1,4 +1,4 @@
-// Xavier's animated story: the landing scene above the home page. One tall track, one pinned stage;
+// Xavier's animated story: the animated story for the Our Story page. One tall track, one pinned stage;
 // scrolling steps through six scenes (the CSS in xavier-story.css reacts to data-scene and data-act).
 (function (root) {
   var SCENES = [
@@ -57,13 +57,19 @@
           ],
           "scene": 5,
           "act": "vision",
-          "subtitle": "And grows into kindness."
+          "subtitle": "And grows into joy."
       }
   ];
 
   function sceneIndex(progress, count) {
     var p = Math.max(0, Math.min(1, progress));
     return Math.min(count - 1, Math.floor(p * count));
+  }
+
+  // A site header that stays on screen (fixed or sticky) covers the top of the stage, so the stage sits below it.
+  function headerOffset(rect, position) {
+    if (!rect || (position !== 'fixed' && position !== 'sticky')) return 0;
+    return Math.max(0, Math.round(rect.bottom));
   }
 
   // Where the drawing and the text go so the whole picture fits between the title and the text.
@@ -80,22 +86,20 @@
   // Elements are looked up on every update, never kept: Squarespace can re-draw a Code Block's HTML.
   function initXavierStory(doc, win) {
     var current = -1;
-    var navigated = false;
-    // go to the home page only when a scroll (not the page loading) reaches the very end of the story
-    function maybeLeave(progress) {
-      var root = doc.querySelector('.xs');
-      var home = root && root.dataset && root.dataset.home;
-      if (home && !navigated && progress >= 0.999) { navigated = true; win.location.assign(home); }
-    }
-    function render(fromScroll) {
+    function render() {
       var track = doc.querySelector('.xs-track');
       var stage = doc.querySelector('.xs .stage');
       if (!track || !stage) return;
+      var xs = doc.querySelector('.xs'), header = doc.querySelector('.site-header, #header');
+      if (xs && xs.style && win.getComputedStyle) {
+        xs.style.setProperty('--xs-top', headerOffset(header && header.getBoundingClientRect(), header && win.getComputedStyle(header).position) + 'px');
+      }
       var total = track.offsetHeight - win.innerHeight;
       var scrolled = -track.getBoundingClientRect().top;
       var progress = total > 0 ? scrolled / total : 0;
-      if (fromScroll === true) maybeLeave(progress);
       var index = sceneIndex(progress, SCENES.length);
+      var track2 = doc.querySelector('.xs .reading-track');
+      if (track2) track2.style.opacity = scrolled > total + win.innerHeight * 0.3 ? '0' : '1';
       var bar = doc.querySelector('.xs .reading-progress');
       if (bar) bar.style.height = (Math.max(0, Math.min(1, progress)) * 100) + '%';
       if (index === current && stage.dataset.act) { fit(stage); return; }
@@ -113,7 +117,6 @@
         })));
       }
       var hint = doc.querySelector('.xs .scroll-hint');
-      if (hint) hint.tabIndex = index === SCENES.length - 1 ? -1 : 0;
       fit(stage);
     }
     // measure the title and text, then place the drawing between them
@@ -134,7 +137,7 @@
     function later() {
       if (queued) return;
       queued = true;
-      (win.requestAnimationFrame || function (f) { f(); })(function () { queued = false; render(true); });
+      (win.requestAnimationFrame || function (f) { f(); })(function () { queued = false; render(); });
     }
     win.addEventListener('scroll', later, { passive: true });
     win.addEventListener('resize', render);
@@ -144,13 +147,18 @@
       var track = doc.querySelector('.xs-track');
       var reduce = win.matchMedia && win.matchMedia('(prefers-reduced-motion: reduce)').matches;
       var top = track.getBoundingClientRect().top + (win.scrollY || 0);
-      win.scrollTo({ top: top + (track.offsetHeight - win.innerHeight) * Math.min(1, (current + 1.1) / SCENES.length), behavior: reduce ? 'auto' : 'smooth' });
+      // on the last scene the arrow leads on to the yellow ending that follows the story
+      var next = current === SCENES.length - 1 ? track.offsetHeight : (track.offsetHeight - win.innerHeight) * Math.min(1, (current + 1.1) / SCENES.length);
+      win.scrollTo({ top: top + next, behavior: reduce ? 'auto' : 'smooth' });
     });
+    // the closing button has no address yet: until it does, it does nothing
+    var link = doc.querySelector('.xs .story-link');
+    if (link && link.getAttribute('href') === '#') link.addEventListener('click', function (e) { e.preventDefault(); });
     render();
     if (doc.fonts && doc.fonts.ready) doc.fonts.ready.then(function () { render(); });
   }
 
-  var api = { SCENES: SCENES, sceneIndex: sceneIndex, fitScene: fitScene, initXavierStory: initXavierStory };
+  var api = { SCENES: SCENES, sceneIndex: sceneIndex, fitScene: fitScene, headerOffset: headerOffset, initXavierStory: initXavierStory };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (typeof document !== 'undefined' && typeof window !== 'undefined') {
     if (!window.__sjXavierStory) {

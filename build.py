@@ -166,22 +166,19 @@ HEART_TRANSITION_STYLE = ("<style>\n"
     + "\n</style>\n")
 HEART_TRANSITION_SCRIPT = "\n<script>\n" + (OUT / "assets" / "heart-transition.js").read_text().strip() + "\n</script>\n"
 
-# The animated landing scene (Xavier's story). Its styles are all scoped under .xs; the sprite sheet is one picture
-# (assets/img/xavier-sprite.png) that the CSS names by its repo path, so to_placeholders swaps in the uploaded address.
+# Xavier's animated story, a block on the Our Story page. Its styles are all scoped under .xs; its four pictures
+# (assets/img/xavier-*.png) are named in the CSS by repo path, so to_placeholders swaps in the uploaded addresses.
 XAVIER_HTML = (OUT / "assets" / "xavier-story.html").read_text().strip()
-XAVIER_STYLE = ("<style>\n" + (OUT / "assets" / "xavier-story.css").read_text().strip()
-                .replace("url('img/xavier-sprite.png')", 'url("assets/img/xavier-sprite.png")') + "\n</style>\n")
+XAVIER_STYLE = ("<style>\n" + re.sub(r"url\('img/([^']+)'\)", r'url("assets/img/\1")',
+                (OUT / "assets" / "xavier-story.css").read_text().strip()) + "\n</style>\n")
 XAVIER_SCRIPT = "\n<script>\n" + (OUT / "assets" / "xavier-story.js").read_text().strip() + "\n</script>\n"
-def xavier_markup(home, link):
-    return '<div class="xs" data-home="%s">\n' % home + XAVIER_HTML.replace('href="index.html"', 'href="%s"' % link) + "\n</div>\n"
+HOME_XAVIER = '<div class="xs">\n' + XAVIER_HTML + "\n</div>\n"
 
-
-# Squarespace: the landing page hides the site header and footer (the page is the story alone)
-XAVIER_BARE_CSS = ("body:has(.xs) #header, body:has(.xs) footer, body:has(.xs) .sjc-footer, body:has(.xs) .sj-footer, body:has(.xs) #sj-give-pill"
-                   " { display: none !important; }\n.page-section:has(.xs) { padding: 0 !important; min-height: 0 !important; }\n"
-                   ".page-section:has(.xs) .content-wrapper, .page-section:has(.xs) .content { padding: 0 !important; max-width: none !important; width: 100% !important; }\n"
-                   ".page-section:has(.xs) .fluid-engine { display: block !important; }\n.page-section:has(.xs) .fe-block { grid-area: auto !important; }\n"
-                   ".page-section:has(.xs) .sqs-block-code, .page-section:has(.xs) .sqs-block-content { padding: 0 !important; margin: 0 !important; overflow: visible !important; }\n")
+# Squarespace: the story is a tall pinned stage, so the section around its Code Block must not add padding or clip it
+XAVIER_SECTION_CSS = (".page-section:has(.xs) { padding: 0 !important; min-height: 0 !important; }\n"
+                      ".page-section:has(.xs) .content-wrapper, .page-section:has(.xs) .content { padding: 0 !important; max-width: none !important; width: 100% !important; }\n"
+                      ".page-section:has(.xs) .fluid-engine { display: block !important; }\n.page-section:has(.xs) .fe-block { grid-area: auto !important; }\n"
+                      ".page-section:has(.xs) .sqs-block-code, .page-section:has(.xs) .sqs-block-content { padding: 0 !important; margin: 0 !important; overflow: visible !important; }\n")
 
 HOME_STORY = """<section class="story" id="story">
   <div class="stage-pin">
@@ -244,15 +241,6 @@ PAGES["index.html"] = dict(
     body='<div class="sj-home">\n' + HOME_HERO + "</div>\n" + HOME_STORY + "\n" + WAVE_UP + "\n" + HOME_TURN,
 )
 
-PAGES["landing.html"] = dict(
-    title="A little story about the joy of life",
-    description="A little story about Xavier, and a whole lot of joy.",
-    bare=True,
-    head_extra='<link rel="stylesheet" href="assets/xavier-story.css">',
-    scripts='<script src="assets/xavier-story.js" defer></script>',
-    body=xavier_markup("index.html", "index.html"),
-)
-
 PAGES["mission.html"] = dict(
     title="Our Mission",
     description="Spread Joy Collective supports individuals with disabilities and their families.",
@@ -270,8 +258,11 @@ PAGES["mission.html"] = dict(
 PAGES["story.html"] = dict(
     title="Our Story",
     description="How Spread Joy Collective began with Xavier and the community around him.",
+    head_extra='<link rel="stylesheet" href="assets/xavier-story.css">',
+    scripts='<script src="assets/xavier-story.js" defer></script>',
     body=f"""
 <div class="wrap page-title" id="ourstory"><h1>Our Story</h1></div>
+{HOME_XAVIER}
 <section class="block">
   <div class="wrap prose">
     <p>Spread Joy Collective began with our son, Xavier.</p>
@@ -526,6 +517,9 @@ HOME_IMAGES = {
     "CARD_SUPPORT": "card-support.jpg",
     "HEART": "heart.png",
     "XAVIER_SPRITE": "xavier-sprite.png",
+    "XAVIER_SOCKS": "xavier-socks.png",
+    "XAVIER_COMMUNITY": "xavier-community.png",
+    "XAVIER_VISION": "xavier-vision.png",
 }
 
 
@@ -844,12 +838,6 @@ for filename, page in PAGES.items():
         give=GIVE_URL,
         preview_note=PREVIEW_NOTE,
     )
-    if page.get("bare"):  # a page that is only its own content: no site header, footer or floating Give pill
-        html = re.sub(r"<header.*?</header>\s*", "", html, flags=re.S)
-        html = re.sub(r"<footer.*?</footer>\s*", "", html, flags=re.S)
-        html = re.sub(r'<link rel="stylesheet" href="assets/(styles|give-pill)\.css">\s*', "", html)
-        html = html.replace('<script src="assets/give-pill.js" defer></script>\n', "").replace('<script src="assets/site.js" defer></script>\n', "")
-        html = html.replace("<body>", '<body style="margin:0;font-family:\'League Spartan\',system-ui,sans-serif">')
     (OUT / filename).write_text(html)
     print("wrote", filename)
 
@@ -880,24 +868,25 @@ def build_contact_block():
     print("wrote contact-page/1-contact-block.html")
 
 
-def build_landing_block():
-    """Paste-ready Code Block for the landing page: the story alone, with the site header and footer hidden."""
-    text = ("<!--\n  LANDING PAGE:   Xavier's animated story\n"
-            "  WHAT IT IS:     Six scroll-driven scenes. At the end it leads to the home page (data-home below).\n"
-            "  WHERE TO PASTE: The only Code Block (mode HTML) on a NEW page (for example /landing) with one empty section.\n"
-            "                  Everything is inside: scoped styles, markup, script. The block also hides the site header,\n"
-            "                  footer and floating Give pill on this page only.\n"
-            "  PLACEHOLDERS:   {{IMG_XAVIER_SPRITE}} (the Xavier and mom sprite picture; upload it and add its address to image-urls.json)\n"
+def build_story_block():
+    """Paste-ready Code Block for the Our Story page: Xavier's animated story, all inside one block."""
+    text = ("<!--\n  OUR STORY:      Xavier's animated story\n"
+            "  WHAT IT IS:     Six scroll-driven scenes about Xavier, then a yellow closing section.\n"
+            "  WHERE TO PASTE: A Code Block (mode HTML) in its own section on the Our Story page. The block carries its own\n"
+            "                  scoped styles and script and trims the padding of that section only; nothing site-wide is needed.\n"
+            "  PLACEHOLDERS:   {{IMG_XAVIER_SPRITE}}, {{IMG_XAVIER_SOCKS}}, {{IMG_XAVIER_COMMUNITY}}, {{IMG_XAVIER_VISION}}\n"
+            "                  (the four xavier-*.png pictures in the assets folder; upload them and add their addresses to home-page/image-urls.json)\n"
+            "  BUTTON:         The yellow section's 'The story behind Spread Joy' button has no address yet (href=\"#\" does nothing).\n"
             "  GENERATED:      by build.py from assets/xavier-story.*. Do not hand-edit.\n-->\n"
-            + to_placeholders("<style>\n" + XAVIER_BARE_CSS + XAVIER_STYLE.split("<style>\n", 1)[1]
-                              + xavier_markup("/home", "/home") + XAVIER_SCRIPT))
-    folder = OUT / "landing-page"
+            + to_placeholders("<style>\n" + XAVIER_SECTION_CSS + XAVIER_STYLE.split("<style>\n", 1)[1]
+                              + HOME_XAVIER + XAVIER_SCRIPT))
+    folder = OUT / "story-page"
     folder.mkdir(exist_ok=True)
-    (folder / "1-landing-block.html").write_text(text)
-    print("wrote landing-page/1-landing-block.html")
+    (folder / "1-story-block.html").write_text(text)
+    print("wrote story-page/1-story-block.html")
 
 
 build_snippets()
 build_home_page()
-build_landing_block()
+build_story_block()
 build_contact_block()

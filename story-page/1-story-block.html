@@ -1,14 +1,14 @@
 <!--
-  LANDING PAGE:   Xavier's animated story
-  WHAT IT IS:     Six scroll-driven scenes. At the end it leads to the home page (data-home below).
-  WHERE TO PASTE: The only Code Block (mode HTML) on a NEW page (for example /landing) with one empty section.
-                  Everything is inside: scoped styles, markup, script. The block also hides the site header,
-                  footer and floating Give pill on this page only.
-  PLACEHOLDERS:   {{IMG_XAVIER_SPRITE}} (the Xavier and mom sprite picture; upload it and add its address to image-urls.json)
+  OUR STORY:      Xavier's animated story
+  WHAT IT IS:     Six scroll-driven scenes about Xavier, then a yellow closing section.
+  WHERE TO PASTE: A Code Block (mode HTML) in its own section on the Our Story page. The block carries its own
+                  scoped styles and script and trims the padding of that section only; nothing site-wide is needed.
+  PLACEHOLDERS:   {{IMG_XAVIER_SPRITE}}, {{IMG_XAVIER_SOCKS}}, {{IMG_XAVIER_COMMUNITY}}, {{IMG_XAVIER_VISION}}
+                  (the four xavier-*.png pictures in the assets folder; upload them and add their addresses to home-page/image-urls.json)
+  BUTTON:         The yellow section's 'The story behind Spread Joy' button has no address yet (href="#" does nothing).
   GENERATED:      by build.py from assets/xavier-story.*. Do not hand-edit.
 -->
 <style>
-body:has(.xs) #header, body:has(.xs) footer, body:has(.xs) .sjc-footer, body:has(.xs) .sj-footer, body:has(.xs) #sj-give-pill { display: none !important; }
 .page-section:has(.xs) { padding: 0 !important; min-height: 0 !important; }
 .page-section:has(.xs) .content-wrapper, .page-section:has(.xs) .content { padding: 0 !important; max-width: none !important; width: 100% !important; }
 .page-section:has(.xs) .fluid-engine { display: block !important; }
@@ -17,7 +17,7 @@ body:has(.xs) #header, body:has(.xs) footer, body:has(.xs) .sjc-footer, body:has
 .xs{--xs-yellow:#ffd112;--xs-ink:#231f20;color:var(--xs-ink);font-family:inherit;line-height:1.2}
 .xs *{box-sizing:border-box}
 .xs .xs-track{position:relative;height:620svh}
-.xs .stage{height:100svh;position:sticky;top:0;overflow:hidden;background:#fff}
+.xs .stage{height:calc(100svh - var(--xs-top,0px));position:sticky;top:var(--xs-top,0px);overflow:hidden;background:#fff}
 .xs .headline{position:absolute;top:14%;left:5%;right:5%;text-align:center;z-index:6;transition:opacity .45s,transform .65s}
 .xs .headline h1{font-size:clamp(44px,6.3vw,88px);line-height:1.03;letter-spacing:-1.8px;margin:0;font-weight:900}
 .xs .headline p{font-size:20px;margin:13px 0}
@@ -57,8 +57,14 @@ body:has(.xs) #header, body:has(.xs) footer, body:has(.xs) .sjc-footer, body:has
 .xs .stage[data-scene="5"] .people{transform:translateX(calc(var(--x)*.85)) scale(var(--s))}
 .xs .chapter-title{position:absolute;top:17%;left:5%;right:5%;text-align:center;font-size:clamp(37px,4.9vw,66px);letter-spacing:-1.3px;line-height:1.03;font-weight:900;opacity:0;transition:opacity .6s}
 .xs .stage:not([data-scene="0"]) .chapter-title{opacity:1}
+.xs .ending{position:relative;min-height:95svh;background:var(--xs-yellow);text-align:center;padding:120px 7% 90px;display:flex;align-items:center;justify-content:center;flex-direction:column}
+.xs .ending:before{content:'';position:absolute;top:-25px;left:0;right:0;height:50px;border-radius:50% 50% 0 0;background:var(--xs-yellow)}
+.xs .ending h2{font-size:clamp(66px,10vw,140px);line-height:1;letter-spacing:-5px;margin:0 0 20px;font-weight:900}
+.xs .ending p{font-size:21px;line-height:1.5;max-width:590px}
+.xs .button{display:inline-block;border-radius:40px;padding:17px 28px;background:var(--xs-ink);color:white;text-decoration:none;font-weight:600;margin:15px 0}
+.xs .signature{font-family:'Brush Script MT','Segoe Script',cursive;font-size:36px;font-style:italic;margin-top:25px}
 @media(min-width:651px) and (max-width:1000px){.xs .theatre{--spread:.82}.xs .people{width:90px;height:215px}.xs .p5, .xs .p6{opacity:0!important}}
-@media(max-width:650px){.xs .headline{top:15%}.xs .headline h1{font-size:48px;letter-spacing:-2px}.xs .headline p{font-size:16px}.xs .theatre{top:31%;height:32%;width:900px;transform:translateX(-50%) scale(.46);transform-origin:50% 100%}.xs .person{height:330px;width:330px}.xs .copy{top:71%;width:86%}.xs .copy h2{font-size:22px;margin-bottom:12px}.xs .copy p{font-size:16px;line-height:1.5}.xs .chapter-title{top:18%;font-size:37px;letter-spacing:-1.5px;left:7%;right:7%}.xs .ground-note{font-size:24px}}
+@media(max-width:650px){.xs .headline{top:15%}.xs .headline h1{font-size:48px;letter-spacing:-2px}.xs .headline p{font-size:16px}.xs .theatre{top:31%;height:32%;width:900px;transform:translateX(-50%) scale(.46);transform-origin:50% 100%}.xs .person{height:330px;width:330px}.xs .copy{top:71%;width:86%}.xs .copy h2{font-size:22px;margin-bottom:12px}.xs .copy p{font-size:16px;line-height:1.5}.xs .chapter-title{top:18%;font-size:37px;letter-spacing:-1.5px;left:7%;right:7%}.xs .ground-note{font-size:24px}.xs .ending h2{font-size:66px;letter-spacing:-3px}.xs .ending p{font-size:19px}.xs .ending{padding:90px 7%}}
 .xs .headline{top:14%}
 .xs .headline h1{font-size:clamp(40px,5.7vw,76px);max-width:850px;margin:auto}
 .xs .headline p{display:none}
@@ -80,8 +86,6 @@ body:has(.xs) #header, body:has(.xs) footer, body:has(.xs) .sjc-footer, body:has
 .xs .chapter-title{font-size:clamp(32px,4vw,53px)}
 @media(max-width:650px){.xs .headline{top:14%}.xs .headline h1{font-size:39px;max-width:340px}.xs .chapter-title{top:15%;font-size:34px}.xs .theatre{top:24%;height:32%}.xs .copy{top:61%;width:86%}.xs .copy p{font-size:15px;line-height:1.5}.xs .copy p+p{margin-top:7px}.xs .copy{top:65%}.xs .copy p{font-size:22px}.xs .chapter-title{font-size:32px}}
 @media(max-height:700px) and (min-width:651px){.xs .person{width:230px;height:230px}.xs .theatre{top:22%;height:34%}.xs .copy{top:61%}.xs .copy p{font-size:16px}.xs .chapter-title{top:14%;font-size:35px}.xs .headline h1{font-size:42px}.xs .people{height:180px}.xs .copy{top:66%}.xs .copy p{font-size:22px}}
-.xs .xs-track{height:620svh}
-.xs .stage{height:100svh}
 .xs .copy{top:67%;max-width:650px}
 .xs .copy p{font-size:22px;line-height:1.5}
 .xs .copy p+p{margin-top:10px}
@@ -129,24 +133,28 @@ body:has(.xs) #header, body:has(.xs) footer, body:has(.xs) .sjc-footer, body:has
 .xs .copy{top:var(--copy-top,70%)!important}
 .xs .headline, .xs .chapter-title{max-width:90%;margin:0 auto}
 @media(max-width:650px){.xs .theatre{width:640px!important}.xs .people{height:195px!important;width:85px!important}.xs .p5, .xs .p6{display:none!important}.xs .p1{--x:-290px!important}.xs .p2{--x:210px!important}.xs .p3{--x:-205px!important}.xs .p4{--x:150px!important}.xs .stage[data-act="vision"] .p1{--x:-290px!important}.xs .stage[data-act="vision"] .p2{--x:210px!important}.xs .copy p{font-size:16px}.xs .copy .second-title{font-size:23px}}
+.xs .stage[data-act="socks"] .scene-characters{background-image:url("{{IMG_XAVIER_SOCKS}}");background-size:contain;background-position:center bottom;background-repeat:no-repeat;}
+.xs .stage[data-act="community"] .scene-characters{background-image:url("{{IMG_XAVIER_COMMUNITY}}");background-size:contain;background-position:center bottom;background-repeat:no-repeat;}
+.xs .stage[data-act="vision"] .scene-characters{background-image:url("{{IMG_XAVIER_VISION}}");background-size:contain;background-position:center bottom;background-repeat:no-repeat;}
+.xs .ending{position:relative;z-index:15;background:#ffd112;min-height:100svh;padding:100px 7% 85px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
+.xs .ending h2{font-size:clamp(64px,9vw,128px);font-weight:900;line-height:1;letter-spacing:-4px;margin:0 0 44px}
+.xs .ending p{max-width:920px;font-size:clamp(19px,2.2vw,29px);line-height:1.55;margin:0 0 28px}
+.xs .ending .closing-line{margin:18px 0 32px}
+.xs .ending .button{margin:14px 0 20px;background:#231f20;color:white;border-radius:60px;padding:23px 38px;text-decoration:none;font-size:21px;font-weight:800}
+.xs .ending .signature{font-size:44px;margin-top:30px}
+@media(max-width:650px){.xs .ending{padding:80px 7% 65px}.xs .ending h2{font-size:64px;letter-spacing:-2px;margin-bottom:30px}.xs .ending p{font-size:20px}.xs .ending .button{font-size:17px;padding:20px 25px}.xs .ending .signature{font-size:37px}}
 .xs a:focus-visible{outline:3px solid #17758e;outline-offset:6px}
-.xs .scroll-hint{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);display:flex;align-items:center;color:var(--xs-ink);text-decoration:none;transition:opacity .4s;animation:xs-bob 1.6s ease-in-out infinite}
-.xs .stage[data-act="vision"] .scroll-hint{opacity:0;pointer-events:none}
+.xs .scroll-hint{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);display:flex;align-items:center;color:var(--xs-ink);text-decoration:none;animation:xs-bob 1.6s ease-in-out infinite}
 @keyframes xs-bob{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}
 @media(prefers-reduced-motion:reduce){.xs .scroll-hint{animation:none}}
-.xs .enter{position:absolute;bottom:34px;left:50%;transform:translateX(-50%);background:var(--xs-yellow);color:var(--xs-ink);border-radius:999px;padding:12px 24px;font-weight:600;text-decoration:none;opacity:0;pointer-events:none;transition:opacity .5s;z-index:9}
-.xs .stage[data-act="vision"] .enter{opacity:1;pointer-events:auto}
-.xs .intro-brand{position:absolute;left:4%;top:25px;text-align:left;font-size:10px;font-weight:600;letter-spacing:2.3px;z-index:10}
-.xs .intro-brand span{color:var(--xs-yellow);font-size:27px;vertical-align:middle;margin-right:10px}
-@media(max-width:650px){.xs .intro-brand{left:6%;top:20px;font-size:8px;letter-spacing:1.7px}.xs .intro-brand span{font-size:23px;margin-right:7px}}
-@media(max-height:700px) and (min-width:651px){.xs .intro-brand{top:15px}}
+.xs .reading-track{transition:opacity .4s}
 </style>
-<div class="xs" data-home="/home">
-<svg style="position:absolute;width:0;height:0" aria-hidden="true"><defs><symbol id="sock" viewBox="0 0 60 90"><path d="M22 4h28v47c0 7-3 12-9 17L24 81C8 93-5 72 8 61l14-12Z" fill="currentColor"/><path d="M22 10h28M22 20h28M22 32h28" stroke="white" stroke-width="5"/><path d="M10 60q13 0 17 18" fill="none" stroke="white" stroke-width="5"/></symbol></defs></svg><div class="reading-track" aria-hidden="true"><div class="reading-progress"></div></div><div class="xs-track" id="xs-story"><div class="stage" data-scene="0"><div class="intro-brand"><span aria-hidden="true">♥</span> SPREAD JOY COLLECTIVE</div><div class="headline"><h1>A little story about<br>the joy of life.</h1><p>A little story about a whole lot of joy.</p></div><div class="chapter-title" aria-hidden="true"></div><div class="theatre" role="img" aria-label="Xavier in a different pose for each chapter. Marisa joins during Sharing the joy, and his father joins the family in the final scene."><div class="floor"></div><svg class="people p1" viewBox="0 0 65 145" aria-hidden="true"><path d="M22 89v40m23-40v40" stroke="#40525e" stroke-width="14" stroke-linecap="round"/><path d="M17 135h10m14 0h12" stroke="#ddd5c8" stroke-width="9" stroke-linecap="round"/><path d="M17 55 8 88m40-33 10 33" stroke="#bb805e" stroke-width="11" stroke-linecap="round"/><rect x="14" y="48" width="37" height="48" rx="12" fill="#7ebec9"/><ellipse cx="33" cy="27" rx="19" ry="23" fill="#bb805e"/><path d="M14 24Q12 0 34 3Q55 4 52 24L43 13 23 15Z" fill="#3c2924"/><circle cx="26" cy="27" r="1.5" fill="#302421"/><circle cx="40" cy="27" r="1.5" fill="#302421"/><path d="M27 36q6 5 12 0" stroke="#744832" fill="none" stroke-width="2" stroke-linecap="round"/></svg><svg class="people p2" viewBox="0 0 65 145" aria-hidden="true"><path d="M22 89v40m23-40v40" stroke="#40525e" stroke-width="14" stroke-linecap="round"/><path d="M17 135h10m14 0h12" stroke="#ddd5c8" stroke-width="9" stroke-linecap="round"/><path d="M17 55 8 88m40-33 10 33" stroke="#edc3a3" stroke-width="11" stroke-linecap="round"/><rect x="14" y="48" width="37" height="48" rx="12" fill="#e6adba"/><ellipse cx="33" cy="27" rx="19" ry="23" fill="#edc3a3"/><path d="M14 24Q12 0 34 3Q55 4 52 24L43 13 23 15Z" fill="#665047"/><circle cx="26" cy="27" r="1.5" fill="#302421"/><circle cx="40" cy="27" r="1.5" fill="#302421"/><path d="M27 36q6 5 12 0" stroke="#744832" fill="none" stroke-width="2" stroke-linecap="round"/></svg><svg class="people p3" viewBox="0 0 65 145" aria-hidden="true"><path d="M22 89v40m23-40v40" stroke="#40525e" stroke-width="14" stroke-linecap="round"/><path d="M17 135h10m14 0h12" stroke="#ddd5c8" stroke-width="9" stroke-linecap="round"/><path d="M17 55 8 88m40-33 10 33" stroke="#d9a27f" stroke-width="11" stroke-linecap="round"/><rect x="14" y="48" width="37" height="48" rx="12" fill="#e5bf40"/><ellipse cx="33" cy="27" rx="19" ry="23" fill="#d9a27f"/><path d="M14 24Q12 0 34 3Q55 4 52 24L43 13 23 15Z" fill="#402d25"/><circle cx="26" cy="27" r="1.5" fill="#302421"/><circle cx="40" cy="27" r="1.5" fill="#302421"/><path d="M27 36q6 5 12 0" stroke="#744832" fill="none" stroke-width="2" stroke-linecap="round"/></svg><svg class="people p4" viewBox="0 0 65 145" aria-hidden="true"><path d="M22 89v40m23-40v40" stroke="#40525e" stroke-width="14" stroke-linecap="round"/><path d="M17 135h10m14 0h12" stroke="#ddd5c8" stroke-width="9" stroke-linecap="round"/><path d="M17 55 8 88m40-33 10 33" stroke="#a8694e" stroke-width="11" stroke-linecap="round"/><rect x="14" y="48" width="37" height="48" rx="12" fill="#9eac81"/><ellipse cx="33" cy="27" rx="19" ry="23" fill="#a8694e"/><path d="M14 24Q12 0 34 3Q55 4 52 24L43 13 23 15Z" fill="#302421"/><circle cx="26" cy="27" r="1.5" fill="#302421"/><circle cx="40" cy="27" r="1.5" fill="#302421"/><path d="M27 36q6 5 12 0" stroke="#744832" fill="none" stroke-width="2" stroke-linecap="round"/></svg><svg class="people p5" viewBox="0 0 65 145" aria-hidden="true"><path d="M22 89v40m23-40v40" stroke="#40525e" stroke-width="14" stroke-linecap="round"/><path d="M17 135h10m14 0h12" stroke="#ddd5c8" stroke-width="9" stroke-linecap="round"/><path d="M17 55 8 88m40-33 10 33" stroke="#edc6a9" stroke-width="11" stroke-linecap="round"/><rect x="14" y="48" width="37" height="48" rx="12" fill="#a99ac1"/><ellipse cx="33" cy="27" rx="19" ry="23" fill="#edc6a9"/><path d="M14 24Q12 0 34 3Q55 4 52 24L43 13 23 15Z" fill="#b18a52"/><circle cx="26" cy="27" r="1.5" fill="#302421"/><circle cx="40" cy="27" r="1.5" fill="#302421"/><path d="M27 36q6 5 12 0" stroke="#744832" fill="none" stroke-width="2" stroke-linecap="round"/></svg><svg class="people p6" viewBox="0 0 65 145" aria-hidden="true"><path d="M22 89v40m23-40v40" stroke="#40525e" stroke-width="14" stroke-linecap="round"/><path d="M17 135h10m14 0h12" stroke="#ddd5c8" stroke-width="9" stroke-linecap="round"/><path d="M17 55 8 88m40-33 10 33" stroke="#cc9977" stroke-width="11" stroke-linecap="round"/><rect x="14" y="48" width="37" height="48" rx="12" fill="#5d959b"/><ellipse cx="33" cy="27" rx="19" ry="23" fill="#cc9977"/><path d="M14 24Q12 0 34 3Q55 4 52 24L43 13 23 15Z" fill="#332c27"/><circle cx="26" cy="27" r="1.5" fill="#302421"/><circle cx="40" cy="27" r="1.5" fill="#302421"/><path d="M27 36q6 5 12 0" stroke="#744832" fill="none" stroke-width="2" stroke-linecap="round"/></svg><div class="scene-characters" aria-hidden="true"></div><span class="flavor music" aria-hidden="true">♫</span><div class="box"><span>♥</span></div><svg class="sock" style="color:#e8aaae;--x:-205px;--y:-95px;--r:-30deg" aria-hidden="true"><use href="#sock"/></svg><svg class="sock" style="color:#72b9ca;--x:175px;--y:-115px;--r:25deg" aria-hidden="true"><use href="#sock"/></svg><svg class="sock" style="color:#e1b834;--x:-165px;--y:-25px;--r:-18deg" aria-hidden="true"><use href="#sock"/></svg><svg class="sock" style="color:#a597be;--x:155px;--y:-20px;--r:30deg" aria-hidden="true"><use href="#sock"/></svg><svg class="sock" style="color:#8eae8b;--x:-30px;--y:-250px;--r:-10deg" aria-hidden="true"><use href="#sock"/></svg><svg class="sock" style="color:#e8aaae;--x:65px;--y:-15px;--r:18deg" aria-hidden="true"><use href="#sock"/></svg> <span class="heart" aria-hidden="true" style="--x:-320px;--y:-50px">♥</span><span class="heart" aria-hidden="true" style="--x:280px;--y:-70px">♥</span><span class="heart" aria-hidden="true" style="--x:-200px;--y:-140px">♥</span><span class="heart" aria-hidden="true" style="--x:185px;--y:-155px">♥</span><span class="heart" aria-hidden="true" style="--x:-65px;--y:-180px">♥</span><span class="heart" aria-hidden="true" style="--x:70px;--y:-220px">♥</span><div class="ground-note">Team Xavier · more than a decade of showing up</div></div><div class="copy"></div><a class="enter" href="/home">Visit our home page <span aria-hidden="true">&rarr;</span></a><a class="scroll-hint" href="#xs-story" aria-label="Scroll down"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M5 9l7 7 7-7" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div></div>
+<div class="xs">
+<svg style="position:absolute;width:0;height:0" aria-hidden="true"><defs><symbol id="sock" viewBox="0 0 60 90"><path d="M22 4h28v47c0 7-3 12-9 17L24 81C8 93-5 72 8 61l14-12Z" fill="currentColor"/><path d="M22 10h28M22 20h28M22 32h28" stroke="white" stroke-width="5"/><path d="M10 60q13 0 17 18" fill="none" stroke="white" stroke-width="5"/></symbol></defs></svg><div class="reading-track" aria-hidden="true"><div class="reading-progress"></div></div><div class="xs-track" id="xs-story"><div class="stage" data-scene="0"><div class="headline"><h1>A little story about<br>the joy of life.</h1><p>A little story about a whole lot of joy.</p></div><div class="chapter-title" aria-hidden="true"></div><div class="theatre" role="img" aria-label="Xavier in a different pose for each chapter. Marisa joins during Sharing the joy, and his father joins the family in the final scene."><div class="floor"></div><svg class="people p1" viewBox="0 0 65 145" aria-hidden="true"><path d="M22 89v40m23-40v40" stroke="#40525e" stroke-width="14" stroke-linecap="round"/><path d="M17 135h10m14 0h12" stroke="#ddd5c8" stroke-width="9" stroke-linecap="round"/><path d="M17 55 8 88m40-33 10 33" stroke="#bb805e" stroke-width="11" stroke-linecap="round"/><rect x="14" y="48" width="37" height="48" rx="12" fill="#7ebec9"/><ellipse cx="33" cy="27" rx="19" ry="23" fill="#bb805e"/><path d="M14 24Q12 0 34 3Q55 4 52 24L43 13 23 15Z" fill="#3c2924"/><circle cx="26" cy="27" r="1.5" fill="#302421"/><circle cx="40" cy="27" r="1.5" fill="#302421"/><path d="M27 36q6 5 12 0" stroke="#744832" fill="none" stroke-width="2" stroke-linecap="round"/></svg><svg class="people p2" viewBox="0 0 65 145" aria-hidden="true"><path d="M22 89v40m23-40v40" stroke="#40525e" stroke-width="14" stroke-linecap="round"/><path d="M17 135h10m14 0h12" stroke="#ddd5c8" stroke-width="9" stroke-linecap="round"/><path d="M17 55 8 88m40-33 10 33" stroke="#edc3a3" stroke-width="11" stroke-linecap="round"/><rect x="14" y="48" width="37" height="48" rx="12" fill="#e6adba"/><ellipse cx="33" cy="27" rx="19" ry="23" fill="#edc3a3"/><path d="M14 24Q12 0 34 3Q55 4 52 24L43 13 23 15Z" fill="#665047"/><circle cx="26" cy="27" r="1.5" fill="#302421"/><circle cx="40" cy="27" r="1.5" fill="#302421"/><path d="M27 36q6 5 12 0" stroke="#744832" fill="none" stroke-width="2" stroke-linecap="round"/></svg><svg class="people p3" viewBox="0 0 65 145" aria-hidden="true"><path d="M22 89v40m23-40v40" stroke="#40525e" stroke-width="14" stroke-linecap="round"/><path d="M17 135h10m14 0h12" stroke="#ddd5c8" stroke-width="9" stroke-linecap="round"/><path d="M17 55 8 88m40-33 10 33" stroke="#d9a27f" stroke-width="11" stroke-linecap="round"/><rect x="14" y="48" width="37" height="48" rx="12" fill="#e5bf40"/><ellipse cx="33" cy="27" rx="19" ry="23" fill="#d9a27f"/><path d="M14 24Q12 0 34 3Q55 4 52 24L43 13 23 15Z" fill="#402d25"/><circle cx="26" cy="27" r="1.5" fill="#302421"/><circle cx="40" cy="27" r="1.5" fill="#302421"/><path d="M27 36q6 5 12 0" stroke="#744832" fill="none" stroke-width="2" stroke-linecap="round"/></svg><svg class="people p4" viewBox="0 0 65 145" aria-hidden="true"><path d="M22 89v40m23-40v40" stroke="#40525e" stroke-width="14" stroke-linecap="round"/><path d="M17 135h10m14 0h12" stroke="#ddd5c8" stroke-width="9" stroke-linecap="round"/><path d="M17 55 8 88m40-33 10 33" stroke="#a8694e" stroke-width="11" stroke-linecap="round"/><rect x="14" y="48" width="37" height="48" rx="12" fill="#9eac81"/><ellipse cx="33" cy="27" rx="19" ry="23" fill="#a8694e"/><path d="M14 24Q12 0 34 3Q55 4 52 24L43 13 23 15Z" fill="#302421"/><circle cx="26" cy="27" r="1.5" fill="#302421"/><circle cx="40" cy="27" r="1.5" fill="#302421"/><path d="M27 36q6 5 12 0" stroke="#744832" fill="none" stroke-width="2" stroke-linecap="round"/></svg><svg class="people p5" viewBox="0 0 65 145" aria-hidden="true"><path d="M22 89v40m23-40v40" stroke="#40525e" stroke-width="14" stroke-linecap="round"/><path d="M17 135h10m14 0h12" stroke="#ddd5c8" stroke-width="9" stroke-linecap="round"/><path d="M17 55 8 88m40-33 10 33" stroke="#edc6a9" stroke-width="11" stroke-linecap="round"/><rect x="14" y="48" width="37" height="48" rx="12" fill="#a99ac1"/><ellipse cx="33" cy="27" rx="19" ry="23" fill="#edc6a9"/><path d="M14 24Q12 0 34 3Q55 4 52 24L43 13 23 15Z" fill="#b18a52"/><circle cx="26" cy="27" r="1.5" fill="#302421"/><circle cx="40" cy="27" r="1.5" fill="#302421"/><path d="M27 36q6 5 12 0" stroke="#744832" fill="none" stroke-width="2" stroke-linecap="round"/></svg><svg class="people p6" viewBox="0 0 65 145" aria-hidden="true"><path d="M22 89v40m23-40v40" stroke="#40525e" stroke-width="14" stroke-linecap="round"/><path d="M17 135h10m14 0h12" stroke="#ddd5c8" stroke-width="9" stroke-linecap="round"/><path d="M17 55 8 88m40-33 10 33" stroke="#cc9977" stroke-width="11" stroke-linecap="round"/><rect x="14" y="48" width="37" height="48" rx="12" fill="#5d959b"/><ellipse cx="33" cy="27" rx="19" ry="23" fill="#cc9977"/><path d="M14 24Q12 0 34 3Q55 4 52 24L43 13 23 15Z" fill="#332c27"/><circle cx="26" cy="27" r="1.5" fill="#302421"/><circle cx="40" cy="27" r="1.5" fill="#302421"/><path d="M27 36q6 5 12 0" stroke="#744832" fill="none" stroke-width="2" stroke-linecap="round"/></svg><div class="scene-characters" aria-hidden="true"></div><span class="flavor music" aria-hidden="true">♫</span><div class="box"><span>♥</span></div><svg class="sock" style="color:#e8aaae;--x:-205px;--y:-95px;--r:-30deg" aria-hidden="true"><use href="#sock"/></svg><svg class="sock" style="color:#72b9ca;--x:175px;--y:-115px;--r:25deg" aria-hidden="true"><use href="#sock"/></svg><svg class="sock" style="color:#e1b834;--x:-165px;--y:-25px;--r:-18deg" aria-hidden="true"><use href="#sock"/></svg><svg class="sock" style="color:#a597be;--x:155px;--y:-20px;--r:30deg" aria-hidden="true"><use href="#sock"/></svg><svg class="sock" style="color:#8eae8b;--x:-30px;--y:-250px;--r:-10deg" aria-hidden="true"><use href="#sock"/></svg><svg class="sock" style="color:#e8aaae;--x:65px;--y:-15px;--r:18deg" aria-hidden="true"><use href="#sock"/></svg> <span class="heart" aria-hidden="true" style="--x:-320px;--y:-50px">♥</span><span class="heart" aria-hidden="true" style="--x:280px;--y:-70px">♥</span><span class="heart" aria-hidden="true" style="--x:-200px;--y:-140px">♥</span><span class="heart" aria-hidden="true" style="--x:185px;--y:-155px">♥</span><span class="heart" aria-hidden="true" style="--x:-65px;--y:-180px">♥</span><span class="heart" aria-hidden="true" style="--x:70px;--y:-220px">♥</span><div class="ground-note">Team Xavier · more than a decade of showing up</div></div><div class="copy"></div><a class="scroll-hint" href="#xs-story" aria-label="Scroll down"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M5 9l7 7 7-7" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div></div><section class="ending"><h2>Small acts.<br>Big impact.</h2><p>Understanding grows kindness.<br>Kindness grows a community where we all belong.</p><p class="closing-line">One person. One family. One act of joy at a time.</p><a class="button story-link" href="#">The story behind Spread Joy</a><div class="signature">Spread joy.</div></section>
 </div>
 
 <script>
-// Xavier's animated story: the landing scene above the home page. One tall track, one pinned stage;
+// Xavier's animated story: the animated story for the Our Story page. One tall track, one pinned stage;
 // scrolling steps through six scenes (the CSS in xavier-story.css reacts to data-scene and data-act).
 (function (root) {
   var SCENES = [
@@ -205,13 +213,19 @@ body:has(.xs) #header, body:has(.xs) footer, body:has(.xs) .sjc-footer, body:has
           ],
           "scene": 5,
           "act": "vision",
-          "subtitle": "And grows into kindness."
+          "subtitle": "And grows into joy."
       }
   ];
 
   function sceneIndex(progress, count) {
     var p = Math.max(0, Math.min(1, progress));
     return Math.min(count - 1, Math.floor(p * count));
+  }
+
+  // A site header that stays on screen (fixed or sticky) covers the top of the stage, so the stage sits below it.
+  function headerOffset(rect, position) {
+    if (!rect || (position !== 'fixed' && position !== 'sticky')) return 0;
+    return Math.max(0, Math.round(rect.bottom));
   }
 
   // Where the drawing and the text go so the whole picture fits between the title and the text.
@@ -228,22 +242,20 @@ body:has(.xs) #header, body:has(.xs) footer, body:has(.xs) .sjc-footer, body:has
   // Elements are looked up on every update, never kept: Squarespace can re-draw a Code Block's HTML.
   function initXavierStory(doc, win) {
     var current = -1;
-    var navigated = false;
-    // go to the home page only when a scroll (not the page loading) reaches the very end of the story
-    function maybeLeave(progress) {
-      var root = doc.querySelector('.xs');
-      var home = root && root.dataset && root.dataset.home;
-      if (home && !navigated && progress >= 0.999) { navigated = true; win.location.assign(home); }
-    }
-    function render(fromScroll) {
+    function render() {
       var track = doc.querySelector('.xs-track');
       var stage = doc.querySelector('.xs .stage');
       if (!track || !stage) return;
+      var xs = doc.querySelector('.xs'), header = doc.querySelector('.site-header, #header');
+      if (xs && xs.style && win.getComputedStyle) {
+        xs.style.setProperty('--xs-top', headerOffset(header && header.getBoundingClientRect(), header && win.getComputedStyle(header).position) + 'px');
+      }
       var total = track.offsetHeight - win.innerHeight;
       var scrolled = -track.getBoundingClientRect().top;
       var progress = total > 0 ? scrolled / total : 0;
-      if (fromScroll === true) maybeLeave(progress);
       var index = sceneIndex(progress, SCENES.length);
+      var track2 = doc.querySelector('.xs .reading-track');
+      if (track2) track2.style.opacity = scrolled > total + win.innerHeight * 0.3 ? '0' : '1';
       var bar = doc.querySelector('.xs .reading-progress');
       if (bar) bar.style.height = (Math.max(0, Math.min(1, progress)) * 100) + '%';
       if (index === current && stage.dataset.act) { fit(stage); return; }
@@ -261,7 +273,6 @@ body:has(.xs) #header, body:has(.xs) footer, body:has(.xs) .sjc-footer, body:has
         })));
       }
       var hint = doc.querySelector('.xs .scroll-hint');
-      if (hint) hint.tabIndex = index === SCENES.length - 1 ? -1 : 0;
       fit(stage);
     }
     // measure the title and text, then place the drawing between them
@@ -282,7 +293,7 @@ body:has(.xs) #header, body:has(.xs) footer, body:has(.xs) .sjc-footer, body:has
     function later() {
       if (queued) return;
       queued = true;
-      (win.requestAnimationFrame || function (f) { f(); })(function () { queued = false; render(true); });
+      (win.requestAnimationFrame || function (f) { f(); })(function () { queued = false; render(); });
     }
     win.addEventListener('scroll', later, { passive: true });
     win.addEventListener('resize', render);
@@ -292,13 +303,18 @@ body:has(.xs) #header, body:has(.xs) footer, body:has(.xs) .sjc-footer, body:has
       var track = doc.querySelector('.xs-track');
       var reduce = win.matchMedia && win.matchMedia('(prefers-reduced-motion: reduce)').matches;
       var top = track.getBoundingClientRect().top + (win.scrollY || 0);
-      win.scrollTo({ top: top + (track.offsetHeight - win.innerHeight) * Math.min(1, (current + 1.1) / SCENES.length), behavior: reduce ? 'auto' : 'smooth' });
+      // on the last scene the arrow leads on to the yellow ending that follows the story
+      var next = current === SCENES.length - 1 ? track.offsetHeight : (track.offsetHeight - win.innerHeight) * Math.min(1, (current + 1.1) / SCENES.length);
+      win.scrollTo({ top: top + next, behavior: reduce ? 'auto' : 'smooth' });
     });
+    // the closing button has no address yet: until it does, it does nothing
+    var link = doc.querySelector('.xs .story-link');
+    if (link && link.getAttribute('href') === '#') link.addEventListener('click', function (e) { e.preventDefault(); });
     render();
     if (doc.fonts && doc.fonts.ready) doc.fonts.ready.then(function () { render(); });
   }
 
-  var api = { SCENES: SCENES, sceneIndex: sceneIndex, fitScene: fitScene, initXavierStory: initXavierStory };
+  var api = { SCENES: SCENES, sceneIndex: sceneIndex, fitScene: fitScene, headerOffset: headerOffset, initXavierStory: initXavierStory };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (typeof document !== 'undefined' && typeof window !== 'undefined') {
     if (!window.__sjXavierStory) {

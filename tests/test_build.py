@@ -516,12 +516,14 @@ class SiteLinkTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         build_index()
-        cls.pages = {p.name: p.read_text() for p in ROOT.glob("*.html")}
+        # only the generated site pages (loose reference html files dropped in the folder are not the site)
+        cls.pages = {p.name: p.read_text() for p in ROOT.glob("*.html") if 'class="site-header"' in p.read_text()}
 
     def test_every_internal_page_link_resolves_and_nothing_is_a_dead_hash(self):
         self.assertNotIn("get-involved.html", self.pages)
         for name, html in self.pages.items():
-            self.assertNotIn('href="#"', html, name)
+            # the story's closing button waits for the owner to give it an address; that one placeholder is allowed
+            self.assertNotIn('href="#"', html.replace('class="button story-link" href="#"', ""), name)
             self.assertNotIn("hello@example.com", html, name)
             self.assertNotRegex(html, r">\s*Donate\s*<", name)
             for href in re.findall(r'href="([^"]+)"', html):
@@ -543,61 +545,70 @@ class SiteLinkTests(unittest.TestCase):
 
 
 class XavierStoryTests(unittest.TestCase):
-    """The animated story is its own landing page (no header, no footer); it leads to the home page."""
+    """The animated story is a block on the Our Story page (not a landing page of its own)."""
 
     def setUp(self):
         subprocess.run([sys.executable, str(ROOT / "build.py")], check=True, capture_output=True)
-        self.home = (ROOT / "index.html").read_text()
-        self.landing = (ROOT / "landing.html").read_text()
-        self.block = (ROOT / "landing-page" / "1-landing-block.html").read_text()
+        self.story = (ROOT / "story.html").read_text()
+        self.block = (ROOT / "story-page" / "1-story-block.html").read_text()
+        self.css = (ROOT / "assets" / "xavier-story.css").read_text()
 
-    def test_landing_is_its_own_page_without_header_footer_or_give_pill(self):
-        self.assertIn('id="xs-story"', self.landing)
-        for bad in ("<header", "<footer", "site-header", "give-pill", 'class="hero"'):
-            self.assertNotIn(bad, self.landing, bad)
+    def test_there_is_no_separate_landing_page_any_more(self):
+        self.assertFalse((ROOT / "landing.html").exists())
+        self.assertFalse((ROOT / "landing-page").exists())
+        self.assertNotIn("landing.html", (ROOT / "index.html").read_text())
 
-    def test_home_page_is_back_to_just_the_home_page(self):
-        self.assertNotIn("xs-story", self.home)
-        self.assertNotIn("xavier-story", self.home)
-        self.assertIn('class="hero"', self.home)
+    def test_our_story_page_has_the_story_block_inside_the_normal_site(self):
+        self.assertIn('id="xs-story"', self.story)
+        self.assertIn('<header class="site-header">', self.story)
+        self.assertIn('<footer class="site-footer">', self.story)
+        self.assertIn("assets/xavier-story.js", self.story)
+        self.assertLess(self.story.index('id="xs-story"'), self.story.index("Spread Joy Collective began with our son"))
 
-    def test_landing_keeps_the_brand_mark_top_left(self):
-        self.assertRegex(self.landing, r'<div class="intro-brand">.*?SPREAD JOY COLLECTIVE')
-        self.assertIn(".xs .intro-brand", (ROOT / "assets" / "xavier-story.css").read_text())
+    def test_story_has_the_yellow_ending_with_a_placeholder_button(self):
+        self.assertIn('class="ending"', self.story)
+        self.assertIn("Small acts.", self.story)
+        self.assertIn("The story behind Spread Joy", self.story)
+        self.assertIn('class="button story-link" href="#"', self.story)
 
-    def test_scroll_hint_is_just_an_arrow(self):
-        self.assertNotIn("Scroll with us", self.landing)
-        hint = re.search(r'<a class="scroll-hint"[^>]*>(.*?)</a>', self.landing, re.S)
-        self.assertIn('aria-label="Scroll down"', hint.group(0))
-        self.assertEqual(re.sub(r"<[^>]+>", "", hint.group(1)).strip(), "")
+    def test_story_does_not_repeat_the_site_brand_or_send_you_anywhere(self):
+        self.assertNotIn("intro-brand", self.story)
+        self.assertNotIn("data-home", self.story)
+        self.assertNotIn("Visit our home page", self.story)
 
-    def test_landing_leads_to_home(self):
-        self.assertIn('data-home="index.html"', self.landing)
-        self.assertIn('href="index.html"', self.landing)  # the visible button at the end
-
-    def test_paste_block_leads_to_the_master_home(self):
-        self.assertIn('data-home="/home"', self.block)
-        self.assertNotIn("index.html", self.block)
-
-    def test_paste_block_hides_the_site_header_and_footer(self):
-        self.assertIn("body:has(.xs)", self.block)
-        self.assertIn("#header", self.block)
-
-    def test_the_sprite_is_a_file_not_inlined(self):
-        self.assertTrue((ROOT / "assets" / "img" / "xavier-sprite.png").exists())
-        self.assertNotIn("base64", self.landing)
+    def test_all_four_pictures_are_files_not_inlined(self):
+        for n in ("xavier-sprite", "xavier-socks", "xavier-community", "xavier-vision"):
+            self.assertTrue((ROOT / "assets" / "img" / (n + ".png")).exists(), n)
+        self.assertNotIn("base64", self.story)
         self.assertLess(len(self.block), 60000)
 
-    def test_paste_block_carries_style_markup_and_script_and_an_image_placeholder(self):
+    def test_paste_block_is_self_contained_with_image_placeholders(self):
         self.assertEqual(self.block.count("<style>"), 1)
         self.assertIn('class="xs"', self.block)
         self.assertIn("initXavierStory", self.block)
-        self.assertNotIn("assets/img/xavier-sprite.png", self.block)
+        self.assertNotIn("assets/img/xavier-", self.block)  # swapped for the uploaded addresses or placeholders
+        for key in ("XAVIER_SPRITE", "XAVIER_SOCKS", "XAVIER_COMMUNITY", "XAVIER_VISION"):
+            self.assertIn("{{IMG_%s}}" % key, self.block)
+
+    def test_paste_block_keeps_the_site_header_and_footer(self):
+        self.assertNotIn("body:has", self.block)  # nothing hides the site header or footer
+        self.assertNotIn("display: none", self.block)
+
+    def test_scroll_hint_is_just_an_arrow(self):
+        self.assertNotIn("Scroll with us", self.story)
+        hint = re.search(r'<a class="scroll-hint"[^>]*>(.*?)</a>', self.story, re.S)
+        self.assertIn('aria-label="Scroll down"', hint.group(0))
+        self.assertEqual(re.sub(r"<[^>]+>", "", hint.group(1)).strip(), "")
 
     def test_story_css_is_scoped_to_xs(self):
-        css = (ROOT / "assets" / "xavier-story.css").read_text()
-        for m in re.finditer(r"(?:^|\})\s*([^{}@]+)\{", css, flags=re.M):
+        for m in re.finditer(r"(?:^|\})\s*([^{}@]+)\{", self.css, flags=re.M):
             for sel in m.group(1).split(","):
                 if sel.strip().endswith("%"):  # keyframe steps
                     continue
                 self.assertTrue(sel.strip().startswith(".xs"), sel.strip())
+
+    def test_ids_do_not_clash_with_the_home_story(self):
+        self.assertNotIn('id="story"', self.story)
+        self.assertNotIn('id="joy"', self.story)
+
+

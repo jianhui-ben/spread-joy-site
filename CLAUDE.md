@@ -26,7 +26,7 @@ Run both suites before committing. Develop test-first; bugs that only showed up 
 | Path | What it is |
 |---|---|
 | `build.py` | Generator: page bodies, `HOME_*` sections, Squarespace paste files. **Edit this, not generated files.** |
-| `assets/` | `styles.css` (mock site), `home.css`, `ripples.js` (heart + counter, carried by the hero block), `heart-transition.js` + `.css` (page-open heart effect from a teammate, also carried by the hero block), `xavier-story.html/.css/.js` (the animated landing story, all scoped under `.xs`; source was `xavier-story-b.html`, which stays untracked), `joy.js`, `home.js`, `scroll-story.js`, `img/` |
+| `assets/` | `styles.css` (mock site), `home.css`, `ripples.js` (heart + counter, carried by the hero block), `heart-transition.js` + `.css` (page-open heart effect from a teammate, also carried by the hero block), `xavier-story.html/.css/.js` (the animated Our Story block, all scoped under `.xs`; the source files `xavier-*.html` and `spread-joy-story-updated.html` in the repo root are untracked reference copies), `joy.js`, `home.js`, `scroll-story.js`, `img/` |
 | `home-page/` | **Generated** paste files 1-6, `README.md` (how to rebuild the home page in Squarespace), `image-urls.json` (uploaded image addresses) |
 | `squarespace/` | Legacy standalone snippets from before the home page; kept, not maintained |
 | `tests/` | `test_build.py`, `*.test.js` |
@@ -51,7 +51,7 @@ Give, everywhere, is `https://givebutter.com/SpreadJoyCollective`. There is no G
 
 ## Home page (current)
 
-Landing page (separate from Home, no header/footer): Xavier's animated six-scene story, `landing.html` locally (`.xs`, paste `landing-page/1-landing-block.html` on its own new page; at the end it leads to the home page; sprite picture `assets/img/xavier-sprite.png` must be uploaded and added to `image-urls.json` as `XAVIER_SPRITE`; not yet on the master). Home page, the scroll story: full-bleed hero with a tap-the-heart pill (counter, floating hearts, confetti) → pinned 3-photo story that slides over the hero → yellow "Your turn." card row ending in Surprise me and I did it. Header slides away on scroll (home page only). That tuck disagrees with SPEC.md §3 and with Michelle’s note in the brainstorm doc, which both want the nav to stay put. Left as the owner last asked, and flagged rather than changed.
+Our Story page: Xavier's animated six-scene story plus a yellow closing section, a Code Block (`story.html` locally; paste `story-page/1-story-block.html` in its own section of the Our Story page). It is not a landing page and never navigates away. Its four pictures `assets/img/xavier-{sprite,socks,community,vision}.png` must be uploaded and added to `home-page/image-urls.json` as `XAVIER_SPRITE`, `XAVIER_SOCKS`, `XAVIER_COMMUNITY`, `XAVIER_VISION`; not yet on the master. The closing button "The story behind Spread Joy" has no address yet (`href="#"`, does nothing): owner to decide. Home page, the scroll story: full-bleed hero with a tap-the-heart pill (counter, floating hearts, confetti) → pinned 3-photo story that slides over the hero → yellow "Your turn." card row ending in Surprise me and I did it. Header slides away on scroll (home page only). That tuck disagrees with SPEC.md §3 and with Michelle’s note in the brainstorm doc, which both want the nav to stay put. Left as the owner last asked, and flagged rather than changed.
 
 ## Squarespace facts
 
