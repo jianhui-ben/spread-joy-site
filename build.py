@@ -188,7 +188,7 @@ HOME_TURN = f"""<section class="turn">
     <a class="card" href="events.html"><img src="assets/img/family.jpg" alt="A family in Peace, Love and Inclusion shirts"><span class="go" aria-hidden="true">&rarr;</span><h3>I have time</h3></a>
     <a class="card" href="{SOCKS_URL}" target="_blank" rel="noopener"><img src="assets/img/card-socks.jpg" alt="A circle of children's feet in colorful, mismatched socks"><span class="go" aria-hidden="true">&rarr;</span><h3>Socks That Spread Joy</h3></a>
     <a class="card" href="#share-a-hope"><img src="assets/img/card-share.jpg" alt="Xavier smiling beside a teammate in green aprons"><span class="go" aria-hidden="true">&rarr;</span><h3>I have something to share</h3></a>
-    <a class="card" href="help.html"><img src="assets/img/card-support.jpg" alt="Xavier and a friend with their arms around each other on a sports field"><span class="go" aria-hidden="true">&rarr;</span><h3>I need support</h3></a>
+    <a class="card" href="help.html"><img src="assets/img/card-support.jpg" alt="Two smiling kids on a sports field, one in a cap and a bright vest, one in a red shirt, both holding up peace signs"><span class="go" aria-hidden="true">&rarr;</span><h3>I need support</h3></a>
     <div class="card surprise">
       <img class="beat" src="assets/img/heart.png" alt="">
       <p id="sj-idea" class="idea sj-needs-js" aria-live="polite"></p>
