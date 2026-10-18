@@ -163,7 +163,7 @@ HOME_STORY = """<section class="story" id="story">
   <div class="stage-pin">
     <div class="frames">
       <div class="frame"><img src="assets/img/xavier-portrait.jpg" alt="Xavier, the kid whose story started it all"></div>
-      <div class="frame"><img src="assets/img/socks-circle-hero.jpg" alt="A circle of people holding socks together"></div>
+      <div class="frame"><img src="assets/img/story-circle.jpg" alt="A boy in a blue shirt smiling in the middle of a circle of children in colorful socks"></div>
       <div class="frame"><img src="assets/img/sock-pile.jpg" alt="A big pile of donated socks"></div>
       <div class="shade"></div>
       <div class="dots" aria-hidden="true"><i></i><i></i><i></i></div>
@@ -483,6 +483,7 @@ HOME_DIR = OUT / "home-page"
 # Images used on the home page: placeholder name -> local file (uploaded to Squarespace by hand)
 HOME_IMAGES = {
     "SOCKS_CIRCLE": "socks-circle-hero.jpg",
+    "STORY_CIRCLE": "story-circle.jpg",
     "XAVIER": "xavier-portrait.jpg",
     "SOCK_PILE": "sock-pile.jpg",
     "FAMILY": "family.jpg",
@@ -762,7 +763,7 @@ def build_home_page():
         (4, "4-story-block.html", "Pinned photo story",
          "Three photos and three short lines that change as you scroll while the stage stays pinned.",
          "A Code Block (mode HTML) in the SECOND section.",
-         "{{IMG_XAVIER}}, {{IMG_SOCKS_CIRCLE}}, {{IMG_SOCK_PILE}}", HOME_STORY),
+         "{{IMG_XAVIER}}, {{IMG_STORY_CIRCLE}}, {{IMG_SOCK_PILE}}", HOME_STORY),
         (5, "5-your-turn-block.html", "Yellow wave and the Your turn cards",
          "The wave, the yellow band, the Your turn headline and the swipeable photo cards, ending with Surprise me.",
          "A Code Block (mode HTML) in the THIRD (last) section.",
